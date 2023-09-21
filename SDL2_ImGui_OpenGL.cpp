@@ -1,4 +1,5 @@
 #include "include/IMGUI/imgui.h"
+#include "include/IMGUI/imgui_stdlib.h"
 #include "include/IMGUI/imgui_impl_sdl2.h"
 #include "include/IMGUI/imgui_impl_opengl3.h"
 #include <stdio.h>
@@ -37,6 +38,8 @@ int main(int argc, char *argv[])
     ImGui_ImplSDL2_InitForOpenGL(window, openglContext);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+    std::string title = "Title";
+    float r, g, b, a = 0;
     bool running = true;
     while (running)
     {
@@ -58,16 +61,32 @@ int main(int argc, char *argv[])
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
+
         // ImGui
+        ImGui::Text(title.c_str());
+        ImGui::InputText("Title", &title);
+        ImGui::SliderFloat("R", &r, 0.0f, 1.0f);
+        ImGui::SliderFloat("G", &g, 0.0f, 1.0f);
+        ImGui::SliderFloat("B", &b, 0.0f, 1.0f);
+        ImGui::SliderFloat("A", &a, 0.0f, 1.0f);
+
 
         // Render
 
+
+
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        glClearColor(255, 255, 255 ,255);
+        glClearColor(r * 255, g * 255, b * 255, a * 255);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+    SDL_GL_DeleteContext(openglContext);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
     return 0;
 }
