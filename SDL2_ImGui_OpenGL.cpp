@@ -2,7 +2,7 @@
 #include "include/IMGUI/imgui_stdlib.h"
 #include "include/IMGUI/imgui_impl_sdl2.h"
 #include "include/IMGUI/imgui_impl_opengl3.h"
-#include <stdio.h>
+#include <iostream>
 #include "include/SDL2/SDL.h"
 #include "include/SDL2/SDL_opengl.h"
 
@@ -18,6 +18,12 @@ int main(int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -39,7 +45,8 @@ int main(int argc, char *argv[])
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     std::string title = "Title";
-    float r, g, b, a = 0;
+    float r = 1, g = 1, b = 1, a = 1;
+    bool epilepticSeizure = false;
     bool running = true;
     while (running)
     {
@@ -65,19 +72,32 @@ int main(int argc, char *argv[])
         // ImGui
         ImGui::Text(title.c_str());
         ImGui::InputText("Title", &title);
+        if(ImGui::Button("Randomize"))
+        {
+            r = (float)(rand() % 1000) / 1000;
+            g = (float)(rand() % 1000) / 1000;
+            b = (float)(rand() % 1000) / 1000;
+        }
+        ImGui::Checkbox("Epileptic Seizure", &epilepticSeizure);
+        if(epilepticSeizure)
+        {
+            r = (float)(rand() % 1000) / 1000;
+            g = (float)(rand() % 1000) / 1000;
+            b = (float)(rand() % 1000) / 1000;
+        }
         ImGui::SliderFloat("R", &r, 0.0f, 1.0f);
         ImGui::SliderFloat("G", &g, 0.0f, 1.0f);
         ImGui::SliderFloat("B", &b, 0.0f, 1.0f);
         ImGui::SliderFloat("A", &a, 0.0f, 1.0f);
 
 
-        // Render
 
+        // Render
 
 
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        glClearColor(r * 255, g * 255, b * 255, a * 255);
+        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
