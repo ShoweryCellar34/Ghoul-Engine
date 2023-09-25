@@ -44,9 +44,10 @@ int main(int argc, char *argv[])
     ImGui_ImplSDL2_InitForOpenGL(window, openglContext);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    std::string title = "Title";
-    float r = 1, g = 1, b = 1, a = 1;
-    bool epilepticSeizure = false;
+
+    // Variables
+
+
     bool running = true;
     while (running)
     {
@@ -70,25 +71,6 @@ int main(int argc, char *argv[])
 
 
         // ImGui
-        ImGui::Text(title.c_str());
-        ImGui::InputText("Title", &title);
-        if(ImGui::Button("Randomize"))
-        {
-            r = (float)(rand() % 1000) / 1000;
-            g = (float)(rand() % 1000) / 1000;
-            b = (float)(rand() % 1000) / 1000;
-        }
-        ImGui::Checkbox("Epileptic Seizure", &epilepticSeizure);
-        if(epilepticSeizure)
-        {
-            r = (float)(rand() % 1000) / 1000;
-            g = (float)(rand() % 1000) / 1000;
-            b = (float)(rand() % 1000) / 1000;
-        }
-        ImGui::SliderFloat("R", &r, 0.0f, 1.0f);
-        ImGui::SliderFloat("G", &g, 0.0f, 1.0f);
-        ImGui::SliderFloat("B", &b, 0.0f, 1.0f);
-        ImGui::SliderFloat("A", &a, 0.0f, 1.0f);
 
 
         // Render
@@ -96,7 +78,7 @@ int main(int argc, char *argv[])
 
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        glClearColor(r, g, b, a);
+        glClearColor(255, 255, 255, 255);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
