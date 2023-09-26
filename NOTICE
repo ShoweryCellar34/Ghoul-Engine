@@ -1,0 +1,7 @@
+This project uses the following libraries:
+
+- SDL2: The license for SDL2 can be found at `licences/SDL2/LICENCE.txt`.
+- ImGui: The license for ImGui can be found at `licences/ImGui/LICENSE.txt`.
+- GLAD: The license for GLAD can be found at `licences/GLAD/LICENSE`.
+
+Please ensure to comply with the terms and conditions of each license when using these libraries.
