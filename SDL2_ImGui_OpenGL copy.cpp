@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
+
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
     SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     SDL_Window *window = SDL_CreateWindow("Dear ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, windowFlags);
     SDL_GLContext openglContext = SDL_GL_CreateContext(window);
@@ -37,17 +37,16 @@ int main(int argc, char *argv[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
+    (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForOpenGL(window, openglContext);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-
-    // Variables
-
-
-    float r = 1, g = 1, b = 1, a = 1;
+    std::string title = "Title";
+    float r = 1, g = 1, b = 1, a = 1, rPrevious = 1, gPrevious = 1, bPrevious = 1, aPrevious = 1;
+    bool epilepticSeizure = false;
     bool running = true;
     while (running)
     {
@@ -59,6 +58,10 @@ int main(int argc, char *argv[])
             {
                 running = false;
             }
+            if (event.type == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+            {
+                running = false;
+            }
         }
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -67,6 +70,34 @@ int main(int argc, char *argv[])
 
 
         // ImGui
+        ImGui::Text(title.c_str());
+        ImGui::InputText("Title", &title);
+        if(ImGui::Button("Randomize"))
+        {
+            rPrevious = r, gPrevious = g, bPrevious = b, aPrevious = a;
+            r = (float)(rand() % 1000) / 1000;
+            g = (float)(rand() % 1000) / 1000;
+            b = (float)(rand() % 1000) / 1000;
+        }
+        if(ImGui::Button("Back"))
+        {
+            r = rPrevious, g = gPrevious, b = bPrevious, a = aPrevious;
+        }
+        ImGui::Checkbox("Epileptic Seizure", &epilepticSeizure);
+        if(epilepticSeizure)
+        {
+            r = (float)(rand() % 1000) / 1000;
+            g = (float)(rand() % 1000) / 1000;
+            b = (float)(rand() % 1000) / 1000;
+        }
+        ImGui::SliderFloat("R", &r, 0.0f, 1.0f);
+        ImGui::SliderFloat("G", &g, 0.0f, 1.0f);
+        ImGui::SliderFloat("B", &b, 0.0f, 1.0f);
+        ImGui::SliderFloat("A", &a, 0.0f, 1.0f);
+        ImGui::Text("Previous R value: %f", rPrevious);
+        ImGui::Text("Previous G value: %f", gPrevious);
+        ImGui::Text("Previous B value: %f", bPrevious);
+        ImGui::Text("Previous A value: %f", aPrevious);
 
 
         // Render
