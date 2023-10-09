@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
     ImGuiIO &io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-    io.ConfigFlags |= ImGuiSliderFlags_AlwaysClamp;
     ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForOpenGL(window, openglContext);
     ImGui_ImplOpenGL3_Init(glsl_version);
