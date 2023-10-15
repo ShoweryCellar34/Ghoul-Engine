@@ -64,12 +64,25 @@ int main(int argc, char *argv[])
         "{\n"
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "}\0";
+    const char *vertexShader2Source = "#version 460 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.y, aPos.x, aPos.z, 1.0);\n"
+        "}\0";
     const char *fragmentShaderSource = "#version 460 core\n"
         "out vec4 FragColor;\n"
         "void main()\n"
         "{\n"
         "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
         "}\n\0";
+    const char *fragmentShader2Source = "#version 460 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
+        "}\n\0";
+
 
     // Vertices
     float vertices[] = {
@@ -83,11 +96,17 @@ int main(int argc, char *argv[])
 
     // Shader Setup
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    unsigned int vertexShader2 = glCreateShader(GL_VERTEX_SHADER);
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    unsigned int fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glShaderSource(vertexShader2, 1, &vertexShader2Source, NULL);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glShaderSource(fragmentShader2, 1, &fragmentShader2Source, NULL);
     glCompileShader(vertexShader);
+    glCompileShader(vertexShader2);
     glCompileShader(fragmentShader);
+    glCompileShader(fragmentShader2);
     int success;
     char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -96,23 +115,48 @@ int main(int argc, char *argv[])
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
+    glGetShaderiv(vertexShader2, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShader2, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
+    glGetShaderiv(fragmentShader2, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShader2, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    bool currentShader = false;
     unsigned int shaderProgram = glCreateProgram();
+    unsigned int shaderProgram2 = glCreateProgram();
+    unsigned int shaderIdDifference = shaderProgram;
     glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram2, vertexShader2);
     glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram2, fragmentShader2);
     glLinkProgram(shaderProgram);
+    glLinkProgram(shaderProgram2);
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
+    glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram2, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
     glDeleteShader(vertexShader);
+    glDeleteShader(vertexShader2);
     glDeleteShader(fragmentShader);
+    glDeleteShader(fragmentShader2);
 
     // VBO and VAO Setup
 
@@ -148,11 +192,19 @@ int main(int argc, char *argv[])
 
 
         // ImGui
+        if(ImGui::Button("Switch Shader"))
+        {
+            std::cout << "Preswitched Shader: " << (int)currentShader + shaderIdDifference << std::endl;
+            std::cout << "Shader 1: " << shaderProgram << std::endl;
+            std::cout << "Shader 2: " << shaderProgram2 << std::endl;
+            currentShader = !currentShader;
+            std::cout << "Switched Shader: " << (int)currentShader + shaderIdDifference << std::endl << std::endl;
+        }
         ImGui::ShowDemoWindow();
 
 
         // Render
-        glUseProgram(shaderProgram);
+        glUseProgram((int)currentShader + shaderIdDifference);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
