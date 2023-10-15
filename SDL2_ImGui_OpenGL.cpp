@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     ImGui_ImplOpenGL3_Init(glsl_version);
 
 
-    // Variables
+    // Setup
 
     // Shaders
     const char *vertexShaderSource = "#version 460 core\n"
@@ -83,16 +83,17 @@ int main(int argc, char *argv[])
         "   FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
         "}\n\0";
 
-
     // Vertices
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
+        0.5f,  0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
     };
-
-
-    // Setup
+    unsigned int indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
 
     // Shader Setup
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -160,15 +161,23 @@ int main(int argc, char *argv[])
 
     // VBO and VAO Setup
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, EBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO); 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
+
+
+    // Variables
+
+    bool wireframeMode = false;
 
 
     bool running = true;
@@ -200,13 +209,20 @@ int main(int argc, char *argv[])
             currentShader = !currentShader;
             std::cout << "Switched Shader: " << (int)currentShader + shaderIdDifference << std::endl << std::endl;
         }
-        ImGui::ShowDemoWindow();
-
+        ImGui::Checkbox("Wireframe Mode", &wireframeMode);
 
         // Render
         glUseProgram((int)currentShader + shaderIdDifference);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        if(wireframeMode)
+        {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
         ImGui::Render();

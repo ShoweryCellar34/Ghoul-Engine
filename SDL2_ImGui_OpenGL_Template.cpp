@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
     ImGui_ImplOpenGL3_Init(glsl_version);
 
 
-    // Variables
-
-
     // Setup
+
+
+    // Variables
 
 
     bool running = true;
