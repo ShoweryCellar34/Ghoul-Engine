@@ -5,7 +5,6 @@
 #include "include/IMGUI/imgui_impl_opengl3.h"
 #include <iostream>
 #include "include/SDL2/SDL.h"
-#include "include/SDL2/SDL_opengl.h"
 
 int main(int argc, char *argv[])
 {
