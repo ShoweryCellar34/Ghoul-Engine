@@ -58,29 +58,22 @@ int main(int argc, char *argv[])
 
     // Shaders
     const char *vertexShaderSource = "#version 460 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
-    const char *vertexShader2Source = "#version 460 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.y, aPos.x, aPos.z, 1.0);\n"
-        "}\0";
+    "layout (location = 0) in vec3 aPos;\n"
+    "out vec4 vertexColor;\n"
+    "void main()\n"
+    "{\n"
+    "gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor\n"
+    "vertexColor = vec4(1.0, 0.0, 0.0, 1.0); // set the output variable to a dark-red color\n"
+    "}\n";
     const char *fragmentShaderSource = "#version 460 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\n\0";
-    const char *fragmentShader2Source = "#version 460 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
-        "}\n\0";
+    "out vec4 FragColor;\n"
+    "in vec4 vertexColor;\n"
+    "uniform vec4 outColor;\n"
+    "void main()\n"
+    "{\n"
+    //"FragColor = vertexColor;\n"
+    "FragColor = outColor;\n"
+    "}\n";
 
     // Vertices
     float vertices[] = {
@@ -100,17 +93,11 @@ int main(int argc, char *argv[])
 
     // Shader Setup
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    unsigned int vertexShader2 = glCreateShader(GL_VERTEX_SHADER);
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    unsigned int fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glShaderSource(vertexShader2, 1, &vertexShader2Source, NULL);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glShaderSource(fragmentShader2, 1, &fragmentShader2Source, NULL);
     glCompileShader(vertexShader);
-    glCompileShader(vertexShader2);
     glCompileShader(fragmentShader);
-    glCompileShader(fragmentShader2);
     int success;
     char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -119,48 +106,24 @@ int main(int argc, char *argv[])
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    glGetShaderiv(vertexShader2, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader2, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    glGetShaderiv(fragmentShader2, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader2, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    bool currentShader = false;
     unsigned int shaderProgram = glCreateProgram();
-    unsigned int shaderProgram2 = glCreateProgram();
     unsigned int shaderIdDifference = shaderProgram;
     glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram2, vertexShader2);
     glAttachShader(shaderProgram, fragmentShader);
-    glAttachShader(shaderProgram2, fragmentShader2);
     glLinkProgram(shaderProgram);
-    glLinkProgram(shaderProgram2);
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
-    glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram2, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
     glDeleteShader(vertexShader);
-    glDeleteShader(vertexShader2);
     glDeleteShader(fragmentShader);
-    glDeleteShader(fragmentShader2);
 
     // VBO and VAO Setup
 
@@ -180,6 +143,8 @@ int main(int argc, char *argv[])
 
     // Variables
 
+
+    float rgba[4] = {0.5f, 0.5f, 0.5f, 1.0f};
     bool wireframeMode = false;
 
 
@@ -204,28 +169,27 @@ int main(int argc, char *argv[])
 
 
         // ImGui
-        if(ImGui::Button("Switch Shader"))
-        {
-            std::cout << "Preswitched Shader: " << (int)currentShader + shaderIdDifference << std::endl;
-            std::cout << "Shader 1: " << shaderProgram << std::endl;
-            std::cout << "Shader 2: " << shaderProgram2 << std::endl;
-            currentShader = !currentShader;
-            std::cout << "Switched Shader: " << (int)currentShader + shaderIdDifference << std::endl << std::endl;
-        }
+        ImGui::Begin(windowTitle.c_str());
+        ImGui::Text("RGBA Values: ");
+        ImGui::SameLine();
+        ImGui::SliderFloat4("", rgba, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Checkbox("Wireframe Mode", &wireframeMode);
+        ImGui::End();
 
         // Render
-        glUseProgram((int)currentShader + shaderIdDifference);
+        glUseProgram(shaderProgram);
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "outColor");
+        glUniform4f(vertexColorLocation, rgba[0], rgba[1], rgba[2], rgba[3]);
         glBindVertexArray(VAO);
         if(wireframeMode)
         {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
         else
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 
 
         ImGui::Render();

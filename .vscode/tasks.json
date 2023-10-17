@@ -36,6 +36,7 @@
             "-Llibraries\\SDL2",
             "-Llibraries\\GLAD",
             "-Llibraries\\IMGUI",
+            "ghoul.res",
             "-lmingw32",
             "-mwindows",
             "-lSDL2main",
