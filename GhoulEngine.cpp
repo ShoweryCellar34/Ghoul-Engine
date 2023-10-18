@@ -10,48 +10,74 @@
 #include "include/SDL2/SDL.h"
 
 
-class Log
+class Logger
 {
     private:
-    std::string tempBuffer;
-    std::string saveBuffer;
-    int flushThreshold = 300;
-    bool useSaveBuffer = false;
+        std::ofstream logFile;
+        std::string tempBuffer;
         void log(std::string prefix, std::string message)
         {
-            tempBuffer = prefix;
+            if(!save)
+            {
+                tempBuffer.append("[NOT SAVED]");
+            }
+            tempBuffer.append(prefix);
             tempBuffer.append(message);
             tempBuffer.append("\n");
+            if(save)
+            {
+                logFile.open(logFilePath, std::ios::app);
+                logFile << tempBuffer;
+                logFile.close();
+            }
             if(print)
             {
                 std::cout << tempBuffer;
             }
-            if(save)
-            {
-                if(useSaveBuffer)
-                {
-                    saveBuffer.append(tempBuffer);
-                }
-                if(saveBuffer.length() > flushThreshold)
-                {
-                    
-                }
-            }
+            tempBuffer.clear();
         }
     public:
+        std::string logFilePath = "log.txt";
         bool print = true;
         bool save = true;
         void Note(std::string message)
         {
-            log("NOTE: ", message);
+            log("[NOTE] ", message);
         }
         void Warn(std::string message)
         {
-            log("WARN: ", message);
+            log("[WARN] ", message);
         }
         void Error(std::string message)
         {
-            log("ERROR: ", message);
+            log("[ERROR] ", message);
+        }
+        void FatalError(std::string message)
+        {
+            log("[FATAL ERROR] ", message);
+        }
+        Logger()
+        {
+            logFile.open(logFilePath);
+            logFile.clear();
+            logFile.close();
+        }
+        Logger(bool print, bool save)
+        {
+            logFile.open(logFilePath);
+            logFile.clear();
+            logFile.close();
+            this -> print = print;
+            this -> save = save;
+        }
+        Logger(bool print, bool save, std::string logFilePath)
+        {
+            logFile.open(logFilePath);
+            logFile.clear();
+            logFile.close();
+            this -> print = print;
+            this -> save = save;
+            this -> logFilePath = logFilePath;
         }
 };
 
@@ -60,7 +86,7 @@ class Shader
 {
     public:
         unsigned int shaderProgram;
-        Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
+        Shader(const char* vertexShaderPath, const char* fragmentShaderPath, Logger &log)
         {
             std::string vertexShaderString;
             std::string fragmentShaderString;
@@ -82,7 +108,7 @@ class Shader
             }
             catch(std::ifstream::failure error)
             {
-                std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+                log.Error("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ");
             }
             const char* vertexShaderCode = vertexShaderString.c_str();
             const char* fragmentShaderCode = fragmentShaderString.c_str();
@@ -99,13 +125,15 @@ class Shader
             if(!success)
             {
                 glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-                std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+                log.Error("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
+                log.Error(infoLog);
             };
             glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
             if(!success)
             {
                 glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-                std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+                log.Error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED");
+                log.Error(infoLog);
             };
             shaderProgram = glCreateProgram();
             glAttachShader(shaderProgram, vertexShader);
@@ -115,7 +143,8 @@ class Shader
             if(!success)
             {
                 glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-                std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+                log.Error("ERROR::SHADER::PROGRAM::LINKING_FAILED");
+                log.Error(infoLog);
             }
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
@@ -141,36 +170,42 @@ class Shader
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Initializing SDL..." << std::endl;
+    Logger log;
+    log.Note("Initializing SDL...");
     int SDLErrorCode = 0;
     SDLErrorCode = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER);
     if (SDLErrorCode != 0)
     {
-        std::cout << "SDL Failed to Initialize: \n" << SDL_GetError() << std::endl;
-        std::cout << "Exiting With Code: " << SDLErrorCode << std::endl;
+        log.FatalError("SDL Failed to Initialize: " + (std::string)SDL_GetError());
+        log.FatalError("Exiting With Code " + std::to_string(SDLErrorCode));
         return SDLErrorCode;
     }
-    std::cout << "Initialized SDL" << std::endl;
+    log.Note("Initialized SDL");
 
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
-    std::cout << "Vertex Shader Path: " << vertexShaderPath << std::endl;
-    std::cout << "Fragment Shader Path: " << fragmentShaderPath << std::endl;
+    log.Note("Vertex Shader Path: " + vertexShaderPath);
+    log.Note("Fragment Shader Path: " + fragmentShaderPath);
     SDL_DisplayMode displayMode;
-    std::cout << "Obtaining Display Mode..." << std::endl;
+    log.Note("Obtaining Display Mode...");
+    int windowWidth = 600, windowHeight = 400;
     SDLErrorCode = SDL_GetDesktopDisplayMode(0, &displayMode);
     if (SDLErrorCode != 0)
     {
-        std::cout << "Failed to Obtain Display Mode: \n" << SDL_GetError() << std::endl;
-        std::cout << "Exiting With Code: " << SDLErrorCode << std::endl;
-        return SDLErrorCode;
+        log.Error("Failed to Obtain Display Mode: \n" + (std::string)SDL_GetError());
+        log.Warn("Using Default Resolution...");
+        log.Note("Window Height: " + std::to_string(windowHeight));
+        log.Note("Window Width: " + std::to_string(windowWidth));
     }
-    std::cout << "Obtained Display Mode" << std::endl;
-    int windowWidth = displayMode.w / 1.5;
-    int windowHeight = displayMode.h / 1.5;
-    std::cout << "Window Height: " << windowHeight << std::endl;
-    std::cout << "Window Width: " << windowWidth << std::endl;
+    else
+    {
+        log.Note("Obtained Display Mode");
+        windowWidth = displayMode.w / 1.5;
+        windowHeight = displayMode.h / 1.5;
+        log.Note("Window Height: " + std::to_string(windowHeight));
+        log.Note("Window Width: " + std::to_string(windowWidth));
+    }
 
     const char *glsl_version = "#version 460";
 
@@ -180,13 +215,13 @@ int main(int argc, char *argv[])
     SDL_GL_MakeCurrent(window, openglContext);
     SDL_GL_SetSwapInterval(1);
 
-    std::cout << "Initializing GLAD..." << std::endl;
+    log.Note("Initializing GLAD...");
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        log.FatalError("Failed to initialize GLAD, Exiting With Code -1");
         return -1;
     }
-    std::cout << "Initialized GLAD" << std::endl;
+    log.Note("Initialized GLAD");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -219,7 +254,7 @@ int main(int argc, char *argv[])
     };
 
     // Shader Setup
-    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), log);
 
     // VBO and VAO Setup
 
@@ -229,7 +264,7 @@ int main(int argc, char *argv[])
     glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO); 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
@@ -299,11 +334,13 @@ int main(int argc, char *argv[])
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
     }
+    log.Note("Shutting Down...");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
     SDL_GL_DeleteContext(openglContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
+    log.Note("Shutdown Success, Exiting");
     return 0;
 }
