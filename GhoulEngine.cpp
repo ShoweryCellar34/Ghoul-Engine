@@ -10,6 +10,52 @@
 #include "include/SDL2/SDL.h"
 
 
+class Log
+{
+    private:
+    std::string tempBuffer;
+    std::string saveBuffer;
+    int flushThreshold = 300;
+    bool useSaveBuffer = false;
+        void log(std::string prefix, std::string message)
+        {
+            tempBuffer = prefix;
+            tempBuffer.append(message);
+            tempBuffer.append("\n");
+            if(print)
+            {
+                std::cout << tempBuffer;
+            }
+            if(save)
+            {
+                if(useSaveBuffer)
+                {
+                    saveBuffer.append(tempBuffer);
+                }
+                if(saveBuffer.length() > flushThreshold)
+                {
+                    
+                }
+            }
+        }
+    public:
+        bool print = true;
+        bool save = true;
+        void Note(std::string message)
+        {
+            log("NOTE: ", message);
+        }
+        void Warn(std::string message)
+        {
+            log("WARN: ", message);
+        }
+        void Error(std::string message)
+        {
+            log("ERROR: ", message);
+        }
+};
+
+
 class Shader
 {
     public:
@@ -95,18 +141,36 @@ class Shader
 
 int main(int argc, char *argv[])
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
+    std::cout << "Initializing SDL..." << std::endl;
+    int SDLErrorCode = 0;
+    SDLErrorCode = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER);
+    if (SDLErrorCode != 0)
     {
-        return -1;
+        std::cout << "SDL Failed to Initialize: \n" << SDL_GetError() << std::endl;
+        std::cout << "Exiting With Code: " << SDLErrorCode << std::endl;
+        return SDLErrorCode;
     }
+    std::cout << "Initialized SDL" << std::endl;
 
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
+    std::cout << "Vertex Shader Path: " << vertexShaderPath << std::endl;
+    std::cout << "Fragment Shader Path: " << fragmentShaderPath << std::endl;
     SDL_DisplayMode displayMode;
-    SDL_GetDesktopDisplayMode(0, &displayMode);
+    std::cout << "Obtaining Display Mode..." << std::endl;
+    SDLErrorCode = SDL_GetDesktopDisplayMode(0, &displayMode);
+    if (SDLErrorCode != 0)
+    {
+        std::cout << "Failed to Obtain Display Mode: \n" << SDL_GetError() << std::endl;
+        std::cout << "Exiting With Code: " << SDLErrorCode << std::endl;
+        return SDLErrorCode;
+    }
+    std::cout << "Obtained Display Mode" << std::endl;
     int windowWidth = displayMode.w / 1.5;
     int windowHeight = displayMode.h / 1.5;
+    std::cout << "Window Height: " << windowHeight << std::endl;
+    std::cout << "Window Width: " << windowWidth << std::endl;
 
     const char *glsl_version = "#version 460";
 
@@ -116,11 +180,13 @@ int main(int argc, char *argv[])
     SDL_GL_MakeCurrent(window, openglContext);
     SDL_GL_SetSwapInterval(1);
 
+    std::cout << "Initializing GLAD..." << std::endl;
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
-    }    
+    }
+    std::cout << "Initialized GLAD" << std::endl;
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
