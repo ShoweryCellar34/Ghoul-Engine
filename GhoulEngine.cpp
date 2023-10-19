@@ -96,6 +96,7 @@ class Shader
             fragmentShaderSource.exceptions (std::ifstream::failbit | std::ifstream::badbit);
             try
             {
+                log.Note("Opening Shader Files...");
                 vertexShaderSource.open(vertexShaderPath);
                 fragmentShaderSource.open(fragmentShaderPath);
                 std::stringstream vShaderStream, fShaderStream;
@@ -103,7 +104,8 @@ class Shader
                 fShaderStream << fragmentShaderSource.rdbuf();
                 vertexShaderSource.close();
                 fragmentShaderSource.close();
-                vertexShaderString   = vShaderStream.str();
+                log.Note("Closed Shader Files");
+                vertexShaderString = vShaderStream.str();
                 fragmentShaderString = fShaderStream.str();
             }
             catch(std::ifstream::failure error)
@@ -113,6 +115,7 @@ class Shader
             const char* vertexShaderCode = vertexShaderString.c_str();
             const char* fragmentShaderCode = fragmentShaderString.c_str();
             unsigned int vertexShader, fragmentShader;
+            log.Note("Creating Shaders...");
             vertexShader = glCreateShader(GL_VERTEX_SHADER);
             fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
             glShaderSource(vertexShader, 1, &vertexShaderCode, NULL);
@@ -127,17 +130,58 @@ class Shader
                 glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
                 log.Error("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
                 log.Error(infoLog);
-            };
+            }
+            else
+            {
+                log.Note("Created Vertex Shader");
+            }
             glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
             if(!success)
             {
                 glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
                 log.Error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED");
                 log.Error(infoLog);
-            };
+            }
+            else
+            {
+                log.Note("Created Fragment Shader");
+            }
+            log.Note("Creating Shader Program...");
             shaderProgram = glCreateProgram();
+            if(shaderProgram == 0)
+            {
+                log.Error("Failed To Created Shader Program");
+            }
+            else
+            {
+                log.Note("Created Shader Program");
+            }
+            log.Note("Attaching Vertex Shader...");
             glAttachShader(shaderProgram, vertexShader);
+            unsigned int failedShaderNumber = 0;
+            int shaderNumber = 0;
+            glGetProgramiv(shaderProgram, GL_ATTACHED_SHADERS, &shaderNumber);
+            if(shaderNumber < 1)
+            {
+                log.Error("Failed To Attach Vertex Shader");
+                failedShaderNumber++;
+            }
+            else
+            {
+                log.Note("Attached Vertex Shader");
+            }
+            log.Note("Attaching Fragment Shader...");
             glAttachShader(shaderProgram, fragmentShader);
+            glGetProgramiv(shaderProgram, GL_ATTACHED_SHADERS, &shaderNumber);
+            if(shaderNumber < 2 - failedShaderNumber)
+            {
+                log.Error("Failed To Attach Fragment Shader");
+                failedShaderNumber++;
+            }
+            else
+            {
+                log.Note("Attached Fragment Shader");
+            }
             glLinkProgram(shaderProgram);
             glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
             if(!success)
@@ -194,7 +238,7 @@ int main(int argc, char *argv[])
     if (SDLErrorCode != 0)
     {
         log.Error("Failed to Obtain Display Mode: \n" + (std::string)SDL_GetError());
-        log.Warn("Using Default Resolution...");
+        log.Warn("Using Default Resolution");
         log.Note("Window Height: " + std::to_string(windowHeight));
         log.Note("Window Width: " + std::to_string(windowWidth));
     }
@@ -209,17 +253,49 @@ int main(int argc, char *argv[])
 
     const char *glsl_version = "#version 460";
 
+
     SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    log.Note("Creating Window...");
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, windowFlags);
+    if(window == NULL)
+    {
+        log.FatalError("Failed To Create Window: " + (std::string)SDL_GetError());
+        log.FatalError("Exiting With Code 1");
+        return 1;
+    }
+    log.Note("Created Window");
+    log.Note("Creating OpenGL Context...");
     SDL_GLContext openglContext = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, openglContext);
-    SDL_GL_SetSwapInterval(1);
+    if(openglContext == NULL)
+    {
+        log.FatalError("Failed To Create OpenGL Context: " + (std::string)SDL_GetError());
+        log.FatalError("Exiting With Code 1");
+        return 1;
+    }
+    log.Note("Created OpenGL Context");
+    SDLErrorCode = SDL_GL_MakeCurrent(window, openglContext);
+    if (SDLErrorCode != 0)
+    {
+        log.FatalError("SDL Failed to Setup OpenGL Context: " + (std::string)SDL_GetError());
+        log.FatalError("Exiting With Code " + std::to_string(SDLErrorCode));
+        return SDLErrorCode;
+    }
+    log.Note("Setting Up Vsync...");
+    if(SDL_GL_SetSwapInterval(1) != 0)
+    {
+        log.Error("Failed To Setup Vsync");
+    }
+    else
+    {
+        log.Note("Setup Vsync");
+    }
 
     log.Note("Initializing GLAD...");
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
     {
-        log.FatalError("Failed to initialize GLAD, Exiting With Code -1");
-        return -1;
+        log.FatalError("Failed to initialize GLAD");
+        log.FatalError("Exiting With Code 1");
+        return 1;
     }
     log.Note("Initialized GLAD");
 
@@ -229,13 +305,25 @@ int main(int argc, char *argv[])
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     ImGui::StyleColorsDark();
-    ImGui_ImplSDL2_InitForOpenGL(window, openglContext);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    log.Note("Initializing Imgui For SDL2...");
+    if(ImGui_ImplSDL2_InitForOpenGL(window, openglContext) == 0)
+    {
+        log.FatalError("Failed To Initialize Imgui For SDL2");
+        log.FatalError("Exiting With Code 1");
+        return 1;
+    }
+    log.Note("Initialize Imgui For OpenGL");
+    log.Note("Initializing Imgui For OpenGL...");
+    if(ImGui_ImplOpenGL3_Init(glsl_version) == 0)
+    {
+        log.FatalError("Failed To Initialize Imgui For OpenGL");
+        log.FatalError("Exiting With Code 1");
+        return 1;
+    }
+    log.Note("Initialize Imgui For OpenGL");
 
 
     // Setup
-
-    // Shaders
 
     // Vertices
     float vertices[] = {
@@ -341,6 +429,7 @@ int main(int argc, char *argv[])
     SDL_GL_DeleteContext(openglContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    log.Note("Shutdown Success, Exiting");
+    log.Note("Shutdown Success");
+    log.Note("Exiting");
     return 0;
 }
