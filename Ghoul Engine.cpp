@@ -3,11 +3,12 @@
 #include "include/IMGUI/imgui_stdlib.h"
 #include "include/IMGUI/imgui_impl_sdl2.h"
 #include "include/IMGUI/imgui_impl_opengl3.h"
+#include "include/SDL2/SDL.h"
+#include "include/stb/stb_image.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "include/SDL2/SDL.h"
 
 
 class Logger
