@@ -230,8 +230,12 @@ int main(int argc, char *argv[])
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
+    std::string texture1Path = "assets\\container.jpg";
+    std::string texture2Path = "assets\\awsomeface.png";
     log.Note("Vertex Shader Path: " + vertexShaderPath);
     log.Note("Fragment Shader Path: " + fragmentShaderPath);
+    log.Note("Texture 1 Path: " + texture1Path);
+    log.Note("Texture 2 Path: " + texture2Path);
     SDL_DisplayMode displayMode;
     log.Note("Obtaining Display Mode...");
     int windowWidth = 600, windowHeight = 400;
@@ -328,25 +332,44 @@ int main(int argc, char *argv[])
 
     // Vertices
     float vertices[] = {
-        0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+    // positions          // colors                 // texture coordinates
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f    // top left 
     };
+
     unsigned int indices[] = {
         0, 1, 3,
-        1, 2, 3,
-        4, 5, 6
+        1, 2, 3
     };
 
     // Shader Setup
     Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), log);
 
-    // VBO and VAO Setup
+    // Texture Setup
+    unsigned int texture1, texture2;
+    glGenTextures(1, &texture1);
+    glGenTextures(1, &texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    log.Note("Loading Texture 1...");
+    int width, height, numberOfChannels;
+    unsigned char *data = stbi_load(texture1Path.c_str(), &width, &height, &numberOfChannels, 0);
+    if (data)
+    {
+        log.Note("Loaded Texture 1");
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        log.Warn("Failed To Load Texture 1");
+    }
 
+    // VBO and VAO Setup
     unsigned int VBO, EBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -356,15 +379,16 @@ int main(int argc, char *argv[])
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
     glBindVertexArray(0);
 
 
     // Variables
-
     int currentVertexBufferElement = 0;
     float value = 0.0f;
     bool wireframeMode = false;
@@ -404,6 +428,10 @@ int main(int argc, char *argv[])
         // Render
         vertices[currentVertexBufferElement] = value;
         shaderProgram.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO); 
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
