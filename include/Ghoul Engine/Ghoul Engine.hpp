@@ -100,7 +100,7 @@ public:
         int width, height, numberOfChannels;
         stbi_set_flip_vertically_on_load(true);
         log.Note("Loading Texture 1");
-        unsigned char *data = stbi_load(texturePath, &width, &height, &numberOfChannels, 0);
+        unsigned char *data = stbi_load(texturePath, &width, &height, &numberOfChannels, 3);
         if (data)
         {
             log.Note("Loaded Texture 1");
@@ -231,7 +231,7 @@ public:
         int width, height, numberOfChannels;
         stbi_set_flip_vertically_on_load(true);
         log->Note("Switching Texture");
-        unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &numberOfChannels, 0);
+        unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &numberOfChannels, 3);
         if (data)
         {
             log->Note("Switched Texture");
