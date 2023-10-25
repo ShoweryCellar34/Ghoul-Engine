@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         1, 2, 3};
 
     // Shader Setup
-    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texturePath.c_str(), STBI_rgb, log);
+    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texturePath.c_str(), log);
 
     // VBO and VAO Setup
     unsigned int VBO, EBO, VAO;
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
         ImGui::SameLine();
         ImGui::SliderFloat("##", &value, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Checkbox("Wireframe Mode", &wireframeMode);
-        if (ImGui::Button("Toggle Texture"))
+        if (ImGui::Button("Toggle Texture On/Off"))
         {
             useTexture = !useTexture;
             shaderProgram.setBool("useTexture", useTexture);

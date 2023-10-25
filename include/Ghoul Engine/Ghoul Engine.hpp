@@ -5,7 +5,6 @@
 #include "../IMGUI/imgui_impl_sdl2.h"
 #include "../IMGUI/imgui_impl_opengl3.h"
 #include "../SDL2/SDL.h"
-#include "../stb/stb_image.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -88,7 +87,7 @@ class Shader
 public:
     unsigned int shaderProgram, texture;
     Logger *log;
-    Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, unsigned int channels, Logger &log)
+    Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, Logger &log)
     {
         this -> log = &log;
         glGenTextures(1, &texture);
@@ -97,21 +96,19 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        int width, height, numberOfChannels;
-        stbi_set_flip_vertically_on_load(true);
         log.Note("Loading Texture");
-        unsigned char *data = stbi_load(texturePath, &width, &height, &numberOfChannels, channels);
-        if (data)
+        unsigned int imageWidth, imageHeight;
+        unsigned char *imageData;
+        if (imageData)
         {
             log.Note("Loaded Texture");
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else
         {
             log.Note("Failed To Load Texture");
         }
-        stbi_image_free(data);
         glUseProgram(shaderProgram);
         glUniform1i(glGetUniformLocation(shaderProgram, "texture"), 0);
         std::string vertexShaderString;
