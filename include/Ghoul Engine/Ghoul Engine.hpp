@@ -88,7 +88,7 @@ class Shader
 public:
     unsigned int shaderProgram, texture;
     Logger *log;
-    Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, Logger &log)
+    Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, unsigned int channels, Logger &log)
     {
         this -> log = &log;
         glGenTextures(1, &texture);
@@ -99,17 +99,17 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         int width, height, numberOfChannels;
         stbi_set_flip_vertically_on_load(true);
-        log.Note("Loading Texture 1");
-        unsigned char *data = stbi_load(texturePath, &width, &height, &numberOfChannels, 3);
+        log.Note("Loading Texture");
+        unsigned char *data = stbi_load(texturePath, &width, &height, &numberOfChannels, channels);
         if (data)
         {
-            log.Note("Loaded Texture 1");
+            log.Note("Loaded Texture");
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else
         {
-            log.Note("Failed To Load Texture 1");
+            log.Note("Failed To Load Texture");
         }
         stbi_image_free(data);
         glUseProgram(shaderProgram);
@@ -224,25 +224,6 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         glUseProgram(shaderProgram);
-    }
-    void switchTexture(const unsigned int &texture, const std::string &texturePath)
-    {
-        glBindTexture(GL_TEXTURE_2D, texture);
-        int width, height, numberOfChannels;
-        stbi_set_flip_vertically_on_load(true);
-        log->Note("Switching Texture");
-        unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &numberOfChannels, 3);
-        if (data)
-        {
-            log->Note("Switched Texture");
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        else
-        {
-            log->Note("Failed To Switch Texture");
-        }
-        stbi_image_free(data);
     }
     void setBool(const std::string &name, bool value) const
     {

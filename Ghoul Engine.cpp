@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         1, 2, 3};
 
     // Shader Setup
-    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texturePath.c_str(), log);
+    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texturePath.c_str(), STBI_rgb, log);
 
     // VBO and VAO Setup
     unsigned int VBO, EBO, VAO;
