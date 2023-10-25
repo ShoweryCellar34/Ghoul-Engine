@@ -86,13 +86,13 @@ public:
 class Shader
 {
 public:
-    unsigned int shaderProgram, texture1, texture2;
+    unsigned int shaderProgram, texture;
     Logger *log;
-    Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texture1Path, const char *texture2Path, Logger &log)
+    Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, Logger &log)
     {
         this->log = &log;
-        glGenTextures(1, &texture1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -100,7 +100,7 @@ public:
         int width, height, numberOfChannels;
         stbi_set_flip_vertically_on_load(true);
         log.Note("Loading Texture 1");
-        unsigned char *data = stbi_load(texture1Path, &width, &height, &numberOfChannels, 0);
+        unsigned char *data = stbi_load(texturePath, &width, &height, &numberOfChannels, 0);
         if (data)
         {
             log.Note("Loaded Texture 1");
@@ -112,28 +112,8 @@ public:
             log.Note("Failed To Load Texture 1");
         }
         stbi_image_free(data);
-        glGenTextures(1, &texture2);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        log.Note("Loading Texture 2");
-        data = stbi_load(texture2Path, &width, &height, &numberOfChannels, 0);
-        if (data)
-        {
-            log.Note("Loaded Texture 2");
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        else
-        {
-            log.Note("Failed To Load Texture 2");
-        }
-        stbi_image_free(data);
         glUseProgram(shaderProgram);
-        glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-        glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
+        glUniform1i(glGetUniformLocation(shaderProgram, "texture"), 0);
         std::string vertexShaderString;
         std::string fragmentShaderString;
         std::ifstream vertexShaderSource;
@@ -242,9 +222,7 @@ public:
     void use()
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glUseProgram(shaderProgram);
     }
     void switchTexture(const unsigned int &texture, const std::string &texturePath)

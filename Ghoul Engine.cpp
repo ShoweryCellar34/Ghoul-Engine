@@ -2,6 +2,7 @@
 
 int main(int argc, char *argv[])
 {
+    // Setup
     Logger log;
     log.Note("Initializing SDL...");
     int SDLErrorCode = 0;
@@ -17,12 +18,10 @@ int main(int argc, char *argv[])
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
-    std::string texture1Path = "assets/container.jpg";
-    std::string texture2Path = "assets/awsomeface.png";
+    std::string texturePath = "assets/container.jpg";
     log.Note("Vertex Shader Path: " + vertexShaderPath);
     log.Note("Fragment Shader Path: " + fragmentShaderPath);
-    log.Note("Texture 1 Path: " + texture1Path);
-    log.Note("Texture 2 Path: " + texture2Path);
+    log.Note("Texture Path: " + texturePath);
     SDL_DisplayMode displayMode;
     log.Note("Obtaining Display Mode...");
     int windowWidth = 600, windowHeight = 400;
@@ -113,7 +112,7 @@ int main(int argc, char *argv[])
     }
     log.Note("Initialize Imgui For OpenGL");
 
-    // Setup
+    // OpenGL Setup
 
     // Vertices
     float vertices[] = {
@@ -129,7 +128,7 @@ int main(int argc, char *argv[])
         1, 2, 3};
 
     // Shader Setup
-    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texture1Path.c_str(), texture2Path.c_str(), log);
+    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texturePath.c_str(), log);
 
     // VBO and VAO Setup
     unsigned int VBO, EBO, VAO;
