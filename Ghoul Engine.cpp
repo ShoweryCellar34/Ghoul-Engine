@@ -87,7 +87,7 @@ class Shader
 {
     public:
         unsigned int shaderProgram;
-        Shader(const char* vertexShaderPath, const char* fragmentShaderPath, Logger &log)
+        Shader(const char *vertexShaderPath, const char *fragmentShaderPath, Logger &log)
         {
             std::string vertexShaderString;
             std::string fragmentShaderString;
@@ -230,12 +230,8 @@ int main(int argc, char *argv[])
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
-    std::string texture1Path = "assets\\container.jpg";
-    std::string texture2Path = "assets\\awsomeface.png";
     log.Note("Vertex Shader Path: " + vertexShaderPath);
     log.Note("Fragment Shader Path: " + fragmentShaderPath);
-    log.Note("Texture 1 Path: " + texture1Path);
-    log.Note("Texture 2 Path: " + texture2Path);
     SDL_DisplayMode displayMode;
     log.Note("Obtaining Display Mode...");
     int windowWidth = 600, windowHeight = 400;
@@ -347,28 +343,6 @@ int main(int argc, char *argv[])
     // Shader Setup
     Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), log);
 
-    // Texture Setup
-    unsigned int texture1, texture2;
-    glGenTextures(1, &texture1);
-    glGenTextures(1, &texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    log.Note("Loading Texture 1...");
-    int width, height, numberOfChannels;
-    unsigned char *data = stbi_load(texture1Path.c_str(), &width, &height, &numberOfChannels, 0);
-    if (data)
-    {
-        log.Note("Loaded Texture 1");
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        log.Warn("Failed To Load Texture 1");
-    }
-
     // VBO and VAO Setup
     unsigned int VBO, EBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -428,10 +402,6 @@ int main(int argc, char *argv[])
         // Render
         vertices[currentVertexBufferElement] = value;
         shaderProgram.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO); 
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
