@@ -17,8 +17,12 @@ int main(int argc, char *argv[])
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
+    std::string texture1Path = "assets/container.jpg";
+    std::string texture2Path = "assets/awsomeface.png";
     log.Note("Vertex Shader Path: " + vertexShaderPath);
     log.Note("Fragment Shader Path: " + fragmentShaderPath);
+    log.Note("Texture 1 Path: " + texture1Path);
+    log.Note("Texture 2 Path: " + texture2Path);
     SDL_DisplayMode displayMode;
     log.Note("Obtaining Display Mode...");
     int windowWidth = 600, windowHeight = 400;
@@ -128,7 +132,7 @@ int main(int argc, char *argv[])
     };
 
     // Shader Setup
-    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), "assets/container.jpg", "assets/awesomeface.png", log);
+    Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texture1Path.c_str(), texture2Path.c_str(), log);
 
     // VBO and VAO Setup
     unsigned int VBO, EBO, VAO;
