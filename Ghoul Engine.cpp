@@ -45,11 +45,10 @@ int main(int argc, char *argv[])
 
     const char *glsl_version = "#version 460";
 
-
     SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     log.Note("Creating Window...");
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, windowFlags);
-    if(window == NULL)
+    if (window == NULL)
     {
         log.FatalError("Failed To Create Window: " + (std::string)SDL_GetError());
         log.FatalError("Exiting With Code 1");
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
     log.Note("Created Window");
     log.Note("Creating OpenGL Context...");
     SDL_GLContext openglContext = SDL_GL_CreateContext(window);
-    if(openglContext == NULL)
+    if (openglContext == NULL)
     {
         log.FatalError("Failed To Create OpenGL Context: " + (std::string)SDL_GetError());
         log.FatalError("Exiting With Code 1");
@@ -73,7 +72,7 @@ int main(int argc, char *argv[])
         return SDLErrorCode;
     }
     log.Note("Setting Up Vsync...");
-    if(SDL_GL_SetSwapInterval(1) != 0)
+    if (SDL_GL_SetSwapInterval(1) != 0)
     {
         log.Error("Failed To Setup Vsync");
     }
@@ -98,7 +97,7 @@ int main(int argc, char *argv[])
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     ImGui::StyleColorsDark();
     log.Note("Initializing Imgui For SDL2...");
-    if(ImGui_ImplSDL2_InitForOpenGL(window, openglContext) == 0)
+    if (ImGui_ImplSDL2_InitForOpenGL(window, openglContext) == 0)
     {
         log.FatalError("Failed To Initialize Imgui For SDL2");
         log.FatalError("Exiting With Code 1");
@@ -106,7 +105,7 @@ int main(int argc, char *argv[])
     }
     log.Note("Initialize Imgui For OpenGL");
     log.Note("Initializing Imgui For OpenGL...");
-    if(ImGui_ImplOpenGL3_Init(glsl_version) == 0)
+    if (ImGui_ImplOpenGL3_Init(glsl_version) == 0)
     {
         log.FatalError("Failed To Initialize Imgui For OpenGL");
         log.FatalError("Exiting With Code 1");
@@ -114,22 +113,20 @@ int main(int argc, char *argv[])
     }
     log.Note("Initialize Imgui For OpenGL");
 
-
     // Setup
 
     // Vertices
     float vertices[] = {
-    // positions          // colors                 // texture coordinates
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f    // top left 
+        // positions          // colors                 // texture coordinates
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f   // top left
     };
 
     unsigned int indices[] = {
         0, 1, 3,
-        1, 2, 3
-    };
+        1, 2, 3};
 
     // Shader Setup
     Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texture1Path.c_str(), texture2Path.c_str(), log);
@@ -140,29 +137,27 @@ int main(int argc, char *argv[])
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO); 
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
     glBindVertexArray(0);
-
 
     // Variables
     int currentVertexBufferElement = 0;
     float value = 0.0f;
     bool wireframeMode = false;
 
-
     bool running = true;
     while (running)
     {
-        glClearColor(255, 255, 255 ,255);
+        glClearColor(255, 255, 255, 255);
         glClear(GL_COLOR_BUFFER_BIT);
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -177,7 +172,6 @@ int main(int argc, char *argv[])
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-
 
         // ImGui
         ImGui::Begin(windowTitle.c_str());
@@ -194,9 +188,9 @@ int main(int argc, char *argv[])
         vertices[currentVertexBufferElement] = value;
         shaderProgram.use();
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO); 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        if(wireframeMode)
+        if (wireframeMode)
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
@@ -205,7 +199,6 @@ int main(int argc, char *argv[])
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
         glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-
 
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
