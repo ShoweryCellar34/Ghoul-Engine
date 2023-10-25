@@ -90,7 +90,7 @@ public:
     Logger *log;
     Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, Logger &log)
     {
-        this->log = &log;
+        this -> log = &log;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

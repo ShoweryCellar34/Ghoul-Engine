@@ -152,6 +152,7 @@ int main(int argc, char *argv[])
     int currentVertexBufferElement = 0;
     float value = 0.0f;
     bool wireframeMode = false;
+    bool useTexture = false;
 
     bool running = true;
     while (running)
@@ -181,6 +182,11 @@ int main(int argc, char *argv[])
         ImGui::SameLine();
         ImGui::SliderFloat("##", &value, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Checkbox("Wireframe Mode", &wireframeMode);
+        if (ImGui::Button("Toggle Texture"))
+        {
+            useTexture = !useTexture;
+            shaderProgram.setBool("useTexture", useTexture);
+        }
         ImGui::End();
 
         // Render
