@@ -1,0 +1,282 @@
+#pragma once
+#include "../GLAD/glad.h"
+#include "../IMGUI/imgui.h"
+#include "../IMGUI/imgui_stdlib.h"
+#include "../IMGUI/imgui_impl_sdl2.h"
+#include "../IMGUI/imgui_impl_opengl3.h"
+#include "../SDL2/SDL.h"
+#include "../stb/stb_image.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+
+
+class Logger
+{
+    private:
+        std::ofstream logFile;
+        std::string tempBuffer;
+        void log(std::string prefix, std::string message)
+        {
+            if(!save)
+            {
+                tempBuffer.append("[NOT SAVED]");
+            }
+            tempBuffer.append(prefix);
+            tempBuffer.append(message);
+            tempBuffer.append("\n");
+            if(save)
+            {
+                logFile.open(logFilePath, std::ios::app);
+                logFile << tempBuffer;
+                logFile.close();
+            }
+            if(print)
+            {
+                std::cout << tempBuffer;
+            }
+            tempBuffer.clear();
+        }
+    public:
+        std::string logFilePath = "log.txt";
+        bool print = true;
+        bool save = true;
+        void Note(std::string message)
+        {
+            log("[NOTE] ", message);
+        }
+        void Warn(std::string message)
+        {
+            log("[WARN] ", message);
+        }
+        void Error(std::string message)
+        {
+            log("[ERROR] ", message);
+        }
+        void FatalError(std::string message)
+        {
+            log("[FATAL ERROR] ", message);
+        }
+        Logger()
+        {
+            logFile.open(logFilePath);
+            logFile.clear();
+            logFile.close();
+        }
+        Logger(bool print, bool save)
+        {
+            logFile.open(logFilePath);
+            logFile.clear();
+            logFile.close();
+            this -> print = print;
+            this -> save = save;
+        }
+        Logger(bool print, bool save, std::string logFilePath)
+        {
+            logFile.open(logFilePath);
+            logFile.clear();
+            logFile.close();
+            this -> print = print;
+            this -> save = save;
+            this -> logFilePath = logFilePath;
+        }
+};
+
+
+class Shader
+{
+    public:
+        unsigned int shaderProgram, texture1, texture2;
+        Logger *log;
+        Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texture1Path, const char *texture2Path, Logger &log)
+        {
+            this->log = &log;
+            glGenTextures(1, &texture1);
+            glBindTexture(GL_TEXTURE_2D, texture1);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            int width, height, numberOfChannels;
+            stbi_set_flip_vertically_on_load(true);
+            log.Note("Loading Texture 1");
+            unsigned char *data = stbi_load(texture1Path, &width, &height, &numberOfChannels, 0);
+            if(data)
+            {
+                log.Note("Loaded Texture 1");
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else
+            {
+                log.Note("Failed To Load Texture 1");
+            }
+            stbi_image_free(data);
+            glGenTextures(1, &texture2);
+            glBindTexture(GL_TEXTURE_2D, texture2);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            log.Note("Loading Texture 2");
+            data = stbi_load(texture2Path, &width, &height, &numberOfChannels, 0);
+            if(data)
+            {
+                log.Note("Loaded Texture 2");
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else
+            {
+                log.Note("Failed To Load Texture 2");
+            }
+            stbi_image_free(data);
+            glUseProgram(shaderProgram);
+            glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+            glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
+            std::string vertexShaderString;
+            std::string fragmentShaderString;
+            std::ifstream vertexShaderSource;
+            std::ifstream fragmentShaderSource;
+            vertexShaderSource.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+            fragmentShaderSource.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+            try
+            {
+                log.Note("Opening Shader Files...");
+                vertexShaderSource.open(vertexShaderPath);
+                fragmentShaderSource.open(fragmentShaderPath);
+                std::stringstream vShaderStream, fShaderStream;
+                vShaderStream << vertexShaderSource.rdbuf();
+                fShaderStream << fragmentShaderSource.rdbuf();
+                vertexShaderSource.close();
+                fragmentShaderSource.close();
+                log.Note("Closed Shader Files");
+                vertexShaderString = vShaderStream.str();
+                fragmentShaderString = fShaderStream.str();
+            }
+            catch(std::ifstream::failure error)
+            {
+                log.Error("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ");
+            }
+            const char* vertexShaderCode = vertexShaderString.c_str();
+            const char* fragmentShaderCode = fragmentShaderString.c_str();
+            unsigned int vertexShader, fragmentShader;
+            log.Note("Creating Shaders...");
+            vertexShader = glCreateShader(GL_VERTEX_SHADER);
+            fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+            glShaderSource(vertexShader, 1, &vertexShaderCode, NULL);
+            glShaderSource(fragmentShader, 1, &fragmentShaderCode, NULL);
+            glCompileShader(vertexShader);
+            glCompileShader(fragmentShader);
+            int success;
+            char infoLog[512];
+            glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+            if(!success)
+            {
+                glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+                log.Error("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
+                log.Error(infoLog);
+            }
+            else
+            {
+                log.Note("Created Vertex Shader");
+            }
+            glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+            if(!success)
+            {
+                glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+                log.Error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED");
+                log.Error(infoLog);
+            }
+            else
+            {
+                log.Note("Created Fragment Shader");
+            }
+            log.Note("Creating Shader Program...");
+            shaderProgram = glCreateProgram();
+            if(shaderProgram == 0)
+            {
+                log.Error("Failed To Created Shader Program");
+            }
+            else
+            {
+                log.Note("Created Shader Program");
+            }
+            log.Note("Attaching Vertex Shader...");
+            glAttachShader(shaderProgram, vertexShader);
+            unsigned int failedShaderNumber = 0;
+            int shaderNumber = 0;
+            glGetProgramiv(shaderProgram, GL_ATTACHED_SHADERS, &shaderNumber);
+            if(shaderNumber < 1)
+            {
+                log.Error("Failed To Attach Vertex Shader");
+                failedShaderNumber++;
+            }
+            else
+            {
+                log.Note("Attached Vertex Shader");
+            }
+            log.Note("Attaching Fragment Shader...");
+            glAttachShader(shaderProgram, fragmentShader);
+            glGetProgramiv(shaderProgram, GL_ATTACHED_SHADERS, &shaderNumber);
+            if(shaderNumber < 2 - failedShaderNumber)
+            {
+                log.Error("Failed To Attach Fragment Shader");
+                failedShaderNumber++;
+            }
+            else
+            {
+                log.Note("Attached Fragment Shader");
+            }
+            glLinkProgram(shaderProgram);
+            glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+            if(!success)
+            {
+                glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+                log.Error("ERROR::SHADER::PROGRAM::LINKING_FAILED");
+                log.Error(infoLog);
+            }
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+        }
+        void use()
+        { 
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, texture2);
+            glUseProgram(shaderProgram);
+        }
+        void switchTexture(const unsigned int &texture, const std::string &texturePath)
+        {
+            glBindTexture(GL_TEXTURE_2D, texture);
+            int width, height, numberOfChannels;
+            stbi_set_flip_vertically_on_load(true);
+            log->Note("Switching Texture");
+            unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &numberOfChannels, 0);
+            if(data)
+            {
+                log->Note("Switched Texture");
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else
+            {
+                log->Note("Failed To Switch Texture");
+            }
+            stbi_image_free(data);
+        }
+        void setBool(const std::string &name, bool value) const
+        {
+            glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), (int)value);
+        }
+        void setInt(const std::string &name, int value) const
+        { 
+            glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), value);
+        }
+        void setFloat(const std::string &name, float value) const
+        {
+            glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), value); 
+        } 
+};
