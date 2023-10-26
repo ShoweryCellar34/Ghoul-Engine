@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
-    std::string texturePath = "assets/container.jpg";
+    std::string texturePath = "";
     log.Note("Vertex Shader Path: " + vertexShaderPath);
     log.Note("Fragment Shader Path: " + fragmentShaderPath);
     log.Note("Texture Path: " + texturePath);
