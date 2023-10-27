@@ -9,6 +9,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "../stb/stb_image.h"
 
 class Logger
 {
@@ -98,11 +99,11 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         log.Note("Loading Texture");
         int imageWidth, imageHeight, imageChannels;
-        unsigned char *imageData;
+        unsigned char *imageData = stbi_load("assets/ghoul.ico", &imageWidth, &imageHeight, &imageChannels, 4);
         if (imageData)
         {
             log.Note("Loaded Texture");
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else

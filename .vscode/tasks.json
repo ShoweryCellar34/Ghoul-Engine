@@ -43,6 +43,7 @@
             "-lSDL2",
             "-lglad",
             "-limgui",
+            "-lstb_image",
             "-lm",
             "-lkernel32",
             "-luser32",

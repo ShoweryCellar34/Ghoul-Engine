@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     std::string windowTitle = "Ghoul Engine";
     std::string vertexShaderPath = "shaders/vertexShader.glsl";
     std::string fragmentShaderPath = "shaders/fragmentShader.glsl";
-    std::string texturePath = "";
+    std::string texturePath = "assets/ghoul.png";
     log.Note("Vertex Shader Path: " + vertexShaderPath);
     log.Note("Fragment Shader Path: " + fragmentShaderPath);
     log.Note("Texture Path: " + texturePath);
@@ -55,6 +55,9 @@ int main(int argc, char *argv[])
     }
     log.Note("Created Window");
     log.Note("Creating OpenGL Context...");
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GLContext openglContext = SDL_GL_CreateContext(window);
     if (openglContext == NULL)
     {
