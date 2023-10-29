@@ -91,6 +91,9 @@ public:
     Shader(const char *vertexShaderPath, const char *fragmentShaderPath, const char *texturePath, Logger &log)
     {
         this -> log = &log;
+        int imageWidth, imageHeight, imageChannels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *imageData = stbi_load(texturePath, &imageWidth, &imageHeight, &imageChannels, 4);
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -98,8 +101,6 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         log.Note("Loading Texture");
-        int imageWidth, imageHeight, imageChannels;
-        unsigned char *imageData = stbi_load("assets/ghoul.ico", &imageWidth, &imageHeight, &imageChannels, 4);
         if (imageData)
         {
             log.Note("Loaded Texture");
