@@ -241,13 +241,12 @@ public:
     }
     void changeTexture(std::string &newTexturePath) const
     {
-        int imageWidth, imageHeight, imageChannels;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char *newImageData = stbi_load(newTexturePath.c_str(), &imageWidth, &imageHeight, &imageChannels, 4);
+        int newImageWidth, newImageHeight, newImageChannels;
+        unsigned char *newImageData = stbi_load(newTexturePath.c_str(), &newImageWidth, &newImageHeight, &newImageChannels, 4);
         log->Note("Loading New Texture");
         if (newImageData)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, newImageData);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newImageWidth, newImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, newImageData);
             glGenerateMipmap(GL_TEXTURE_2D);
             log->Note("Loaded New Texture");
         }
