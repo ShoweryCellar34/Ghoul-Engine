@@ -88,9 +88,9 @@ class Shader
 public:
     unsigned int shaderProgram, texture;
     Logger *log;
-    Shader(std::string vertexShaderPath, std::string fragmentShaderPath, std::string texturePath, Logger &log)
+    Shader(std::string &vertexShaderPath, std::string &fragmentShaderPath, std::string &texturePath, Logger &log)
     {
-        this -> log = &log;
+        this->log = &log;
         int imageWidth, imageHeight, imageChannels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *imageData = stbi_load(texturePath.c_str(), &imageWidth, &imageHeight, &imageChannels, 4);
@@ -239,8 +239,7 @@ public:
     {
         glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), value);
     }
-    void changeTexture() const
+    void changeTexture(std::string &newTexturePath) const
     {
-
     }
 };
