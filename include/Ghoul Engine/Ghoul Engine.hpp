@@ -91,15 +91,15 @@ public:
     Shader(std::string &vertexShaderPath, std::string &fragmentShaderPath, std::string &texturePath, Logger &log)
     {
         this->log = &log;
-        int imageWidth, imageHeight, imageChannels;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char *imageData = stbi_load(texturePath.c_str(), &imageWidth, &imageHeight, &imageChannels, 4);
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        int imageWidth, imageHeight, imageChannels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *imageData = stbi_load(texturePath.c_str(), &imageWidth, &imageHeight, &imageChannels, 4);
         log.Note("Loading Texture");
         if (imageData)
         {
@@ -241,5 +241,22 @@ public:
     }
     void changeTexture(std::string &newTexturePath) const
     {
+        int imageWidth, imageHeight, imageChannels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *newImageData = stbi_load(newTexturePath.c_str(), &imageWidth, &imageHeight, &imageChannels, 4);
+        log->Note("Loading New Texture");
+        if (newImageData)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, newImageData);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            log->Note("Loaded New Texture");
+        }
+        else
+        {
+            log->Note("Failed To Load New Texture");
+        }
+        log->Note("Freeing New Image Data...");
+        stbi_image_free(newImageData);
+        log->Note("Freed New Image Data");
     }
 };
