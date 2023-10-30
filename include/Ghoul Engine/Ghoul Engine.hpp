@@ -111,6 +111,9 @@ public:
         {
             log.Note("Failed To Load Texture");
         }
+        log.Note("Freeing Image Data...");
+        stbi_image_free(imageData);
+        log.Note("Freed Image Data");
         glUseProgram(shaderProgram);
         glUniform1i(glGetUniformLocation(shaderProgram, "texture"), 0);
         std::string vertexShaderString;
