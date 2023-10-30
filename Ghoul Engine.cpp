@@ -128,7 +128,8 @@ int main(int argc, char *argv[])
 
     unsigned int indices[] = {
         0, 1, 3,
-        1, 2, 3};
+        1, 2, 3
+    };
 
     // Shader Setup
     Shader shaderProgram(vertexShaderPath.c_str(), fragmentShaderPath.c_str(), texturePath.c_str(), log);

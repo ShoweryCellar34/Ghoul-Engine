@@ -103,9 +103,9 @@ public:
         log.Note("Loading Texture");
         if (imageData)
         {
-            log.Note("Loaded Texture");
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
             glGenerateMipmap(GL_TEXTURE_2D);
+            log.Note("Loaded Texture");
         }
         else
         {
