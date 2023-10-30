@@ -181,15 +181,22 @@ int main(int argc, char *argv[])
         ImGui::Begin(windowTitle.c_str());
         ImGui::Text("Current Vertex Buffer Element: ");
         ImGui::SameLine();
-        ImGui::SliderInt("###", &currentVertexBufferElement, 0, sizeof(vertices) / sizeof(vertices[0]), "%d", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::SliderInt("##SliderInt1", &currentVertexBufferElement, 0, sizeof(vertices) / sizeof(vertices[0]), "%d", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Text("Vertex Buffer Element Value: ");
         ImGui::SameLine();
-        ImGui::SliderFloat("##", &value, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::SliderFloat("##SliderFloat1", &value, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Checkbox("Wireframe Mode", &wireframeMode);
         if (ImGui::Button("Toggle Texture On/Off"))
         {
             useTexture = !useTexture;
             shaderProgram.setBool("useTexture", useTexture);
+        }
+        ImGui::Text("Texture Path: ");
+        ImGui::SameLine();
+        ImGui::InputText("##InputText1", &texturePath);
+        if (ImGui::Button("Update Image"))
+        {
+            shaderProgram.updateTexture(texturePath);
         }
         ImGui::End();
 

@@ -239,23 +239,23 @@ public:
     {
         glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), value);
     }
-    void changeTexture(std::string &newTexturePath) const
+    void updateTexture(std::string &updatedTexturePath) const
     {
-        int newImageWidth, newImageHeight, newImageChannels;
-        unsigned char *newImageData = stbi_load(newTexturePath.c_str(), &newImageWidth, &newImageHeight, &newImageChannels, 4);
-        log->Note("Loading New Texture");
-        if (newImageData)
+        int updatedImageWidth, updatedImageHeight, updatedImageChannels;
+        unsigned char *updatedImageData = stbi_load(updatedTexturePath.c_str(), &updatedImageWidth, &updatedImageHeight, &updatedImageChannels, 4);
+        log->Note("Loading Updated Texture");
+        if (updatedImageData)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newImageWidth, newImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, newImageData);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, updatedImageWidth, updatedImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, updatedImageData);
             glGenerateMipmap(GL_TEXTURE_2D);
-            log->Note("Loaded New Texture");
+            log->Note("Loaded Updated Texture");
         }
         else
         {
-            log->Note("Failed To Load New Texture");
+            log->Note("Failed To Load Updated Texture");
         }
-        log->Note("Freeing New Image Data...");
-        stbi_image_free(newImageData);
-        log->Note("Freed New Image Data");
+        log->Note("Freeing Updated Image Data...");
+        stbi_image_free(updatedImageData);
+        log->Note("Freed Updated Image Data");
     }
 };
