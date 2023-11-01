@@ -154,9 +154,20 @@ int main(int argc, char *argv[])
 
     // Variables
     int currentVertexBufferElement = 0;
-    float value = vertices[0];
     bool wireframeMode = false;
     bool useTexture = true;
+    std::string stringItems[IM_ARRAYSIZE(vertices) / 9];
+    int currentOption = 0;
+    for (int i = 0; i < IM_ARRAYSIZE(vertices) / 9; i++)
+    {
+        stringItems[i] = "Vertex " + std::to_string(i + 1);
+    }
+    const char *items[IM_ARRAYSIZE(vertices) / 9];
+    for (int i = 0; i < IM_ARRAYSIZE(vertices) / 9; i++)
+    {
+        items[i] = stringItems[i].c_str();
+    }
+    float vertexPosition[] = {vertices[0], vertices[1], vertices[2]};
 
     bool running = true;
     while (running)
@@ -179,12 +190,6 @@ int main(int argc, char *argv[])
 
         // ImGui
         ImGui::Begin(windowTitle.c_str());
-        ImGui::Text("Current Vertex Buffer Element: ");
-        ImGui::SameLine();
-        ImGui::SliderInt("##SliderInt1", &currentVertexBufferElement, 0, sizeof(vertices) / sizeof(vertices[0]), "%d", ImGuiSliderFlags_AlwaysClamp);
-        ImGui::Text("Vertex Buffer Element Value: ");
-        ImGui::SameLine();
-        ImGui::SliderFloat("##SliderFloat1", &value, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Checkbox("Wireframe Mode", &wireframeMode);
         if (ImGui::Button("Toggle Texture On/Off"))
         {
@@ -197,12 +202,38 @@ int main(int argc, char *argv[])
         {
             shaderProgram.updateTexture(texturePath);
         }
+        ImGui::Text("Current Vertex: ");
+        ImGui::SameLine();
+        if (ImGui::BeginCombo("##Combo1", items[currentOption]))
+        {
+            for (int i = 0; i < IM_ARRAYSIZE(items); i++)
+            {
+                bool is_selected = (currentOption == i);
+                if (ImGui::Selectable(items[i], is_selected))
+                {
+                    currentOption = i;
+                    vertexPosition[0] = vertices[(currentOption * 9)];
+                    vertexPosition[1] = vertices[(currentOption * 9) + 1];
+                    vertexPosition[2] = vertices[(currentOption * 9) + 2];
+                }
+                if (is_selected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::Text(items[currentOption]);
+        ImGui::SameLine();
+        ImGui::SliderFloat3("##SliderFloat31", vertexPosition, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::End();
 
         // Render
         shaderProgram.setBool("useTexture", useTexture);
-        vertices[currentVertexBufferElement] = value;
         shaderProgram.use();
+        vertices[(currentOption * 9)] = vertexPosition[0];
+        vertices[(currentOption * 9) + 1] = vertexPosition[1];
+        vertices[(currentOption * 9) + 2] = vertexPosition[2];
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
