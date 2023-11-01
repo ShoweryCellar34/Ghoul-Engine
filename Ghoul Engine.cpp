@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 
     // Variables
     int currentVertexBufferElement = 0;
-    float value = 0.0f;
+    float value = vertices[0];
     bool wireframeMode = false;
     bool useTexture = false;
 
