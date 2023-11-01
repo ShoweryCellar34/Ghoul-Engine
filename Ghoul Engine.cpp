@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     int currentVertexBufferElement = 0;
     float value = vertices[0];
     bool wireframeMode = false;
-    bool useTexture = false;
+    bool useTexture = true;
 
     bool running = true;
     while (running)
@@ -189,7 +189,6 @@ int main(int argc, char *argv[])
         if (ImGui::Button("Toggle Texture On/Off"))
         {
             useTexture = !useTexture;
-            shaderProgram.setBool("useTexture", useTexture);
         }
         ImGui::Text("Texture Path: ");
         ImGui::SameLine();
@@ -201,6 +200,7 @@ int main(int argc, char *argv[])
         ImGui::End();
 
         // Render
+        shaderProgram.setBool("useTexture", useTexture);
         vertices[currentVertexBufferElement] = value;
         shaderProgram.use();
         glBindVertexArray(VAO);
