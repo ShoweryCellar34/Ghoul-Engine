@@ -61,7 +61,10 @@
             "-ldinput",
             "-ldwmapi",
             "-lopengl32",
-            "-mconsole"
+            "-mconsole",
+            "-static",
+            "-static-libgcc",
+            "-static-libstdc++"
         ],
         "options": {
             "cwd": "${fileDirname}"
