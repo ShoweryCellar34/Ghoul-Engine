@@ -168,6 +168,8 @@ int main(int argc, char *argv[])
         items[i] = stringItems[i].c_str();
     }
     float vertexPosition[] = {vertices[0], vertices[1], vertices[2]};
+    float vertexColor[] = {vertices[3], vertices[4], vertices[5], vertices[6]};
+    float vertexTextureCoordinates[] = {vertices[7], vertices[8]};
 
     bool running = true;
     while (running)
@@ -190,18 +192,6 @@ int main(int argc, char *argv[])
 
         // ImGui
         ImGui::Begin(windowTitle.c_str());
-        ImGui::Checkbox("Wireframe Mode", &wireframeMode);
-        if (ImGui::Button("Toggle Texture On/Off"))
-        {
-            useTexture = !useTexture;
-        }
-        ImGui::Text("Texture Path: ");
-        ImGui::SameLine();
-        ImGui::InputText("##InputText1", &texturePath);
-        if (ImGui::Button("Update Image"))
-        {
-            shaderProgram.updateTexture(texturePath);
-        }
         ImGui::Text("Current Vertex: ");
         ImGui::SameLine();
         if (ImGui::BeginCombo("##Combo1", items[currentOption]))
@@ -215,6 +205,12 @@ int main(int argc, char *argv[])
                     vertexPosition[0] = vertices[(currentOption * 9)];
                     vertexPosition[1] = vertices[(currentOption * 9) + 1];
                     vertexPosition[2] = vertices[(currentOption * 9) + 2];
+                    vertexColor[0] = vertices[(currentOption * 9) + 3];
+                    vertexColor[1] = vertices[(currentOption * 9) + 4];
+                    vertexColor[2] = vertices[(currentOption * 9) + 5];
+                    vertexTextureCoordinates[0] = vertices[(currentOption * 9) + 6];
+                    vertexTextureCoordinates[1] = vertices[(currentOption * 9) + 7];
+                    vertexTextureCoordinates[2] = vertices[(currentOption * 9) + 8];
                 }
                 if (is_selected)
                 {
@@ -223,9 +219,27 @@ int main(int argc, char *argv[])
             }
             ImGui::EndCombo();
         }
-        ImGui::Text(items[currentOption]);
+        ImGui::Text((stringItems[currentOption] + " Position").c_str());
         ImGui::SameLine();
         ImGui::SliderFloat3("##SliderFloat31", vertexPosition, -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::Text((stringItems[currentOption] + " Color").c_str());
+        ImGui::SameLine();
+        ImGui::SliderFloat4("##SliderFloat41", vertexColor, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::Text((stringItems[currentOption] + " Texture Coordinates").c_str());
+        ImGui::SameLine();
+        ImGui::SliderFloat2("##SliderFloat21", vertexTextureCoordinates, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::Checkbox("Wireframe Mode", &wireframeMode);
+        if (ImGui::Button("Toggle Texture On/Off"))
+        {
+            useTexture = !useTexture;
+        }
+        ImGui::Text("Texture Path: ");
+        ImGui::SameLine();
+        ImGui::InputText("##InputText1", &texturePath);
+        if (ImGui::Button("Update Image"))
+        {
+            shaderProgram.updateTexture(texturePath);
+        }
         ImGui::End();
 
         // Render
@@ -234,6 +248,12 @@ int main(int argc, char *argv[])
         vertices[(currentOption * 9)] = vertexPosition[0];
         vertices[(currentOption * 9) + 1] = vertexPosition[1];
         vertices[(currentOption * 9) + 2] = vertexPosition[2];
+        vertices[(currentOption * 9) + 3] = vertexColor[0];
+        vertices[(currentOption * 9) + 4] = vertexColor[1];
+        vertices[(currentOption * 9) + 5] = vertexColor[2];
+        vertices[(currentOption * 9) + 6] = vertexColor[3];
+        vertices[(currentOption * 9) + 7] = vertexTextureCoordinates[0];
+        vertices[(currentOption * 9) + 8] = vertexTextureCoordinates[1];
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
