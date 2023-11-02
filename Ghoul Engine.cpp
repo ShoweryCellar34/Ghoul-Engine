@@ -208,9 +208,9 @@ int main(int argc, char *argv[])
                     vertexColor[0] = vertices[(currentOption * 9) + 3];
                     vertexColor[1] = vertices[(currentOption * 9) + 4];
                     vertexColor[2] = vertices[(currentOption * 9) + 5];
-                    vertexTextureCoordinates[0] = vertices[(currentOption * 9) + 6];
-                    vertexTextureCoordinates[1] = vertices[(currentOption * 9) + 7];
-                    vertexTextureCoordinates[2] = vertices[(currentOption * 9) + 8];
+                    vertexColor[3] = vertices[(currentOption * 9) + 6];
+                    vertexTextureCoordinates[0] = vertices[(currentOption * 9) + 7];
+                    vertexTextureCoordinates[1] = vertices[(currentOption * 9) + 8];
                 }
                 if (is_selected)
                 {
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
         ImGui::SameLine();
         ImGui::SliderFloat2("##SliderFloat21", vertexTextureCoordinates, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
         ImGui::Checkbox("Wireframe Mode", &wireframeMode);
-        if (ImGui::Button("Toggle Texture On/Off"))
+        if (ImGui::Button((useTexture ? "Turn Off Texture" : "Turn On Texture")))
         {
             useTexture = !useTexture;
         }
