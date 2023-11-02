@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
         ImGui::Text("Texture Path: ");
         ImGui::SameLine();
         ImGui::InputText("##InputText1", &texturePath);
-        if (ImGui::Button("Update Image"))
+        if (ImGui::IsItemDeactivatedAfterEdit())
         {
             shaderProgram.updateTexture(texturePath);
         }
