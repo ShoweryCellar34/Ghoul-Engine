@@ -228,11 +228,6 @@ int main(int argc, char *argv[])
         ImGui::Text((stringItems[currentOption] + " Texture Coordinates").c_str());
         ImGui::SameLine();
         ImGui::SliderFloat2("##SliderFloat21", vertexTextureCoordinates, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
-        ImGui::Checkbox("Wireframe Mode", &wireframeMode);
-        if (ImGui::Button((useTexture ? "Turn Off Texture" : "Turn On Texture")))
-        {
-            useTexture = !useTexture;
-        }
         ImGui::Text("Texture Path: ");
         ImGui::SameLine();
         ImGui::InputText("##InputText1", &texturePath);
@@ -240,6 +235,13 @@ int main(int argc, char *argv[])
         {
             shaderProgram.updateTexture(texturePath);
         }
+        if (ImGui::Button((useTexture ? "Turn Off Texture" : "Turn On Texture")))
+        {
+            useTexture = !useTexture;
+        }
+        ImGui::Text("Wireframe Mode");
+        ImGui::SameLine();
+        ImGui::Checkbox("##CheckBox1", &wireframeMode);
         ImGui::End();
 
         // Render
