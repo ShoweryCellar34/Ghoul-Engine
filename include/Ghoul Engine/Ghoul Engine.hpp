@@ -5,11 +5,13 @@
 #include "../IMGUI/imgui_impl_sdl2.h"
 #include "../IMGUI/imgui_impl_opengl3.h"
 #include "../SDL2/SDL.h"
+#include "../stb/stb_image.h"
+#include "../glm/glm.hpp"
+#include "../glm/ext.hpp"
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "../stb/stb_image.h"
 
 class Logger
 {
@@ -243,16 +245,16 @@ public:
     {
         int updatedImageWidth, updatedImageHeight, updatedImageChannels;
         unsigned char *updatedImageData = stbi_load(updatedTexturePath.c_str(), &updatedImageWidth, &updatedImageHeight, &updatedImageChannels, 4);
-        log->Note("Loading Updated Texture");
+        log->Note("Loading Updated Texture From: " + updatedTexturePath);
         if (updatedImageData)
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, updatedImageWidth, updatedImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, updatedImageData);
             glGenerateMipmap(GL_TEXTURE_2D);
-            log->Note("Loaded Updated Texture");
+            log->Note("Loaded Updated Texture From: " + updatedTexturePath);
         }
         else
         {
-            log->Note("Failed To Load Updated Texture");
+            log->Note("Failed To Load Updated Texture From: " + updatedTexturePath);
         }
         log->Note("Freeing Updated Image Data...");
         stbi_image_free(updatedImageData);
