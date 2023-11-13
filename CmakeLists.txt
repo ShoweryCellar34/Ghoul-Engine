@@ -1,2 +1,2 @@
 cmake_minimum_required(3.27)
-project(Ghoul-Engine DESCRIPTION "A Basic Game Enine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine/")
+project(Ghoul-Engine DESCRIPTION "A Basic Game Enine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
