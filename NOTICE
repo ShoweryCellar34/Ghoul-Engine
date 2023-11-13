@@ -1,7 +1,7 @@
 This project uses the following projects:
 
-- SDL2: The license for SDL2 can be found at `licences/SDL2/LICENCE.txt`.
-- ImGui: The license for ImGui can be found at `licences/ImGui/LICENSE.txt`.
+- SDL: The license for SDL can be found at `dependenies/SDL/LICENCE.txt`.
+- ImGui: The license for ImGui can be found at `dependencies/imgui/LICENSE.txt`.
 - GLAD: The license for GLAD can be found at `licences/GLAD/LICENSE`.
 - stb: The license for stb can be found at `licences/stb/LICENSE`.
 - glm: The license for glm can be found at `licences/glm/copying.txt`.
