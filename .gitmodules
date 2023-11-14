@@ -2,6 +2,6 @@
 	path = dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
-[submodule "dependencies/--force"]
-	path = dependencies/--force
+[submodule "dependencies/SDL"]
+	path = dependencies/SDL
 	url = https://github.com/libsdl-org/SDL.git
