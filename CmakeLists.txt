@@ -1,3 +1,3 @@
 cmake_minimum_required(VERSION 3.27)
 project(Ghoul-Engine DESCRIPTION "A Basic Game Enine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
-add_subdirectory(dependencies/SDL)
+add_subdirectory(dependencies)
