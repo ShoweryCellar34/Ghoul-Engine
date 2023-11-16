@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.27)
 project(imgui)
+
 option(allegro5 "allegro5" off)
 option(android_opengl3 "android_opengl3" off)
 option(apple_metal "apple_metal" off)
-option(allegro5 "apple_opengl2" off)
+option(apple_opengl2 "apple_opengl2" off)
 option(emscripten_wgpu "emscripten_wgpu" off)
 option(glfw_metal "glfw_metal" off)
 option(glfw_opengl2 "glfw_opengl2" off)
@@ -23,6 +24,75 @@ option(win32_directx10 "win32_directx10" off)
 option(win32_directx11 "win32_directx11" off)
 option(win32_directx12 "win32_directx12" off)
 option(win32_opengl3 "win32_opengl3" off)
+if(allegro5)
+
+endif()
+if(android_opengl3)
+
+endif(apple_metal)
+if()
+
+endif()
+if(apple_opengl2)
+
+endif()
+if(emscripten_wgpu)
+
+endif()
+if(glfw_metal)
+
+endif()
+if(glfw_opengl2)
+
+endif()
+if(glfw_opengl3)
+
+endif()
+if(glfw_vulcan)
+
+endif()
+if(glut_opengl2)
+
+endif()
+if(sdl2_directx11)
+
+endif()
+if(sdl2_metal)
+
+endif()
+if(sdl2_opengl2)
+
+endif()
+if(sdl2_opengl3)
+
+endif()
+if(sdl2_sdlrenderer2)
+
+endif()
+if(sdl2_vulcan)
+
+endif()
+if(sdl3_opengl3)
+
+endif()
+if(sdl3_sdlrenderer3)
+
+endif()
+if(win32_directx9)
+
+endif()
+if(win32_directx10)
+
+endif()
+if(win32_directx11)
+
+endif()
+if(win32_directx12)
+
+endif()
+if(win32_opengl3)
+
+endif()
 file(GLOB BASE_CPP imgui/*.cpp)
 file(GLOB_RECURSE MISC_CPP imgui/misc/*.cpp)
 add_library(imgui ${BASE_CPP} ${MISC_CPP} ${BACKEND_CPP})
