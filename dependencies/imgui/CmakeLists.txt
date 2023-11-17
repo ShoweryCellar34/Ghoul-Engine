@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.27)
 project(imgui)
 
+set(HEADER_FOLDER_NAME headers)
+
 option(allegro5 "allegro5" off)
 option(android_opengl3 "android_opengl3" off)
 option(apple_metal "apple_metal" off)
@@ -115,6 +117,8 @@ endif()
 if(win32_opengl3)
     set(BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_opengl3.cpp)
     set(BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_opengl3.h)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})
+    file(COPY ${BACKEND_H} ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})
 endif()
 file(GLOB BASE_CPP imgui/*.cpp)
 set(BASE_H imgui/)
