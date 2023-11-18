@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     SDLErrorCode = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER);
     if (SDLErrorCode != 0)
     {
-        log.FatalError("SDL Failed to Initialize: " + (std::string)SDL_GetError());
+        log.FatalError("SDL Failed to Initialize: \n" + (std::string)SDL_GetError());
         log.FatalError("Exiting With Code " + std::to_string(SDLErrorCode));
         return SDLErrorCode;
     }
@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
     {
         log.Error("Failed to Obtain Display Mode: \n" + (std::string)SDL_GetError());
         log.Warn("Using Default Resolution");
-        log.Note("Window Height: " + std::to_string(windowHeight));
         log.Note("Window Width: " + std::to_string(windowWidth));
+        log.Note("Window Height: " + std::to_string(windowHeight));
     }
     else
     {
@@ -153,7 +153,6 @@ int main(int argc, char *argv[])
     glBindVertexArray(0);
 
     // Variables
-    int currentVertexBufferElement = 0;
     bool wireframeMode = false;
     bool useTexture = true;
     std::string stringItems[IM_ARRAYSIZE(vertices) / 9];
