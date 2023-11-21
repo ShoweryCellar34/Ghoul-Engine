@@ -3,6 +3,7 @@ project(imgui)
 
 set(HEADER_FOLDER_NAME headers)
 
+option(external_includes "external include paths" "C:/")
 option(allegro5 "allegro5" off)
 option(android_opengl3 "android_opengl3" off)
 option(apple_metal "apple_metal" off)
@@ -125,4 +126,4 @@ set(BASE_H imgui/)
 file(GLOB MISC_CPP imgui/misc/cpp/*.cpp)
 set(MISC_H imgui/misc/)
 add_library(imgui ${BASE_CPP} ${MISC_CPP} ${BACKEND_CPP})
-target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H} ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})
+target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H} ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME} ${external_includes})
