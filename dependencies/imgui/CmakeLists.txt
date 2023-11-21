@@ -3,8 +3,9 @@ project(imgui)
 
 set(HEADER_FOLDER_NAME headers)
 
-option(external_includes "external include paths" "C:/")
 option(allegro5 "allegro5" off)
+set(MY_TEXT_OPTION "desired_value" CACHE STRING "Description")
+option(allergro5_path "" "allergro5_path" )
 option(android_opengl3 "android_opengl3" off)
 option(apple_metal "apple_metal" off)
 option(apple_opengl2 "apple_opengl2" off)
