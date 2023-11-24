@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.27)
 project(Ghoul-Engine-Dependencies DESCRIPTION "A Basic Game Enine's Dependencies" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
+set(sdl3_opengl3 ON CACHE BOOL "sdl3_opengl3")
+set(sdl3_path "C:\\Users\\user\\Documents\\otcvdb\\Documents\\VSCode\\Ghoul-Engine-dev\\dependencies\\SDL\\include\\SDL3\\" CACHE PATH "sdl3_path")
 add_subdirectory(imgui)
 add_subdirectory(SDL)
 add_subdirectory(glm)
+target_include_directories(<your executable> glm)

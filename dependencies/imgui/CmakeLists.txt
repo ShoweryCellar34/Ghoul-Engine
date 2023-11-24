@@ -23,8 +23,8 @@ option(glfw_opengl3 "glfw_opengl3" off)
 option(glfw_vulkan "glfw_vulkan" off)
 set(glfw_path "" CACHE PATH "glfw_path")
 
-option(glut_opengl2 "glut_opengl2" off)
-set(glut_path "" CACHE PATH "glut_path")
+option(freeglut_opengl2 "freeglut_opengl2" off)
+set(freeglut_path "" CACHE PATH "freeglut_path")
 
 option(sdl2_directx11 "sdl2_directx11" off)
 option(sdl2_metal "sdl2_metal" off)
@@ -108,10 +108,10 @@ endif()
 
 
 # glut
-if(glut_opengl2)
+if(freeglut_opengl2)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glut.cpp imgui/backends/imgui_impl_opengl2.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glut.h imgui/backends/imgui_impl_opengl2.h)
-    file(COPY ${glut_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/glut/)
+    file(COPY ${freeglut_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/GL/)
 endif()
 
 
