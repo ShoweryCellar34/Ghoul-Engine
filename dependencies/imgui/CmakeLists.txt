@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.27)
 project(imgui)
 
+file(GLOB BASE_CPP imgui/*.cpp)
+set(BASE_H imgui/)
+file(GLOB MISC_CPP imgui/misc/cpp/*.cpp)
+set(MISC_H imgui/misc/)
+add_library(imgui ${BASE_CPP} ${MISC_CPP})
+
 set(HEADER_FOLDER_NAME headers)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/)
 
@@ -154,7 +160,7 @@ if(sdl3_sdlrenderer3)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl3.cpp imgui/backends/imgui_impl_sdlrenderer3.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl3.h imgui/backends/imgui_impl_sdlrenderer3.h)
     endif()
-    if(sdl3_opengl3 OR sdl3_sdlrenderer3)
+if(sdl3_opengl3 OR sdl3_sdlrenderer3)
     if(sdl3_added_as_subdirectory)
     target_include_directories(imgui PRIVATE SDL3::Headers)
     else()
@@ -192,11 +198,7 @@ endif()
 
 
 
+target_sources(imgui PRIVATE ${BACKEND_CPP})
 file(COPY ${BACKEND_H} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})
-file(GLOB BASE_CPP imgui/*.cpp)
-set(BASE_H imgui/)
-file(GLOB MISC_CPP imgui/misc/cpp/*.cpp)
-set(MISC_H imgui/misc/)
-add_library(imgui ${BASE_CPP} ${MISC_CPP} ${BACKEND_CPP})
 target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H})
 target_include_directories(imgui PRIVATE ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})

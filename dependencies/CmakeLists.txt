@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 project(Ghoul-Engine-Dependencies DESCRIPTION "A Basic Game Enine's Dependencies" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
-add_library(Ghoul-Engine-Dependencies STATIC)
+add_library(Ghoul-Engine-Dependencies STATIC )
 
 
 set(SDL_SHARED OFF CACHE BOOL "Build a shared version of the library")
