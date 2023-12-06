@@ -161,11 +161,7 @@ if(sdl3_sdlrenderer3)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl3.h imgui/backends/imgui_impl_sdlrenderer3.h)
     endif()
 if(sdl3_opengl3 OR sdl3_sdlrenderer3)
-    if(sdl3_added_as_subdirectory)
-    target_include_directories(imgui PRIVATE SDL3::Headers)
-    else()
-        file(COPY ${sdl3_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/SDL3/)
-    endif()
+    file(COPY ${sdl3_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/SDL3/)
 endif()
 
 
