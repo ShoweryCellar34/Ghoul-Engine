@@ -5,10 +5,10 @@ file(GLOB BASE_CPP imgui/*.cpp)
 set(BASE_H imgui/)
 file(GLOB MISC_CPP imgui/misc/cpp/*.cpp)
 set(MISC_H imgui/misc/)
-add_library(imgui ${BASE_CPP} ${MISC_CPP})
+add_library(imgui PRIVATE ${BASE_CPP} ${MISC_CPP})
 
 set(HEADER_FOLDER_NAME headers)
-file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/)
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/backend_headers/)
 
 option(allegro5 "allegro5" off)
 
@@ -33,7 +33,6 @@ option(sdl2_opengl3 "sdl2_opengl3" off)
 option(sdl2_sdlrenderer2 "sdl2_sdlrenderer2" off)
 option(sdl2_vulkan "sdl2_vulkan" off)
 
-option(sdl3_added_as_subdirectory "Use SDL3::Headers to get the header files" off)
 option(sdl3_opengl3 "sdl3_opengl3" off)
 option(sdl3_sdlrenderer3 "sdl3_sdlrenderer3" off)
 
@@ -43,6 +42,7 @@ option(win32_directx11 "win32_directx11" off)
 option(win32_directx12 "win32_directx12" off)
 option(win32_opengl3 "win32_opengl3" off)
 
+option(include_paths "include_paths" "")
 
 
 # allegro5
@@ -91,11 +91,8 @@ if(glfw_opengl3)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_opengl3.h)
 endif()
 if(glfw_vulkan)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_vulkan.cpp)
-list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_vulkan.h)
-endif()
-if(glfw_metal OR glfw_metal OR glfw_opengl3 OR glfw_vulkan OR emscripten_wgpu)
-    file(COPY ${glfw_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/GLFW/)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_vulkan.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_vulkan.h)
 endif()
 
 
@@ -103,7 +100,6 @@ endif()
 if(freeglut_opengl2)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glut.cpp imgui/backends/imgui_impl_opengl2.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glut.h imgui/backends/imgui_impl_opengl2.h)
-    file(COPY ${freeglut_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/GL/)
 endif()
 
 
@@ -125,28 +121,23 @@ if(sdl2_opengl3)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_opengl3.h)
 endif()
 if(sdl2_sdlrenderer2)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_sdlrenderer2.cpp)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_sdlrenderer2.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_sdlrenderer2.h)
 endif()
 if(sdl2_vulkan)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_vulkan.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_vulkan.h)
-    endif()
-if(sdl2_directx11 OR sdl2_metal OR sdl2_opengl2 OR sdl2_opengl3 OR sdl2_sdlrenderer2 OR sdl2_vulkan)
-    file(COPY ${sdl2_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/)
 endif()
+
 
 # sdl3
 if(sdl3_opengl3)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl3.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl3.cpp imgui/backends/imgui_impl_opengl3.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl3.h imgui/backends/imgui_impl_opengl3.h)
 endif()
 if(sdl3_sdlrenderer3)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl3.cpp imgui/backends/imgui_impl_sdlrenderer3.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl3.h imgui/backends/imgui_impl_sdlrenderer3.h)
-    endif()
-if(sdl3_opengl3 OR sdl3_sdlrenderer3)
-    file(COPY ${sdl3_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/SDL3/)
 endif()
 
 
@@ -160,7 +151,7 @@ if(win32_directx10)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx10.h)
 endif()
 if(win32_directx11)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx11.cpp)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx11.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx11.h)
     endif()
 if(win32_directx12)
@@ -175,6 +166,5 @@ endif()
 
 
 target_sources(imgui PRIVATE ${BACKEND_CPP})
-file(COPY ${BACKEND_H} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})
-target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H})
-target_include_directories(imgui PRIVATE ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME})
+file(COPY ${BACKEND_H} DESTINATION ${CMAKE_BINARY_DIR}/backend_headers)
+target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H} ${CMAKE_BINARY_DIR}/backend_headers ${include_paths})
