@@ -11,26 +11,20 @@ set(HEADER_FOLDER_NAME headers)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/)
 
 option(allegro5 "allegro5" off)
-set(allegro5_path "" CACHE PATH "allegro5_path")
 
 option(android_opengl3 "android_opengl3" off)
-set(android_path "" CACHE PATH "android_path")
 
 option(apple_metal "apple_metal" off)
 option(apple_opengl2 "apple_opengl2" off)
-set(cocoa_path "" CACHE PATH "cocoa_path")
 
 option(emscripten_wgpu "emscripten_wgpu" off)
-set(emscripten_path "" CACHE PATH "emscripten_path")
 
 option(glfw_metal "glfw_metal" off)
 option(glfw_opengl2 "glfw_opengl2" off)
 option(glfw_opengl3 "glfw_opengl3" off)
 option(glfw_vulkan "glfw_vulkan" off)
-set(glfw_path "" CACHE PATH "glfw_path")
 
 option(freeglut_opengl2 "freeglut_opengl2" off)
-set(freeglut_path "" CACHE PATH "freeglut_path")
 
 option(sdl2_directx11 "sdl2_directx11" off)
 option(sdl2_metal "sdl2_metal" off)
@@ -38,12 +32,10 @@ option(sdl2_opengl2 "sdl2_opengl2" off)
 option(sdl2_opengl3 "sdl2_opengl3" off)
 option(sdl2_sdlrenderer2 "sdl2_sdlrenderer2" off)
 option(sdl2_vulkan "sdl2_vulkan" off)
-set(sdl2_path "" CACHE PATH "sdl2_path")
 
 option(sdl3_added_as_subdirectory "Use SDL3::Headers to get the header files" off)
 option(sdl3_opengl3 "sdl3_opengl3" off)
 option(sdl3_sdlrenderer3 "sdl3_sdlrenderer3" off)
-set(sdl3_path "" CACHE PATH "sdl3_path")
 
 option(win32_directx9 "win32_directx9" off)
 option(win32_directx10 "win32_directx10" off)
@@ -51,14 +43,12 @@ option(win32_directx11 "win32_directx11" off)
 option(win32_directx12 "win32_directx12" off)
 option(win32_opengl3 "win32_opengl3" off)
 
-set(vulkan_path "" CACHE PATH "vulkan_path")
 
 
 # allegro5
 if(allegro5)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_allegro5.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_allegro5.h)
-    file(COPY ${allegro5_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/allegro5/)
 endif()
 
 
@@ -66,7 +56,6 @@ endif()
 if(android_opengl3)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_android.cpp imgui/backends/imgui_impl_opengl3.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_android.h imgui/backends/imgui_impl_opengl3.h)
-    file(COPY ${android_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/android/)
 endif()
 
 
@@ -79,16 +68,12 @@ if(apple_opengl2)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_cocoa.mm imgui/backends/imgui_impl_opengl2.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_cocoa.h imgui/backends/imgui_impl_opengl2.h)
 endif()
-if(apple_metal OR apple_opengl2)
-    file(COPY ${cocoa_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/)
-endif()
 
 
 # emscripten
 if(emscripten_wgpu)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_wgpu.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_wgpu.h)
-    file(COPY ${emscripten_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/emscripten/)
 endif()
 
 
@@ -96,13 +81,13 @@ endif()
 if(glfw_metal)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_metal.mm)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_metal.h)
-    endif()
-    if(glfw_metal)
+endif()
+if(glfw_metal)
     list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl2.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_opengl2.h)
 endif()
 if(glfw_opengl3)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl3.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_opengl3.h)
 endif()
 if(glfw_vulkan)
@@ -179,17 +164,12 @@ list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui
     list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx11.h)
     endif()
 if(win32_directx12)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx12.cpp)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx12.cpp)
     list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx12.h)
 endif()
 if(win32_opengl3)
-list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_opengl3.cpp)
-list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_opengl3.h)
-endif()
-
-
-if(glfw_metal OR sdl2_metal OR apple_metal)
-file(COPY ${vulkan_path} DESTINATION ${CMAKE_BINARY_DIR}/${HEADER_FOLDER_NAME}/vulkan/)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_opengl3.h)
 endif()
 
 

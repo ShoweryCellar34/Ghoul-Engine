@@ -12,9 +12,9 @@ target_link_libraries(Ghoul-Engine-Dependencies PUBLIC SDL3::SDL3)
 target_include_directories(Ghoul-Engine-Dependencies PUBLIC SDL3::Headers)
 
 set(sdl3_opengl3 ON CACHE BOOL "sdl3_opengl3")
-get_target_property(SDL3_include_pathghety SDL3::Headers INTERFACE_INCLUDE_DIRECTORIES)
-set(sdl3_path ${sdl3_include_path} CACHE STRING "sdl3_path")
-message(STATUS ${SDL3_include_pathghety})
+get_target_property(SDL3_header_path SDL3::Headers INTERFACE_INCLUDE_DIRECTORIES)
+set(sdl3_path ${SDL3_header_path} CACHE STRING "sdl3_path")
+message(STATUS ${SDL3_header_path})
 add_subdirectory(imgui)
 target_link_libraries(Ghoul-Engine-Dependencies PUBLIC imgui)
 
