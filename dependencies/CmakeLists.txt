@@ -16,6 +16,11 @@ get_target_property(SDL3_header_path SDL3::Headers INTERFACE_INCLUDE_DIRECTORIES
 set(include_paths ${SDL3_header_path} CACHE STRING "include_paths")
 add_subdirectory(imgui)
 target_link_libraries(Ghoul-Engine-Dependencies PUBLIC imgui)
+target_include_directories(Ghoul-Engine-Dependencies PUBLIC imgui)
 
 add_subdirectory(glm)
 target_include_directories(Ghoul-Engine-Dependencies PUBLIC glm)
+
+add_subdirectory(glad)
+target_link_libraries(Ghoul-Engine-Dependencies PUBLIC glad)
+target_include_directories(Ghoul-Engine-Dependencies PUBLIC glad)
