@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 project(Ghoul-Engine-Dependencies DESCRIPTION "A Basic Game Enine's Dependencies" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
-add_library(Ghoul-Engine-Dependencies STATIC "Wrapper.hpp")
+add_library(Ghoul-Engine-Dependencies STATIC "Ghoul-Engine-Dependencies-Wrapper.hpp")
 set_target_properties(Ghoul-Engine-Dependencies PROPERTIES LINKER_LANGUAGE CXX)
 
 
@@ -13,8 +13,7 @@ target_include_directories(Ghoul-Engine-Dependencies PUBLIC SDL3::Headers)
 
 set(sdl3_opengl3 ON CACHE BOOL "sdl3_opengl3")
 get_target_property(SDL3_header_path SDL3::Headers INTERFACE_INCLUDE_DIRECTORIES)
-set(sdl3_path ${SDL3_header_path} CACHE STRING "sdl3_path")
-message(STATUS ${SDL3_header_path})
+set(include_paths ${SDL3_header_path} CACHE STRING "include_paths")
 add_subdirectory(imgui)
 target_link_libraries(Ghoul-Engine-Dependencies PUBLIC imgui)
 

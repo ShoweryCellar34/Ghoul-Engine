@@ -5,7 +5,7 @@ file(GLOB BASE_CPP imgui/*.cpp)
 set(BASE_H imgui/)
 file(GLOB MISC_CPP imgui/misc/cpp/*.cpp)
 set(MISC_H imgui/misc/)
-add_library(imgui PRIVATE ${BASE_CPP} ${MISC_CPP})
+add_library(imgui ${BASE_CPP} ${MISC_CPP})
 
 set(HEADER_FOLDER_NAME headers)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/backend_headers/)
@@ -165,6 +165,6 @@ endif()
 
 
 
-target_sources(imgui PRIVATE ${BACKEND_CPP})
+target_sources(imgui PUBLIC ${BACKEND_CPP})
 file(COPY ${BACKEND_H} DESTINATION ${CMAKE_BINARY_DIR}/backend_headers)
 target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H} ${CMAKE_BINARY_DIR}/backend_headers ${include_paths})
