@@ -55,6 +55,7 @@
         "ctime": "cpp",
         "ratio": "cpp",
         "iomanip": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "stb_image.h": "c"
     }
 }

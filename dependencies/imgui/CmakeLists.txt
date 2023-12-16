@@ -165,6 +165,6 @@ endif()
 
 
 
-target_sources(imgui PUBLIC ${BACKEND_CPP})
 file(COPY ${BACKEND_H} DESTINATION ${CMAKE_BINARY_DIR}/backend_headers)
 target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H} ${CMAKE_BINARY_DIR}/backend_headers ${include_paths})
+target_sources(imgui PUBLIC ${BACKEND_CPP})
