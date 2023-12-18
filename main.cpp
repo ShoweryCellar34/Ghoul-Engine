@@ -1,0 +1,1 @@
+#include <Pentagram.hpp>
