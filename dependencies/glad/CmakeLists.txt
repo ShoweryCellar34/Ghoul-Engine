@@ -1,4 +1,0 @@
-cmake_minimum_required(VERSION 3.27)
-project(glad)
-target_include_directories(glad PUBLIC "include")
-add_library(glad STATIC "src/gl.c")
