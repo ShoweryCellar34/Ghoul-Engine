@@ -1,6 +1,6 @@
 This project uses the following projects:
 
-- Pentagram: The license for ImGui can be found at `Pentagram/LICENSE`.
+- Pentagram: The license for Pentagram can be found at `Pentagram/LICENSE`.
 - ImGui: The license for ImGui can be found at `Pentagram/imgui/imgui/LICENSE.txt`.
 - SDL: The license for SDL can be found at `Pentagram/SDL/LICENCE.txt`.
 - glm: The license for glm can be found at `Pentagram/glm/copying.txt`.
