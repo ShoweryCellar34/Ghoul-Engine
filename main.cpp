@@ -5,14 +5,24 @@
 //    return 0;
 //}
 //
-#include <ctime>
+// C++ Program to implement Date and Time parsing using
+// <ctime>
+// C++ Program to implement Date and Time Parsing using
+// chrono
 #include <iostream>
+#include <ctime>
 
 int main() {
-    std::time_t t = std::time(0);   // get time now
-    std::tm* now = std::localtime(&t);
-    std::cout << (now->tm_year + 1900) << '-' 
-         <<  now->tm_mday << '-'
-         << (now->tm_mon + 1)
-         << "\n";
+    // Get the current time
+    time_t currentTime = time(0);
+
+    // Create a buffer to store the formatted time
+    char buffer[80];
+
+    // Format the current time
+    strftime(buffer, 80, "%d-%m-%Y %H:%M:%S", localtime(&currentTime));
+
+    std::cout << "The current time in the specified format is: " << buffer << std::endl;
+
+    return 0;
 }
