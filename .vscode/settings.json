@@ -56,7 +56,20 @@
         "ratio": "cpp",
         "iomanip": "cpp",
         "sstream": "cpp",
-        "stb_image.h": "c"
+        "stb_image.h": "c",
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "cstring": "cpp",
+        "format": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "shared_mutex": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "variant": "cpp"
     },
     "cmake.configureOnOpen": false
 }
