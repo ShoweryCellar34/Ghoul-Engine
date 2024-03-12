@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
     logger log;
-    log.log(1, "Hello");
-    log.log(1, "Yello");
+    log.log(NOTE, "Hello");
+    log.log(NOTE, "Yello");
     return 0;
 }
