@@ -70,7 +70,8 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "variant": "cpp",
-        "*.editorconfig": "cpp"
+        "*.editorconfig": "cpp",
+        "filesystem": "cpp"
     },
     "cmake.configureOnOpen": false
 }
