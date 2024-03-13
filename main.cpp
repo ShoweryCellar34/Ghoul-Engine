@@ -2,8 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    logger log;
-    log.log(NOTE, "Hello");
-    log.log(NOTE, "Yello");
+    PNT::log.log(PNT::NOTE, "Hello");
+    PNT::log.log(PNT::NOTE, "Yello");
     return 0;
 }
