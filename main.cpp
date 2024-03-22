@@ -1,4 +1,4 @@
-#include <Pentagram.hpp>
+#include <PentagramExt.hpp>
 
 int main(int argc, char *argv[])
 {
