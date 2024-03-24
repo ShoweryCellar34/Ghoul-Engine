@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     bool running = true;
     while(running)
     {
-        PNT::startFrame(&running);
+        SDL_Event event = PNT::startFrame(&running);
         ImGui::ShowDemoWindow();
         PNT::endFrame();
     }
