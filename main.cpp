@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
     PNT::initialize(800, 500, "Ghoul Engine");
-    PNT::vsync(PNT::ON);
+    PNT::vsync(PNT::ADAPTIVE);
     bool running = true;
     while(running)
     {
@@ -11,5 +11,6 @@ int main(int argc, char *argv[])
         ImGui::ShowDemoWindow();
         PNT::endFrame();
     }
+    PNT::deinitialize();
     return 0;
 }
