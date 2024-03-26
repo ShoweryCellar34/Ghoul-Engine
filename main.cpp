@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
     PNT::initialize(800, 500, "Ghoul Engine");
-    PNT::vsync(PNT::ADAPTIVE);
+    PNT::vsync(PNT_VSYNC_ON);
     bool running = true;
     while(running)
     {
