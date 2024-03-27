@@ -7,8 +7,13 @@ int main(int argc, char *argv[])
     bool running = true;
     while(running)
     {
-        SDL_Event event = PNT::startFrame(&running);
-        ImGui::ShowDemoWindow();
+        static unsigned short rgba[8];
+        SDL_Event event = PNT::startFrame(&running, rgba[0], rgba[2], rgba[4], rgba[6]);
+        ImGui::Begin("Background Color");
+        ImGui::Text("RGBA: ");
+        ImGui::SameLine();
+        ImGui::SliderInt4("##SliderInt4 0", (int *)rgba, 0, 255, "%d", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::End();
         PNT::endFrame();
     }
     PNT::deinitialize();
