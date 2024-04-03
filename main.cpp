@@ -1,13 +1,18 @@
 #include <PentagramExt.hpp>
+#include <windows.hpp>
 #include <random>
 
 int main(int argc, char *argv[])
 {
     PNT::initialize(800, 500, "Ghoul Engine");
     PNT::vsync(PNT_VSYNC_ON);
+    PNT::Window test("Hello", 500, 500, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+    PNT::Window test2("Hello", 500, 500);
     bool running = true;
     while(running)
     {
+        test.eventProcess();
+        test2.eventProcess();
         static unsigned short rgba[8];
         static bool rgbaRondomize = false;
         SDL_Event event = PNT::startFrame(&running, rgba[0], rgba[2], rgba[4], rgba[6]);
