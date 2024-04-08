@@ -6,23 +6,23 @@ int main(int argc, char *argv[])
 {
     PNT::initialize(800, 500, "Ghoul Engine");
     PNT::vsync(PNT_VSYNC_ON);
-    PNT::Window test[2] = {PNT::Window(), PNT::Window()};
+    PNT::Window test("test", 500, 500, SDL_WINDOW_RESIZABLE);
+    PNT::Window test2("test2", 500, 500, SDL_WINDOW_RESIZABLE);
     bool running = true;
     while(running)
     {
-        for(PNT::Window window : test)
+        if(SDL_PollEvent(&PNT::event))
         {
-            window.startFrame();
-            SDL_Event event;
-            while(SDL_PollEvent(&event))
-            {
-                
-            }
-            window.endFrame();
+            test.startFrame();
+            test.eventProcess();
+            test.endFrame();
+            test2.startFrame();
+            test2.eventProcess();
+            test2.endFrame();
         }
 
         static unsigned short rgba[8];
-        static bool rgbaRondomize = false;
+        static bool rgbaRandomize = false;
         PNT::startFrame(&running, rgba[0], rgba[2], rgba[4], rgba[6]);
         ImGui::Begin("Rehehehehehehehe");
 
@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
 
         ImGui::Text("Backgroung RGBA Randomize (flashing lights): ");
         ImGui::SameLine();
-        ImGui::Checkbox("##Checkbox 0", &rgbaRondomize);
-        if(rgbaRondomize)
+        ImGui::Checkbox("##Checkbox 0", &rgbaRandomize);
+        if(rgbaRandomize)
         {
             rgba[0] = rand() % 255 + 1;
             rgba[2] = rand() % 255 + 1;
