@@ -3,7 +3,7 @@
 #include <random>
 
 int main(int argc, char *argv[])
-{
+{ 
     PNT::initialize(800, 500, "Ghoul Engine");
     PNT::vsync(PNT_VSYNC_ON);
     PNT::Window test("test", 500, 500, SDL_WINDOW_RESIZABLE);
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     bool running = true;
     while(running)
     {
-        if(SDL_PollEvent(&PNT::event))
+        while(SDL_PollEvent(&PNT::Window::event))
         {
             test.startFrame();
             test.eventProcess();
