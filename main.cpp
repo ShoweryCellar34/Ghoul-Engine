@@ -1,49 +1,43 @@
 #include <PentagramExt.hpp>
-#include <windows.hpp>
 #include <random>
 
+unsigned short rb[] = {255, 0};
+
+void testCallback(SDL_Event event)
+{
+    switch(event.key.keysym.sym)
+    {
+    case SDLK_1:
+        rb[0] = 255;
+        rb[1] = 0;
+        break;
+
+    case SDLK_2:
+        rb[0] = 0;
+        rb[1] = 255;
+        break;
+    }
+}
+
 int main(int argc, char *argv[])
-{ 
-    PNT::initialize(800, 500, "Ghoul Engine");
-    PNT::vsync(PNT_VSYNC_ON);
+{
     PNT::Window test("test", 500, 500, SDL_WINDOW_RESIZABLE);
-    PNT::Window test2("test2", 500, 500, SDL_WINDOW_RESIZABLE);
-    bool running = true;
-    while(running)
+    //PNT::Window test2("test2", 500, 500, SDL_WINDOW_RESIZABLE);
+    test.setEventCallback(testCallback);
+    bool shouldClose = true;
+    while(!shouldClose)
     {
         while(SDL_PollEvent(&PNT::Window::event))
         {
-            test.startFrame();
-            test.eventProcess();
+            test.startFrame(rb[0], 0, rb[1]);
+            test.eventProcess(&shouldClose);
+            ImGui::Begin("Test");
+            ImGui::End();
             test.endFrame();
-            test2.startFrame();
-            test2.eventProcess();
-            test2.endFrame();
+            //test2.startFrame();
+            //test2.eventProcess();
+            //test2.endFrame();
         }
-
-        static unsigned short rgba[8];
-        static bool rgbaRandomize = false;
-        PNT::startFrame(&running, rgba[0], rgba[2], rgba[4], rgba[6]);
-        ImGui::Begin("Rehehehehehehehe");
-
-        ImGui::Text("Backgroung RGBA: ");
-        ImGui::SameLine();
-        ImGui::SliderInt4("##SliderInt4 0", (int *)rgba, 0, 255, "%d", ImGuiSliderFlags_AlwaysClamp);
-
-        ImGui::Text("Backgroung RGBA Randomize (flashing lights): ");
-        ImGui::SameLine();
-        ImGui::Checkbox("##Checkbox 0", &rgbaRandomize);
-        if(rgbaRandomize)
-        {
-            rgba[0] = rand() % 255 + 1;
-            rgba[2] = rand() % 255 + 1;
-            rgba[4] = rand() % 255 + 1;
-            rgba[6] = rand() % 255 + 1;
-        }
-
-        ImGui::End();
-        PNT::endFrame();
     }
-    PNT::deinitialize();
     return 0;
 }
