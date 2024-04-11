@@ -35,7 +35,8 @@ int main(int argc, char *argv[])
         }
 
         // Begin frame
-        window.startFrame(rgb[0]*255, rgb[1]*255, rgb[2]*255);
+        window.setClearColor(rgb[0], rgb[1], rgb[2]);
+        window.startFrame();
 
         // ImGui
         ImGui::Begin("Controls");
