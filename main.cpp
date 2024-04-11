@@ -1,43 +1,52 @@
 #include <PentagramExt.hpp>
 #include <random>
 
-unsigned short rb[] = {255, 0};
+float rgb[] = {1, 0, 0};
 
 void testCallback(SDL_Event event)
 {
     switch(event.key.keysym.sym)
     {
     case SDLK_1:
-        rb[0] = 255;
-        rb[1] = 0;
+        rgb[0] = 1;
+        rgb[1] = 0;
+        rgb[2] = 0;
         break;
 
     case SDLK_2:
-        rb[0] = 0;
-        rb[1] = 255;
+        rgb[0] = 0;
+        rgb[1] = 0;
+        rgb[2] = 1;
         break;
     }
 }
 
 int main(int argc, char *argv[])
 {
-    PNT::Window test("test", 500, 500, SDL_WINDOW_RESIZABLE);
-    //PNT::Window test2("test2", 500, 500, SDL_WINDOW_RESIZABLE);
-    test.setEventCallback(testCallback);
-    bool shouldClose = true;
+    PNT::Window window("Demo window", 500, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+    window.setEventCallback(&testCallback);
+    bool shouldClose = false;
     while(!shouldClose)
     {
+        // Event processing
         while(SDL_PollEvent(&PNT::Window::event))
         {
-            test.startFrame(rb[0], 0, rb[1]);
-            test.eventProcess(&shouldClose);
-            ImGui::Begin("Test");
-            ImGui::End();
-            test.endFrame();
-            //test2.startFrame();
-            //test2.eventProcess();
-            //test2.endFrame();
+            window.eventProcess(shouldClose);
         }
+
+        // Begin frame
+        window.startFrame(rgb[0]*255, rgb[1]*255, rgb[2]*255);
+
+        // ImGui
+        ImGui::Begin("Controls");
+
+        ImGui::Text("Background Color: ");
+        ImGui::ColorPicker3("##ColorPicker3 0", rgb, ImGuiColorEditFlags_InputRGB);
+
+        ImGui::End();
+
+        // End frame
+        window.endFrame();
     }
     return 0;
 }
