@@ -3,8 +3,9 @@
 
 float rgb[] = {1, 0, 0};
 
-void testCallback(SDL_Event event)
+void testCallback(PNT::Window *window, SDL_Event event)
 {
+    static unsigned short step = 1;
     switch(event.key.keysym.sym)
     {
     case SDLK_1:
@@ -17,6 +18,34 @@ void testCallback(SDL_Event event)
         rgb[0] = 0;
         rgb[1] = 0;
         rgb[2] = 1;
+        break;
+
+    case SDLK_BACKSPACE:
+        window->setPosition(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+        break;
+
+    case SDLK_EQUALS:
+        step++;
+        break;
+
+    case SDLK_MINUS:
+        step--;
+        break;
+
+    case SDLK_UP:
+        window->setPosition(-1, window->getPosition().second - step);
+        break;
+
+    case SDLK_DOWN:
+        window->setPosition(-1, window->getPosition().second + step);
+        break;
+
+    case SDLK_LEFT:
+        window->setPosition(window->getPosition().first - step, -1);
+        break;
+
+    case SDLK_RIGHT:
+        window->setPosition(window->getPosition().first + step, -1);
         break;
     }
 }
