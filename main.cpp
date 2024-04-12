@@ -52,6 +52,7 @@ void testCallback(PNT::Window *window, SDL_Event event)
 
 int main(int argc, char *argv[])
 {
+    SDL_Init(SDL_INIT_VIDEO);
     PNT::Window window("Demo window", 500, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     window.setEventCallback(&testCallback);
     bool shouldClose = false;
