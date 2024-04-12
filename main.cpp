@@ -2,10 +2,10 @@
 #include <random>
 
 float rgb[] = {1, 0, 0};
+unsigned short step = 1;
 
 void testCallback(PNT::Window *window, SDL_Event event)
 {
-    static unsigned short step = 1;
     switch(event.key.keysym.sym)
     {
     case SDLK_1:
@@ -53,7 +53,7 @@ void testCallback(PNT::Window *window, SDL_Event event)
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
-    PNT::Window window("Demo window", 500, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+    PNT::Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     window.setEventCallback(&testCallback);
     bool shouldClose = false;
     while(!shouldClose)
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
         // Event processing
         while(SDL_PollEvent(&PNT::Window::event))
         {
-            window.eventProcess(shouldClose);
+            window.eventProcess(&shouldClose);
         }
 
         // Begin frame
@@ -69,10 +69,12 @@ int main(int argc, char *argv[])
         window.startFrame();
 
         // ImGui
-        ImGui::Begin("Controls");
+        ImGui::Begin("Demo Controls");
 
         ImGui::Text("Background Color: ");
         ImGui::ColorPicker3("##ColorPicker3 0", rgb, ImGuiColorEditFlags_InputRGB);
+
+        ImGui::SliderInt("##SliderInt 0", (int *)&step, 1, 15, "%d", ImGuiSliderFlags_AlwaysClamp);
 
         ImGui::End();
 
