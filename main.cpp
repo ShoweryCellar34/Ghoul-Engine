@@ -25,11 +25,11 @@ void testCallback(PNT::Window *window, SDL_Event event)
         break;
 
     case SDLK_EQUALS:
-        step++;
+        if(event.type == SDL_EVENT_KEY_DOWN) step++;
         break;
 
     case SDLK_MINUS:
-        step--;
+        if(event.type == SDL_EVENT_KEY_DOWN) step--;
         break;
 
     case SDLK_UP:
@@ -74,7 +74,9 @@ int main(int argc, char *argv[])
         ImGui::Text("Background Color: ");
         ImGui::ColorPicker3("##ColorPicker3 0", rgb, ImGuiColorEditFlags_InputRGB);
 
-        ImGui::SliderInt("##SliderInt 0", (int *)&step, 1, 15, "%d", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::Text("Reposition Step: ");
+        ImGui::SameLine();
+        ImGui::SliderInt("##SliderInt 0", (int *)&step, 1, 20, "%d", ImGuiSliderFlags_AlwaysClamp);
 
         ImGui::End();
 
