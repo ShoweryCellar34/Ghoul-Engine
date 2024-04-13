@@ -27,11 +27,11 @@ void testCallback(PNT::Window *window, SDL_Event event)
             break;
 
         case SDLK_EQUALS:
-            step++;
+            if(step < 20) step++;
             break;
 
         case SDLK_MINUS:
-            step--;
+            if(step > 1) step--;
             break;
 
         case SDLK_UP:
