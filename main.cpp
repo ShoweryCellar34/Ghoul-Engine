@@ -1,14 +1,15 @@
 #include <PentagramExt.hpp>
 #include <random>
 
+PNT::PNT_Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
 float rgb[] = {1, 0, 0};
 unsigned short step = 1;
 
-void testCallback(PNT::Window *window, SDL_Event event)
+void testCallback()
 {
-    if(event.type == SDL_EVENT_KEY_DOWN)
+    if(window.event.type == SDL_EVENT_KEY_DOWN)
     {
-        switch(event.key.keysym.sym)
+        switch(window.event.key.keysym.sym)
         {
         case SDLK_1:
             rgb[0] = 1;
@@ -23,7 +24,7 @@ void testCallback(PNT::Window *window, SDL_Event event)
             break;
 
         case SDLK_BACKSPACE:
-            window->setPosition(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+            window.setPosition(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
             break;
 
         case SDLK_EQUALS:
@@ -35,19 +36,19 @@ void testCallback(PNT::Window *window, SDL_Event event)
             break;
 
         case SDLK_UP:
-            window->setPosition(-1, window->getPosition().second - step);
+            window.setPosition(-1, window.getPosition().second - step);
             break;
 
         case SDLK_DOWN:
-            window->setPosition(-1, window->getPosition().second + step);
+            window.setPosition(-1, window.getPosition().second + step);
             break;
 
         case SDLK_LEFT:
-            window->setPosition(window->getPosition().first - step, -1);
+            window.setPosition(window.getPosition().first - step, -1);
             break;
 
         case SDLK_RIGHT:
-            window->setPosition(window->getPosition().first + step, -1);
+            window.setPosition(window.getPosition().first + step, -1);
             break;
         }
     }
@@ -56,13 +57,12 @@ void testCallback(PNT::Window *window, SDL_Event event)
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
-    PNT::Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
-    window.setEventCallback(&testCallback);
+    window.setCallback(PNT_CALLBACK_FLAGS_EVENT, &testCallback);
     bool shouldClose = false;
     while(!shouldClose)
     {
         // Event processing
-        while(SDL_PollEvent(&PNT::Window::event))
+        while(SDL_PollEvent(&PNT::PNT_Window::event))
         {
             window.eventProcess(&shouldClose);
         }
