@@ -1,7 +1,7 @@
 #include <PentagramExt.hpp>
 #include <random>
 
-PNT::PNT_Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+PNT::Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
 float rgb[] = {1, 0, 0};
 unsigned short step = 1;
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     while(!shouldClose)
     {
         // Event processing
-        while(SDL_PollEvent(&PNT::PNT_Window::event))
+        while(SDL_PollEvent(&PNT::Window::event))
         {
             window.eventProcess(&shouldClose);
         }
