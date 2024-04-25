@@ -3,7 +3,7 @@
 
 PNT::Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
 float rgb[] = {1, 0, 0};
-unsigned short step = 1;
+unsigned short step = 5;
 
 void testCallback()
 {
@@ -36,19 +36,19 @@ void testCallback()
             break;
 
         case SDLK_UP:
-            window.setPosition(-1, window.getPosition().second - step);
+            window.setPosition(-1, window.y - step);
             break;
 
         case SDLK_DOWN:
-            window.setPosition(-1, window.getPosition().second + step);
+            window.setPosition(-1, window.y + step);
             break;
 
         case SDLK_LEFT:
-            window.setPosition(window.getPosition().first - step, -1);
+            window.setPosition(window.x - step, -1);
             break;
 
         case SDLK_RIGHT:
-            window.setPosition(window.getPosition().first + step, -1);
+            window.setPosition(window.x + step, -1);
             break;
         }
     }
@@ -57,7 +57,7 @@ void testCallback()
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
-    window.setCallback(PNT_CALLBACK_FLAGS_EVENT, &testCallback);
+    window.setListener(PNT_LISTENER_FLAGS_EVENT, &testCallback);
     bool shouldClose = false;
     while(!shouldClose)
     {
