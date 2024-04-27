@@ -1,0 +1,170 @@
+cmake_minimum_required(VERSION 3.27)
+project(imgui)
+
+file(GLOB BASE_CPP imgui/*.cpp)
+set(BASE_H imgui/)
+file(GLOB MISC_CPP imgui/misc/cpp/*.cpp)
+set(MISC_H imgui/misc/)
+add_library(imgui ${BASE_CPP} ${MISC_CPP})
+
+set(HEADER_FOLDER_NAME headers)
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/backend_headers/)
+
+option(allegro5 "allegro5" off)
+
+option(android_opengl3 "android_opengl3" off)
+
+option(apple_metal "apple_metal" off)
+option(apple_opengl2 "apple_opengl2" off)
+
+option(emscripten_wgpu "emscripten_wgpu" off)
+
+option(glfw_metal "glfw_metal" off)
+option(glfw_opengl2 "glfw_opengl2" off)
+option(glfw_opengl3 "glfw_opengl3" off)
+option(glfw_vulkan "glfw_vulkan" off)
+
+option(freeglut_opengl2 "freeglut_opengl2" off)
+
+option(sdl2_directx11 "sdl2_directx11" off)
+option(sdl2_metal "sdl2_metal" off)
+option(sdl2_opengl2 "sdl2_opengl2" off)
+option(sdl2_opengl3 "sdl2_opengl3" off)
+option(sdl2_sdlrenderer2 "sdl2_sdlrenderer2" off)
+option(sdl2_vulkan "sdl2_vulkan" off)
+
+option(sdl3_opengl3 "sdl3_opengl3" off)
+option(sdl3_sdlrenderer3 "sdl3_sdlrenderer3" off)
+
+option(win32_directx9 "win32_directx9" off)
+option(win32_directx10 "win32_directx10" off)
+option(win32_directx11 "win32_directx11" off)
+option(win32_directx12 "win32_directx12" off)
+option(win32_opengl3 "win32_opengl3" off)
+
+option(include_paths "include_paths" "")
+
+
+# allegro5
+if(allegro5)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_allegro5.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_allegro5.h)
+endif()
+
+
+# android
+if(android_opengl3)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_android.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_android.h imgui/backends/imgui_impl_opengl3.h)
+endif()
+
+
+# apple
+if(apple_metal)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_cocoa.mm imgui/backends/imgui_impl_metal.mm)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_cocoa.h imgui/backends/imgui_impl_metal.h)
+endif()
+if(apple_opengl2)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_cocoa.mm imgui/backends/imgui_impl_opengl2.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_cocoa.h imgui/backends/imgui_impl_opengl2.h)
+endif()
+
+
+# emscripten
+if(emscripten_wgpu)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_wgpu.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_wgpu.h)
+endif()
+
+
+# glfw
+if(glfw_metal)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_metal.mm)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_metal.h)
+endif()
+if(glfw_metal)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl2.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_opengl2.h)
+endif()
+if(glfw_opengl3)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_opengl3.h)
+endif()
+if(glfw_vulkan)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_vulkan.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glfw.h imgui/backends/imgui_impl_vulkan.h)
+endif()
+
+
+# glut
+if(freeglut_opengl2)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_glut.cpp imgui/backends/imgui_impl_opengl2.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_glut.h imgui/backends/imgui_impl_opengl2.h)
+endif()
+
+
+# sdl2
+if(sdl2_directx11)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_dx11.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_dx11.h)
+endif()
+if(sdl2_metal)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_metal.mm)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_metal.h)
+endif()
+if(sdl2_opengl2)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_opengl2.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_opengl2.h)
+endif()
+if(sdl2_opengl3)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_opengl3.h)
+endif()
+if(sdl2_sdlrenderer2)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_sdlrenderer2.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_sdlrenderer2.h)
+endif()
+if(sdl2_vulkan)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_vulkan.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl2.h imgui/backends/imgui_impl_vulkan.h)
+endif()
+
+
+# sdl3
+if(sdl3_opengl3)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl3.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl3.h imgui/backends/imgui_impl_opengl3.h)
+endif()
+if(sdl3_sdlrenderer3)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_sdl3.cpp imgui/backends/imgui_impl_sdlrenderer3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_sdl3.h imgui/backends/imgui_impl_sdlrenderer3.h)
+endif()
+
+
+# win32
+if(win32_directx9)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx9.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx9.h)
+endif()
+if(win32_directx10)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx10.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx10.h)
+endif()
+if(win32_directx11)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx11.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx11.h)
+    endif()
+if(win32_directx12)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_dx12.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_dx12.h)
+endif()
+if(win32_opengl3)
+    list(APPEND BACKEND_CPP imgui/backends/imgui_impl_win32.cpp imgui/backends/imgui_impl_opengl3.cpp)
+    list(APPEND BACKEND_H imgui/backends/imgui_impl_win32.h imgui/backends/imgui_impl_opengl3.h)
+endif()
+
+
+
+file(COPY ${BACKEND_H} DESTINATION ${CMAKE_BINARY_DIR}/backend_headers)
+target_include_directories(imgui PUBLIC ${BASE_H} ${MISC_H} ${CMAKE_BINARY_DIR}/backend_headers ${include_paths})
+target_sources(imgui PUBLIC ${BACKEND_CPP})
