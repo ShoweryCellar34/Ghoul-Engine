@@ -1,11 +1,11 @@
-### What is Ghoul Engine?
-Ghoul Engine is an OpenGL rendering engine (I don't realy know what I'm doing with the project, but I know I'll use OpenGL for rendering).
+### What is Ghoul Engine dev?
+Ghoul Engine dev is the development branch for [Ghoul Engine](https://github.com/ShoweryCellar34/Ghoul-Engine.git) where big changes happen (like a full re-write, backend changes, ect).
 
 ## Project status
-Currently the work on this branch is paused for a full code re-write on the [dev branch](https://github.com/ShoweryCellar34/Ghoul-Engine/tree/dev).
+Currently Ghoul Enine dev is undegoing a full re-write to use [Pentagram](https://github.com/ShoweryCellar34/Pentagram.git) (A basic application framework I'm currently working on) and a more modular approach.
 
 ## How to clone
 run this command with [git](https://git-scm.com/) installed to clone this repository:
 ```
-git clone --recursive https://github.com/ShoweryCellar34/Ghoul-Engine.git
+git clone --branch dev --recursive https://github.com/ShoweryCellar34/Ghoul-Engine.git Ghoul-Engine-dev
 ```
