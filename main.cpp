@@ -7,9 +7,9 @@ unsigned short step = 5;
 
 void testCallback()
 {
-    if(window.event.type == SDL_EVENT_KEY_DOWN)
+    if(PNT::Window::event.type == SDL_EVENT_KEY_DOWN)
     {
-        switch(window.event.key.keysym.sym)
+        switch(PNT::Window::event.key.keysym.sym)
         {
         case SDLK_1:
             rgb[0] = 1;
