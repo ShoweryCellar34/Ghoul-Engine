@@ -3,7 +3,7 @@
 
 PNT::Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
 float rgb[] = {1, 0, 0};
-unsigned short step = 5;
+unsigned char step = 5;
 
 void testCallback()
 {
