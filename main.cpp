@@ -36,19 +36,19 @@ void testCallback()
             break;
 
         case SDLK_UP:
-            window.setPosition(-1, window.y - step);
+            window.setPosition(-1, window.getWindowData().y - step);
             break;
 
         case SDLK_DOWN:
-            window.setPosition(-1, window.y + step);
+            window.setPosition(-1, window.getWindowData().y + step);
             break;
 
         case SDLK_LEFT:
-            window.setPosition(window.x - step, -1);
+            window.setPosition(window.getWindowData().x - step, -1);
             break;
 
         case SDLK_RIGHT:
-            window.setPosition(window.x + step, -1);
+            window.setPosition(window.getWindowData().x + step, -1);
             break;
         }
     }
