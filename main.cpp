@@ -1,15 +1,16 @@
 #include <PentagramExt.hpp>
 #include <random>
 
+bool shouldClose = false;
 PNT::Window window("Demo Window", 600, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
 float rgb[] = {1, 0, 0};
 unsigned char step = 5;
 
 void eventListener()
 {
-    if(PNT::Window::event.type == SDL_EVENT_KEY_DOWN)
+    if(PNT::getEvent().type == SDL_EVENT_KEY_DOWN)
     {
-        switch(PNT::Window::event.key.keysym.sym)
+        switch(PNT::getEvent().key.keysym.sym)
         {
         case SDLK_1:
             rgb[0] = 1;
@@ -51,6 +52,11 @@ void eventListener()
             window.setPosition(window.getWindowData().x + step, -1);
             break;
         }
+        if(PNT::getEvent().window.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED)
+        {
+            shouldClose = true;
+            std::cout << shouldClose;
+        }
     }
 }
 
@@ -58,13 +64,12 @@ int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
     window.setListener(PNT_LISTENER_FLAGS_EVENT, &eventListener);
-    bool shouldClose = false;
     while(!shouldClose)
     {
         // Event processing
-        while(SDL_PollEvent(&PNT::Window::event))
+        while(PNT::pollEvent())
         {
-            window.eventProcess(&shouldClose);
+            window.eventProcess();
         }
 
         // Begin frame
