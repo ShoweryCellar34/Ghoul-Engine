@@ -52,6 +52,7 @@ void eventListener()
             window.setPosition(window.getWindowData().x + step, -1);
             break;
         }
+        std::cout << PNT::getEvent().window.type << std::endl;
         if(PNT::getEvent().window.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED)
         {
             shouldClose = true;
@@ -60,10 +61,34 @@ void eventListener()
     }
 }
 
+void startFrameListener()
+{
+    // Set background color.
+    window.setClearColor(rgb[0], rgb[1], rgb[2]);
+
+    // ImGui gui.
+    ImGui::Begin("Demo Controls");
+
+    ImGui::Text("Background Color: ");
+    ImGui::ColorPicker3("##ColorPicker3 0", rgb, ImGuiColorEditFlags_InputRGB);
+
+    ImGui::Text("Reposition Step: ");
+    ImGui::SameLine();
+    ImGui::SliderInt("##SliderInt 0", (int *)&step, 1, 20, "%d", ImGuiSliderFlags_AlwaysClamp);
+
+    ImGui::End();
+}
+
 int main(int argc, char *argv[])
 {
+    // Initualizing SDL
     SDL_Init(SDL_INIT_VIDEO);
+
+    // Setting listeners
     window.setListener(PNT_LISTENER_FLAGS_EVENT, &eventListener);
+    window.setListener(PNT_LISTENER_FLAGS_STARTFRAME, &startFrameListener);
+
+    // App loop
     while(!shouldClose)
     {
         // Event processing
@@ -72,23 +97,8 @@ int main(int argc, char *argv[])
             window.eventProcess();
         }
 
-        // Begin frame
-        window.setClearColor(rgb[0], rgb[1], rgb[2]);
+        // Start and end frame
         window.startFrame();
-
-        // ImGui
-        ImGui::Begin("Demo Controls");
-
-        ImGui::Text("Background Color: ");
-        ImGui::ColorPicker3("##ColorPicker3 0", rgb, ImGuiColorEditFlags_InputRGB);
-
-        ImGui::Text("Reposition Step: ");
-        ImGui::SameLine();
-        ImGui::SliderInt("##SliderInt 0", (int *)&step, 1, 20, "%d", ImGuiSliderFlags_AlwaysClamp);
-
-        ImGui::End();
-
-        // End frame
         window.endFrame();
     }
     return 0;
