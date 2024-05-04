@@ -1,7 +1,7 @@
 #include <PentagramExt.hpp>
 
-void eventListener();
-void startFrameListener();
+void eventListener(PNT::Window *window);
+void startFrameListener(PNT::Window *window);
 
 int main(int argc, char *argv[])
 {
@@ -32,10 +32,25 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void eventListener()
+void eventListener(PNT::Window *window)
 {
+    switch(PNT::getEvent().key.keysym.sym)
+    {
+        case SDLK_1:
+            window->setClearColor(1.0f, 0.0f, 0.0f);
+            break;
+
+        case SDLK_2:
+            window->setClearColor(0.0f, 0.0f, 1.0f);
+            break;
+
+        case SDLK_3:
+            window->setClearColor(0.0f, 0.0f, 0.0f);
+            break;
+    }
 }
 
-void startFrameListener()
+void startFrameListener(PNT::Window *window)
 {
+    ImGui::ShowDemoWindow();
 }
