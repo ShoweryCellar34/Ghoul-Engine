@@ -1,5 +1,6 @@
 #include <PentagramExt.hpp>
 
+bool shouldClose = false;
 void eventListener(PNT::Window *window);
 void startFrameListener(PNT::Window *window);
 
@@ -16,7 +17,6 @@ int main(int argc, char *argv[])
     window.setListener(PNT_LISTENER_FLAGS_STARTFRAME, &startFrameListener);
 
     // App loop
-    bool shouldClose = false;
     while(!shouldClose)
     {
         // Event processing
@@ -47,6 +47,10 @@ void eventListener(PNT::Window *window)
         case SDLK_3:
             window->setClearColor(0.0f, 0.0f, 0.0f);
             break;
+    }
+    if(PNT::getEvent().window.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED)
+    {
+        shouldClose = true;
     }
 }
 
