@@ -1,53 +1,30 @@
-#include <PentagramExt.hpp>
+#include <Pentagram.hpp>
 
-bool shouldClose = false;
-void eventListener(PNT::Window *window);
-void startFrameListener(PNT::Window *window);
+void eventCallback(PNT::Window *window, PNT::windowEvent event) {
+}
+
+void startFrameCallback(PNT::Window *window) {
+    ImGui::Begin("Controls");
+    ImGui::End();
+}
 
 int main(int argc, char *argv[]) {
-    // Initualizing SDL
-    SDL_Init(SDL_INIT_VIDEO);
+    PNT::init();
 
-    // Creating window
-    PNT::Window window("Ghoul Engine", 1000, 800, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+    PNT::Window window("Ghoul Engine", 1000, 700, 200, 200, ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable);
+    window.setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, &startFrameCallback);
+    window.setEventCallback(&eventCallback);
+    window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
+    window.setIcon(PNT::image("..\\ghoul.png"));
+    std::cout << stbi_failure_reason();
 
-    // Setting listeners
-    window.setListener(PNT_LISTENER_FLAGS_KEYBOARDEVENT, &eventListener);
-    window.setListener(PNT_LISTENER_FLAGS_MOUSEEVENT, &eventListener);
-    window.setListener(PNT_LISTENER_FLAGS_STARTFRAME, &startFrameListener);
+    while(!window.shouldClose()) {
+        PNT::processEvents();
 
-    // App loop
-    while(!shouldClose) {
-        // Event processing
-        while(PNT::pollEvent())
-        {
-            window.eventProcess();
-        }
-
-        // Start and end frame
         window.startFrame();
         window.endFrame();
     }
+
+    PNT::deinit();
     return 0;
-}
-
-void eventListener(PNT::Window *window) {
-    switch(PNT::getEvent().key.keysym.sym) {
-        case SDLK_1:
-            window->setClearColor(1.0f, 0.0f, 0.0f);
-            break;
-
-        case SDLK_2:
-            window->setClearColor(0.0f, 0.0f, 1.0f);
-            break;
-
-        case SDLK_3:
-            window->setClearColor(0.0f, 0.0f, 0.0f);
-            break;
-    }
-    if(PNT::getEvent().window.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) shouldClose = true;
-}
-
-void startFrameListener(PNT::Window *window) {
-    ImGui::ShowDemoWindow();
 }

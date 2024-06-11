@@ -1,3 +1,4 @@
 [submodule "Pentagram"]
 	path = Pentagram
-	url = https://github.com/ShoweryCellar34/Pentagram.git
+	url = https://github.com/ShoweyCellar34/Pentagram.git
+	branch = dev
