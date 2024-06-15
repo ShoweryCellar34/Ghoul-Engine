@@ -15,8 +15,7 @@ int main(int argc, char *argv[]) {
     window.setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, &startFrameCallback);
     window.setEventCallback(&eventCallback);
     window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
-    window.setIcon(PNT::image("..\\ghoul.png"));
-    std::cout << stbi_failure_reason();
+    window.setIcon(PNT::image("..\\ghoul32x32.png", 4));
 
     while(!window.shouldClose()) {
         PNT::processEvents();
