@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
         PNT::processEvents();
 
         window.startFrame();
-        icon.ImGuiDraw();
+        icon.ImGuiDraw(512, 512);
         window.endFrame();
     }
 
