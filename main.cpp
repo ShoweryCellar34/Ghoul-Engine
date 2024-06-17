@@ -15,12 +15,16 @@ int main(int argc, char *argv[]) {
     window.setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, &startFrameCallback);
     window.setEventCallback(&eventCallback);
     window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
-    window.setIcon(PNT::image("..\\ghoul32x32.png", 4));
+    PNT::image icon("..\\ghoul.png", 4);
+    icon.resize(32, 32);
+    window.setIcon(icon);
+    icon.loadOnGPU();
 
     while(!window.shouldClose()) {
         PNT::processEvents();
 
         window.startFrame();
+        icon.ImGuiDraw();
         window.endFrame();
     }
 
