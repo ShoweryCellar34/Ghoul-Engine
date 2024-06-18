@@ -11,8 +11,18 @@ int main(int argc, char *argv[]) {
     window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
 
     // Set icon.
-    PNT::image icon("res\\ghoul32x32.png", 4);
+    PNT::image icon("res\\textures\\ghoul32x32.png", 4);
     window.setIcon(icon);
+
+
+    float vertices[] = {
+        // positions          // colors           // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+    };
+
 
     while(!window.shouldClose()) {
         PNT::processEvents();
