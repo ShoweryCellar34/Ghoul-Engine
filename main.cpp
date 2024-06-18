@@ -14,6 +14,29 @@ int main(int argc, char *argv[]) {
     PNT::image icon("res\\textures\\logo\\ghoul32x32.png", 4);
     window.setIcon(icon);
 
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    char* shaderSource = (char*)PNT::fileToString("res\\shaders\\vertex.glsl").c_str();
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &shaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    shaderSource = (char*)PNT::fileToString("res\\shaders\\fragment.glsl").c_str();
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &shaderSource, NULL);
+    glCompileShader(fragmentShader);
+
     while(!window.shouldClose()) {
         PNT::processEvents();
 
