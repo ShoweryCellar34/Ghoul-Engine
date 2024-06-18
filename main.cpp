@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
 
     // Set icon.
-    PNT::image icon("res\\textures\\ghoul32x32.png", 4);
+    PNT::image icon("res\\textures\\logo\\ghoul32x32.png", 4);
     window.setIcon(icon);
 
 
