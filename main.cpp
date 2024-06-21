@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 
     // Set icon.
     PNT::image icon("res\\textures\\logo\\ghoul32x32.png");
-    window.setIcon(&icon);
+    window.setIcon(icon);
 
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
@@ -47,7 +47,6 @@ int main(int argc, char *argv[]) {
     glLinkProgram(shaderProgram);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
 
     while(!window.shouldClose()) {
         PNT::processEvents();
