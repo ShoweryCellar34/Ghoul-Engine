@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     }
 
     PNT::Window window("Ghoul Engine", 1000, 700, 200, 200, ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable);
-    window.setEventCallback(&eventCallback);
+    window.setEventCallback(eventCallback);
     window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
 
     // Set icon.
