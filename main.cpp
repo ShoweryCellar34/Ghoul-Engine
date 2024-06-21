@@ -48,6 +48,7 @@ int main(int argc, char *argv[]) {
         PNT::processEvents();
 
         window.startFrame();
+
         ImGui::Begin("Controls");
         ImGui::End();
 
