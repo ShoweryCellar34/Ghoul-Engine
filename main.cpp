@@ -12,7 +12,6 @@ int main(int argc, char *argv[]) {
 
     // Set icon.
     PNT::image icon("res\\textures\\logo\\ghoul32x32.png");
-    PNT::image image2 = icon;
     window.setIcon(&icon);
 
     float vertices[] = {
@@ -57,7 +56,6 @@ int main(int argc, char *argv[]) {
 
         ImGui::Begin("Controls");
         icon.ImGuiDraw(300, 300);
-        image2.ImGuiDraw(300, 300);
         ImGui::End();
 
         window.endFrame();
