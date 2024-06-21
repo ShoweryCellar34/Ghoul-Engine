@@ -4,7 +4,9 @@ void eventCallback(PNT::Window *window, PNT::windowEvent event) {
 }
 
 int main(int argc, char *argv[]) {
-    PNT::init();
+    if(!PNT::init()) {
+        return 1;
+    }
 
     PNT::Window window("Ghoul Engine", 1000, 700, 200, 200, ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable);
     window.setEventCallback(&eventCallback);
