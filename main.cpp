@@ -28,11 +28,13 @@ int main(int argc, char *argv[]) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Vertex shader.
-    PNT::shader vertexShader(PNT::fileToString("res\\shaders\\vertex.glsl").c_str(), GL_VERTEX_SHADER);
+    PNT::file vertexFile("res\\shaders\\vertex.glsl");
+    PNT::shader vertexShader(vertexFile.getContents(), GL_VERTEX_SHADER);
     vertexShader.compile();
 
     // Fragment shader.
-    PNT::shader fragmentShader(PNT::fileToString("res\\shaders\\fragment.glsl").c_str(), GL_FRAGMENT_SHADER);
+    PNT::file fragmentFile("res\\shaders\\fragment.glsl");
+    PNT::shader fragmentShader(fragmentFile.getContents(), GL_FRAGMENT_SHADER);
     fragmentShader.compile();
 
     // Shader program.
