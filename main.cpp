@@ -56,6 +56,7 @@ int main(int argc, char *argv[]) {
         window.startFrame();
 
         ImGui::Begin("Controls");
+        icon.ImGuiDraw(300, 300);
         image2.ImGuiDraw(300, 300);
         ImGui::End();
 
