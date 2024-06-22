@@ -20,21 +20,6 @@ int main(int argc, char *argv[]) {
     image.loadOnGPU();
     window.setEventCallback(eventCallback);
 
-    
-    float vertices[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f,
-        -1.0f, 1.0f, 0.0f
-    };
-
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
     // Vertex shader.
     PNT::file vertexFile("res\\shaders\\vertex.glsl");
     PNT::shader vertexShader(vertexFile.getContents(), GL_VERTEX_SHADER);
@@ -56,8 +41,6 @@ int main(int argc, char *argv[]) {
         PNT::processEvents();
 
         window.startFrame();
-
-
 
         window.endFrame();
     }
