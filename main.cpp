@@ -1,13 +1,6 @@
 #include <Pentagram.hpp>
 
-PNT::image image;
-
-void eventCallback(PNT::Window* window, PNT::windowEvent event) {
-    if(event.eventType == PNT_EVENT_TYPE_DROP) {
-        image.load(event.dropEvent.paths[0]);
-        window->setDimentions(image.getDimentions().first, image.getDimentions().second);
-        image.loadOnGPU();
-    }
+void eventCallback(PNT::Window *window, PNT::windowEvent event) {
 }
 
 int main(int argc, char *argv[]) {
@@ -15,10 +8,24 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    image.load("res\\textures\\logo\\ghoul.png");
-    PNT::Window window("Drag'n Drop", image.getDimentions().first, image.getDimentions().second, 500, 500, ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable);
-    image.loadOnGPU();
+    PNT::Window window("Ghoul Engine", 1000, 700, 200, 200, ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable);
     window.setEventCallback(eventCallback);
+    window.setClearColor(0.25f, 0.25f, 0.25f, 0.25f);
+
+    // Set icon.
+    PNT::image icon("res\\textures\\logo\\ghoul32x32.png");
+    window.setIcon(icon);
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Vertex shader.
     PNT::file vertexFile("res\\shaders\\vertex.glsl");
@@ -41,6 +48,9 @@ int main(int argc, char *argv[]) {
         PNT::processEvents();
 
         window.startFrame();
+
+        ImGui::Begin("Controls");
+        ImGui::End();
 
         window.endFrame();
     }
