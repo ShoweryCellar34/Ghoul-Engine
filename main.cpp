@@ -38,11 +38,7 @@ int main(int argc, char *argv[]) {
     fragmentShader.compile();
 
     // Shader program.
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader.getID());
-    glAttachShader(shaderProgram, fragmentShader.getID());
-    glLinkProgram(shaderProgram);
+    PNT::program shaderProgram(2, vertexShader, fragmentShader);
 
     while(!window.shouldClose()) {
         PNT::processEvents();
