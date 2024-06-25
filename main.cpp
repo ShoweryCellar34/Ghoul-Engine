@@ -3,6 +3,19 @@
 void eventCallback(PNT::Window *window, PNT::windowEvent event) {
 }
 
+const char *vertexShaderSource = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+const char *fragmentShaderSource = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n\0";
+
 int main(int argc, char *argv[]) {
     if(!PNT::init()) {
         return 1;
@@ -16,22 +29,16 @@ int main(int argc, char *argv[]) {
     PNT::image icon("res\\textures\\logo\\ghoul32x32.png");
     window.setIcon(icon);
 
-    PNT::file shaderSource("res\\shaders\\vertex.glsl");
-
-    PNT::shader vertexShader(shaderSource.getContents(), GL_VERTEX_SHADER);
+    PNT::shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     vertexShader.compile();
-    std::cout << vertexShader.getError() << "\n\n\n";
 
     // fragment shader
-    shaderSource.open("res\\shaders\\fragment.glsl");
-    PNT::shader fragmentShader(shaderSource.getContents(), GL_FRAGMENT_SHADER);
+    PNT::shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
     fragmentShader.compile();
-    std::cout << fragmentShader.getError() << "\n\n\n";
 
     // link shaders
     PNT::program shaderProgram({&vertexShader, &fragmentShader});
     shaderProgram.link();
-    std::cout << shaderProgram.getError() << "\n\n\n";
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
