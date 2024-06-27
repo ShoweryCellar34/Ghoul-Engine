@@ -28,6 +28,9 @@ int main(int argc, char *argv[]) {
     // Set icon.
     PNT::image icon("res\\textures\\logo\\ghoul32x32.png");
     window.setIcon(icon);
+    PNT::file a("a.txt");
+    std::cout << a.getContents() << '\n';
+    std::cout << a.getError() << '\n';
 
     PNT::shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     vertexShader.compile();
