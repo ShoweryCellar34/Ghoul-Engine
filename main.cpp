@@ -1,3 +1,4 @@
+#include <iostream>
 #include <Pentagram.hpp>
 
 void eventCallback(PNT::Window *window, PNT::windowEvent event) {
