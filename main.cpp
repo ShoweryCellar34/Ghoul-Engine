@@ -29,11 +29,10 @@ int main(int argc, char *argv[]) {
     // Set icon.
     PNT::image icon("res\\textures\\logo\\ghoul32x32.png");
     window.setIcon(icon);
-    PNT::file a("a.txt");
-    std::cout << a.getContents() << '\n';
-    std::cout << a.getError() << '\n';
+    PNT::file a("res\\shaders\\fragment.glsl");
+    std::cout << a.getContents();
 
-    PNT::shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
+    PNT::shader vertexShader(a.getContents().c_str(), GL_VERTEX_SHADER);
     vertexShader.compile();
 
     // fragment shader
