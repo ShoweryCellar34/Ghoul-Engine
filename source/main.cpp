@@ -20,20 +20,32 @@ int main(int argc, char *argv[]) {
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
 
-    node world(nullptr, "World");
-
-    node* currentWorld = &world;
-    currentWorld->addChild();
+    node* currentWorld = new node(nullptr, "World");
 
     while(!window.shouldClose()) {
         PNT::processEvents();
-
         window.startFrame();
+
+        ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
+        ImGui::Begin("Node Tree", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
         currentWorld->ImGuiDraw();
 
+        ImGui::End();
+
+        ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
+        ImGui::Begin("Node Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+
+
+
+        ImGui::End();
+
         window.endFrame();
     }
+
+    delete currentWorld;
 
     PNT::deinit();
     return 0;
