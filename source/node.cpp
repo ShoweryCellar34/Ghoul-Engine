@@ -4,7 +4,7 @@
 #include <cstring>
 #include <string>
 
-node::node(node* parent) : parent(parent), ID(instances), name{1} {
+node::node(node* parent) : parent(parent), ID(instances), name{"Unnamed"} {
     instances++;
 }
 
@@ -69,11 +69,22 @@ size_t node::getID() {
 }
 
 void node::ImGuiDraw() {
-    if(ImGui::TreeNode("%s##%i", name, ID)) {
-        for(node* child : children) {
-            child->ImGuiDraw();
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_NavLeftJumpsBackHere | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+    if(children.size() < 1) {
+        flags |= ImGuiTreeNodeFlags_Leaf;
+    }
+    char* name = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str())];
+    strcpy(name, this->name);
+    strcat(name, "##");
+    strcat(name, std::to_string(ID).c_str());
+    if(ImGui::TreeNodeEx(name, flags)) {
+        if(children.size() > 0) {
+            for(node* child : children) {
+                child->ImGuiDraw();
+            }
         }
 
         ImGui::TreePop();
     }
+    delete name;
 }

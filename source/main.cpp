@@ -1,6 +1,7 @@
 #include <Pentagram.hpp>
 #include <depracated/file.hpp>
 
+#include <vector>
 #include <node.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
@@ -19,18 +20,17 @@ int main(int argc, char *argv[]) {
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
 
-    node test(nullptr);
-    for (size_t i = 0; i < 10; i++) {
-        test.addChild(std::to_string(i).c_str());
-    }
-    
+    std::vector<node> worlds;
+    worlds.push_back(node(nullptr, "World"));
+
+    node* currentWorld = &worlds[0];
 
     while(!window.shouldClose()) {
         PNT::processEvents();
 
         window.startFrame();
 
-        test.ImGuiDraw();
+        currentWorld->ImGuiDraw();
 
         window.endFrame();
     }
