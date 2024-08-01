@@ -3,9 +3,11 @@
 #include <imgui.h>
 #include <cstring>
 #include <string>
+#include <iostream>
 
-node::node(node* parent) : parent(parent), ID(instances), name{"Unnamed"} {
+node::node(node* parent) : parent(parent), ID(instances) {
     instances++;
+    setName("Unnamed");
 }
 
 node::node(node *parent, const char* name) : parent(parent), ID(instances) {
@@ -14,7 +16,7 @@ node::node(node *parent, const char* name) : parent(parent), ID(instances) {
 }
 
 node::~node() {
-    instances--;
+    delete[] imguiName;
     for(node* node : children) {
         delete node;
     }
@@ -29,13 +31,17 @@ void node::addChild(const char *name) {
 }
 
 void node::setName(const char *name) {
-    if(strlen(name) <= 256) {
+    if(strlen(name) < 256) {
         strcpy(this->name, name);
     } else {
         for(int i; i < 256; i++) {
             this->name[i] = name[i];
         }
     }
+    imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str())];
+    strcpy(imguiName, this->name);
+    strcat(imguiName, "##");
+    strcat(imguiName, std::to_string(ID).c_str());
 }
 
 std::vector<node*> node::getChildren() {
@@ -69,15 +75,11 @@ size_t node::getID() {
 }
 
 void node::ImGuiDraw() {
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_NavLeftJumpsBackHere | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_NavLeftJumpsBackHere | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | selected;
     if(children.size() < 1) {
         flags |= ImGuiTreeNodeFlags_Leaf;
     }
-    char* name = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str())];
-    strcpy(name, this->name);
-    strcat(name, "##");
-    strcat(name, std::to_string(ID).c_str());
-    if(ImGui::TreeNodeEx(name, flags)) {
+    if(ImGui::TreeNodeEx(imguiName, flags)) {
         if(children.size() > 0) {
             for(node* child : children) {
                 child->ImGuiDraw();
@@ -86,5 +88,13 @@ void node::ImGuiDraw() {
 
         ImGui::TreePop();
     }
-    delete name;
+    if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+        std::cout << "NEW\n";
+        selectedID = ID;
+    }
+    if(selectedID == ID) {
+        selected = ImGuiTreeNodeFlags_Selected;
+    } else {
+        selected = ImGuiTreeNodeFlags_None;
+    }
 }

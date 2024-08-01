@@ -22,8 +22,11 @@ public:
 
 private:
     static inline size_t instances;
+    static inline size_t selectedID;
+    int selected;
     size_t ID;
     char name[256];
+    char* imguiName;
     node* parent;
     std::vector<node*> children;
 };

@@ -20,10 +20,10 @@ int main(int argc, char *argv[]) {
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
 
-    std::vector<node> worlds;
-    worlds.push_back(node(nullptr, "World"));
+    node world(nullptr, "World");
 
-    node* currentWorld = &worlds[0];
+    node* currentWorld = &world;
+    currentWorld->addChild();
 
     while(!window.shouldClose()) {
         PNT::processEvents();
