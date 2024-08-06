@@ -1,21 +1,25 @@
 #include <node.hpp>
 
-#include <imgui.h>
 #include <cstring>
 #include <string>
-#include <iostream>
+#include <algorithm>
+#include <imgui.h>
 
-node::node(node* parent) : parent(parent), ID(instances), selected(ImGuiTreeNodeFlags_None) {
+node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None) {
+    instancesList.push_back(this);
     instances++;
     setName("Unnamed");
 }
 
-node::node(node *parent, const char* name) : parent(parent), ID(instances), selected(ImGuiTreeNodeFlags_None) {
+node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None) {
+    instancesList.push_back(this);
     instances++;
     setName(name);
 }
 
 node::~node() {
+    instances--;
+    instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
     delete[] imguiName;
     for(node* node : children) {
         delete node;
@@ -64,11 +68,11 @@ void node::setName(const char *name) {
     strcat(imguiName, std::to_string(ID).c_str());
 }
 
-std::vector<node*> node::getChildren() {
+std::vector<node*> node::getChildren() const {
     return children;
 }
 
-node *node::getChild(const char* name) {
+node* node::getChild(const char* name) const {
     for(node* node : children) {
         if(node->getName() == name) {
             return node;
@@ -77,7 +81,7 @@ node *node::getChild(const char* name) {
     return nullptr;
 }
 
-node *node::getChild(size_t ID) {
+node* node::getChild(size_t ID) const {
     for(node* node : children) {
         if(node->getID() == ID) {
             return node;
@@ -86,31 +90,31 @@ node *node::getChild(size_t ID) {
     return nullptr;
 }
 
-const char* node::getName() {
+const char* node::getName() const {
     return name;
 }
 
-size_t node::getID() {
+size_t node::getID() const {
     return ID;
 }
 
-void node::ImGuiDraw() {
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | selected;
+void node::ImGuiDraw() const {
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | selectedFlag;
     if(children.size() == 0) {
         flags |= ImGuiTreeNodeFlags_Leaf;
     }
     if(ImGui::TreeNodeEx(imguiName, flags)) {
         if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
-            selectedID = ID;
+            selectedNode = (node*)this;
         }
         for(node* child : children) {
             child->ImGuiDraw();
         }
         ImGui::TreePop();
     }
-    if(selectedID == ID) {
-        selected = ImGuiTreeNodeFlags_Selected;
+    if(selectedNode == this) {
+        selectedFlag = ImGuiTreeNodeFlags_Selected;
     } else {
-        selected = ImGuiTreeNodeFlags_None;
+        selectedFlag = ImGuiTreeNodeFlags_None;
     }
 }

@@ -2,17 +2,23 @@
 
 #include <vector>
 
+namespace PNT {
+    class Window;
+}
+
 struct node {
 private:
     static inline size_t instances;
-    static inline size_t selectedID;
-    int selected;
+    static inline std::vector<node*> instancesList;
+    static inline node* selectedNode;
+    mutable int selectedFlag;
     size_t ID;
     char name[256];
     char* imguiName;
     node* parent;
     std::vector<node*> children;
 
+    friend void drawNodeInspector(const PNT::Window& window);
 public:
     node(node* parent);
     node(node* parent, const char* name);
@@ -24,12 +30,12 @@ public:
     bool deleteChild(size_t ID);
     void setName(const char* name);
 
-    std::vector<node*> getChildren();
-    node* getChild(const char* name);
-    node* getChild(size_t ID);
-    node* getParent();
-    const char* getName();
-    size_t getID();
+    std::vector<node*> getChildren() const;
+    node* getChild(const char* name) const;
+    node* getChild(size_t ID) const;
+    node* getParent() const;
+    const char* getName() const;
+    size_t getID() const;
 
-    void ImGuiDraw();
+    void ImGuiDraw() const;
 };
