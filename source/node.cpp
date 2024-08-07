@@ -26,13 +26,15 @@ node::~node() {
 }
 
 node* node::addChild() {
-    children.push_back(new node(this));
-    return children.at(children.size() - 1);
+    node* child = new node(this);
+    children.push_back(child);
+    return child;
 }
 
 node* node::addChild(const char* name) {
-    children.push_back(new node(this, name));
-    return children.at(children.size() - 1);
+    node* child = new node(this, name);
+    children.push_back(child);
+    return child;
 }
 
 bool node::deleteChild(const char* name) {
@@ -56,7 +58,7 @@ bool node::deleteChild(size_t ID) {
 }
 
 void node::setName(const char *name) {
-    if(name != nullptr) {
+    if(this->name != nullptr) {
         delete[] this->name;
     }
     if(strlen(name) > 0) {
@@ -67,7 +69,7 @@ void node::setName(const char *name) {
         this->name[0] = 0;
     }
 
-    if(name != nullptr) {
+    if(this->imguiName != nullptr) {
         delete[] imguiName;
     }
     imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str()) + 1];
@@ -113,8 +115,8 @@ size_t node::getID() const {
     return ID;
 }
 
-std::string node::getPath() const {
-    return std::string();
+node* node::getParent() const {
+    return parent;
 }
 
 void node::ImGuiDraw() const {

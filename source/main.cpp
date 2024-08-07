@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
     window.setEventCallback(eventCallback);
 
     node currentWorld(nullptr, "World");
+    currentWorld.addChild("a");
 
     while(!window.shouldClose()) {
         PNT::processEvents();

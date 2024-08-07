@@ -19,6 +19,7 @@ private:
     char* imguiName;
     node* parent;
     std::vector<node*> children;
+    std::string path;
 
     friend void drawNodeInspector(const PNT::Window& window);
 public:
@@ -38,7 +39,6 @@ public:
     node* getChild(size_t ID) const;
     const char* getName() const;
     size_t getID() const;
-    std::string getPath() const;
     node* getParent() const;
 
     void ImGuiDraw() const;
