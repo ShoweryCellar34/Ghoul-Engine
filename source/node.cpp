@@ -66,7 +66,7 @@ void node::setName(const char *name) {
     }
 
     delete[] imguiName;
-    imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str())];
+    imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str()) + 1];
     strcpy(imguiName, this->name);
     strcat(imguiName, "##");
     strcat(imguiName, std::to_string(ID).c_str());
