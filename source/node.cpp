@@ -4,13 +4,13 @@
 #include <algorithm>
 #include <imgui.h>
 
-node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}) {
+node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}), imguiName(new char[1]{0}) {
     instancesList.push_back(this);
     instances++;
     setName("Unnamed");
 }
 
-node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}) {
+node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}), imguiName(new char[1]{0}) {
     instancesList.push_back(this);
     instances++;
     setName(name);
@@ -63,6 +63,7 @@ void node::setName(const char *name) {
         this->name[0] = 0;
     }
 
+    delete[] imguiName;
     imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str())];
     strcpy(imguiName, this->name);
     strcat(imguiName, "##");
