@@ -34,7 +34,7 @@ void drawNodeInspector(const PNT::Window& window) {
 
     if(node::selectedNode != nullptr) {
         ImGui::Text("Selected node name: %s", node::selectedNode->getName());
-        ImGui::Text("Selected node ID: %i", node::selectedNode->getID());
+        ImGui::Text("Selected node ID: %lu", node::selectedNode->getID());
         ImGui::Text("Path: %s", node::selectedNode->getPath().c_str());
     }
 
