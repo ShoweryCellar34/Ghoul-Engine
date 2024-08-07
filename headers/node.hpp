@@ -13,7 +13,7 @@ private:
     static inline node* selectedNode;
     mutable int selectedFlag;
     size_t ID;
-    char name[256];
+    char* name;
     char* imguiName;
     node* parent;
     std::vector<node*> children;
