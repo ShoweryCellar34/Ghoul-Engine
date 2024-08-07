@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <vector>
 #include <string>
 
@@ -10,7 +11,7 @@ namespace PNT {
 struct node {
 private:
     static inline size_t instances;
-    static inline std::vector<node*> instancesList;
+    static inline std::unordered_map<size_t, node*> instancesList;
     static inline node* selectedNode = nullptr;
     mutable int selectedFlag;
     size_t ID;
@@ -25,19 +26,20 @@ public:
     node(node* parent, const char* name);
     ~node();
 
-    void addChild();
-    void addChild(const char* name);
+    node* addChild();
+    node* addChild(const char* name);
     bool deleteChild(const char* name);
     bool deleteChild(size_t ID);
     void setName(const char* name);
+    node* reparent(size_t ID);
 
     std::vector<node*> getChildren() const;
     node* getChild(const char* name) const;
     node* getChild(size_t ID) const;
-    node* getParent() const;
     const char* getName() const;
     size_t getID() const;
     std::string getPath() const;
+    node* getParent() const;
 
     void ImGuiDraw() const;
 };

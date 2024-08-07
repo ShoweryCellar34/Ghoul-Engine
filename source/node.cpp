@@ -5,32 +5,34 @@
 #include <imgui.h>
 
 node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}), imguiName(new char[1]{0}) {
-    instancesList.push_back(this);
+    instancesList.insert({ID, this});
     instances++;
     setName("Unnamed");
 }
 
 node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}), imguiName(new char[1]{0}) {
-    instancesList.push_back(this);
+    instancesList.insert({ID, this});
     instances++;
     setName(name);
 }
 
 node::~node() {
     instances--;
-    instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
+    instancesList.erase(instancesList.find(ID));
     delete[] imguiName;
     for(node* node : children) {
         delete node;
     }
 }
 
-void node::addChild() {
+node* node::addChild() {
     children.push_back(new node(this));
+    return children.at(children.size() - 1);
 }
 
-void node::addChild(const char* name) {
+node* node::addChild(const char* name) {
     children.push_back(new node(this, name));
+    return children.at(children.size() - 1);
 }
 
 bool node::deleteChild(const char* name) {
@@ -68,6 +70,13 @@ void node::setName(const char *name) {
     strcpy(imguiName, this->name);
     strcat(imguiName, "##");
     strcat(imguiName, std::to_string(ID).c_str());
+}
+
+node* node::reparent(size_t ID) {
+    instancesList.at(ID)->children.push_back(this);
+    parent->children.erase(std::find(parent->children.begin(), parent->children.end(), this));
+    instancesList.erase(instancesList.find(ID));
+    return nullptr;
 }
 
 std::vector<node*> node::getChildren() const {
