@@ -4,13 +4,13 @@
 #include <algorithm>
 #include <imgui.h>
 
-node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}), imguiName(new char[1]{0}) {
+node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(nullptr), imguiName(nullptr) {
     instancesList.insert({ID, this});
     instances++;
     setName("Unnamed");
 }
 
-node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(new char[1]{0}), imguiName(new char[1]{0}) {
+node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(nullptr), imguiName(nullptr) {
     instancesList.insert({ID, this});
     instances++;
     setName(name);
@@ -56,7 +56,9 @@ bool node::deleteChild(size_t ID) {
 }
 
 void node::setName(const char *name) {
-    delete[] this->name;
+    if(name != nullptr) {
+        delete[] this->name;
+    }
     if(strlen(name) > 0) {
         this->name = new char[strlen(name)];
         strcpy(this->name, name);
@@ -65,7 +67,9 @@ void node::setName(const char *name) {
         this->name[0] = 0;
     }
 
-    delete[] imguiName;
+    if(name != nullptr) {
+        delete[] imguiName;
+    }
     imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str()) + 1];
     strcpy(imguiName, this->name);
     strcat(imguiName, "##");
