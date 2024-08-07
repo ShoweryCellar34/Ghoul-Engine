@@ -1,16 +1,17 @@
 #include <node.hpp>
 
 #include <cstring>
+#include <string>
 #include <algorithm>
 #include <imgui.h>
 
-node::node(node* parent) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(nullptr), imguiName(nullptr) {
+node::node(node* parent) : selectedFlag(ImGuiTreeNodeFlags_None), ID(instances), name(nullptr), imguiName(nullptr), parent(parent), shouldOpen(false) {
     instancesList.insert({ID, this});
     instances++;
     setName("Unnamed");
 }
 
-node::node(node *parent, const char* name) : parent(parent), ID(instances), selectedFlag(ImGuiTreeNodeFlags_None), name(nullptr), imguiName(nullptr) {
+node::node(node *parent, const char* name) : selectedFlag(ImGuiTreeNodeFlags_None), ID(instances), name(nullptr), imguiName(nullptr), parent(parent), shouldOpen(false) {
     instancesList.insert({ID, this});
     instances++;
     setName(name);
@@ -58,24 +59,26 @@ bool node::deleteChild(size_t ID) {
 }
 
 void node::setName(const char *name) {
-    if(this->name != nullptr) {
-        delete[] this->name;
-    }
-    if(strlen(name) > 0) {
-        this->name = new char[strlen(name)];
-        strcpy(this->name, name);
-    } else {
-        this->name = new char[1];
-        this->name[0] = 0;
-    }
+    if(name != this->name) {
+        if(this->name != nullptr) {
+            delete[] this->name;
+        }
+        if(strlen(name) > 0) {
+            this->name = new char[strlen(name)];
+            strcpy(this->name, name);
+        } else {
+            this->name = new char[1];
+            this->name[0] = 0;
+        }
 
-    if(this->imguiName != nullptr) {
-        delete[] imguiName;
+        if(this->imguiName != nullptr) {
+            delete[] imguiName;
+        }
+        imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str()) + 1];
+        strcpy(imguiName, this->name);
+        strcat(imguiName, "##");
+        strcat(imguiName, std::to_string(ID).c_str());
     }
-    imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str()) + 1];
-    strcpy(imguiName, this->name);
-    strcat(imguiName, "##");
-    strcat(imguiName, std::to_string(ID).c_str());
 }
 
 node* node::reparent(size_t ID) {
@@ -119,20 +122,43 @@ node* node::getParent() const {
     return parent;
 }
 
+void drawPopup(node* node) {
+    if(ImGui::Button("Add child")) {
+        node->addChild();
+        node->shouldOpen = true;
+        ImGui::CloseCurrentPopup();
+    }
+}
+
 void node::ImGuiDraw() const {
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | selectedFlag;
     if(children.size() == 0) {
         flags |= ImGuiTreeNodeFlags_Leaf;
     }
+    if(shouldOpen) {
+        ImGui::SetNextItemOpen(true);
+        shouldOpen = false;
+    }
     if(ImGui::TreeNodeEx(imguiName, flags)) {
         if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
             selectedNode = (node*)this;
         }
+        if(ImGui::BeginPopupContextItem()) {
+            drawPopup((node*)this);
+            ImGui::EndPopup();
+        }
+
         for(node* child : children) {
             child->ImGuiDraw();
         }
         ImGui::TreePop();
+    } else {
+        if(ImGui::BeginPopupContextItem()) {
+            drawPopup((node*)this);
+            ImGui::EndPopup();
+        }
     }
+
     if(selectedNode == this) {
         selectedFlag = ImGuiTreeNodeFlags_Selected;
     } else {

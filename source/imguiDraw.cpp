@@ -33,7 +33,11 @@ void drawNodeInspector(const PNT::Window& window) {
     ImGui::Begin("Node Inspector", nullptr);
 
     if(node::selectedNode != nullptr) {
-        ImGui::Text("Selected node name: %s", node::selectedNode->getName());
+        ImGui::Text("Selected node name: ");
+        ImGui::SameLine();
+        char buffer[256] = {0};
+        ImGui::InputText("Input Label", buffer, sizeof(buffer));
+        node::selectedNode->setName(buffer);
         ImGui::Text("Selected node ID: %lu", node::selectedNode->getID());
     }
 

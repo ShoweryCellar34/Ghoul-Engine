@@ -2,7 +2,6 @@
 
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 namespace PNT {
     class Window;
@@ -18,10 +17,11 @@ private:
     char* name;
     char* imguiName;
     node* parent;
+    mutable bool shouldOpen;
     std::vector<node*> children;
-    std::string path;
 
     friend void drawNodeInspector(const PNT::Window& window);
+    friend void drawPopup(node* node);
 public:
     node(node* parent);
     node(node* parent, const char* name);
