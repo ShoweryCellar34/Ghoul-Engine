@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace PNT {
     class Window;
@@ -10,7 +11,7 @@ struct node {
 private:
     static inline size_t instances;
     static inline std::vector<node*> instancesList;
-    static inline node* selectedNode;
+    static inline node* selectedNode = nullptr;
     mutable int selectedFlag;
     size_t ID;
     char* name;
@@ -36,6 +37,7 @@ public:
     node* getParent() const;
     const char* getName() const;
     size_t getID() const;
+    std::string getPath() const;
 
     void ImGuiDraw() const;
 };

@@ -1,7 +1,6 @@
 #include <node.hpp>
 
 #include <cstring>
-#include <string>
 #include <algorithm>
 #include <imgui.h>
 
@@ -98,6 +97,10 @@ const char* node::getName() const {
 
 size_t node::getID() const {
     return ID;
+}
+
+std::string node::getPath() const {
+    return std::string();
 }
 
 void node::ImGuiDraw() const {

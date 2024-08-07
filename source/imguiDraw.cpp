@@ -18,21 +18,25 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
 }
 
 void drawNodeTree(const PNT::Window& window, const node &node) {
-        ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
-        ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
-        ImGui::Begin("Node Tree", nullptr);
+    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
+    ImGui::Begin("Node Tree", nullptr);
 
-        node.ImGuiDraw();
+    node.ImGuiDraw();
 
-        ImGui::End();
+    ImGui::End();
 }
 
 void drawNodeInspector(const PNT::Window& window) {
-        ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
-        ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
-        ImGui::Begin("Node Inspector", nullptr);
+    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
+    ImGui::Begin("Node Inspector", nullptr);
 
-        ImGui::Text(node::selectedNode->getName());
+    if(node::selectedNode != nullptr) {
+        ImGui::Text("Selected node name: %s", node::selectedNode->getName());
+        ImGui::Text("Selected node ID: %i", node::selectedNode->getID());
+        ImGui::Text("Path: %s", node::selectedNode->getPath());
+    }
 
-        ImGui::End();
+    ImGui::End();
 }
