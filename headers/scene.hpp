@@ -1,16 +1,20 @@
 #pragma once
 
 #include <unordered_map>
-#include <node.hpp>
+#include <vector>
+
+struct node;
 
 struct scene {
 private:
     char* name;
     std::unordered_map<size_t, node*> nodes;
-    std::vector<node*> nodesVector;
+    size_t selectedNode;
     size_t nodeIDCounter;
+    static inline node* selectedNode = nullptr;
 
     node* newNode(node* parent, const char* name);
+    void deleteNode(size_t ID);
     friend struct node;
 public:
     scene(const char* name);
@@ -21,12 +25,4 @@ public:
     bool deleteChild(const char* name);
     bool deleteChild(size_t ID);
     void setName(const char* name);
-
-    std::vector<node*> getNodes() const;
-    std::vector<node*> getChildren() const;
-    node* getNode(const char* name) const;
-    node* getNode(size_t ID) const;
-    node* getNodeRecursive(const char* name) const;
-    node* getNodeRecursive(size_t ID) const;
-    const char* getTitle() const;
 };

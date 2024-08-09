@@ -2,30 +2,27 @@
 
 #include <unordered_map>
 #include <vector>
+#include <scene.hpp>
 
 namespace PNT {
     class Window;
 }
 
-struct scene;
-
 struct node {
 private:
-    scene* scene;
-    static inline node* selectedNode = nullptr;
-    mutable int selectedFlag;
+    scene* parentScene;
     size_t ID;
     char* name;
+    std::vector<node*> children;
+    mutable int selectedFlag;
     char* imguiName;
     node* parent;
     mutable bool shouldOpen;
-    std::vector<node*> children;
 
     friend void drawNodeInspector(const PNT::Window& window);
     friend void drawPopup(node* node);
 public:
-    node(node* parent);
-    node(node* parent, const char* name);
+    node(scene* scene, node* node, size_t ID, const char* name);
     ~node();
 
     node* addChild();
