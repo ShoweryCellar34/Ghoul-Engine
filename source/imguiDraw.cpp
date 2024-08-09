@@ -21,7 +21,7 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
 void drawNodeTree(const PNT::Window& window, scene* currentScene) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
-    ImGui::Begin(currentScene->getName(), nullptr);
+    ImGui::Begin(currentScene->getTitle(), nullptr);
 
     for(node* node : currentScene->getChildren()) {
         node->ImGuiDraw();
@@ -30,19 +30,17 @@ void drawNodeTree(const PNT::Window& window, scene* currentScene) {
     ImGui::End();
 }
 
-void drawNodeInspector(const PNT::Window& window) {
+void drawNodeInspector(const PNT::Window& window, scene* currentScene) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);
 
-    if(node::selectedNode != nullptr) {
-        ImGui::Text("Selected node name: ");
-        ImGui::SameLine();
-        char buffer[256] = {0};
-        ImGui::InputText("Input Label", buffer, sizeof(buffer));
-        //node::selectedNode->setName(buffer);
-        ImGui::Text("Selected node ID: %lu", node::selectedNode->getID());
-    }
+    ImGui::Text("Selected node name: ");
+    ImGui::SameLine();
+    char buffer[256] = {0};
+    ImGui::InputText("Input Label", buffer, sizeof(buffer));
+    //node::selectedNode->setName(buffer);
+    ImGui::Text("node ID: %lu", currentScene->getSelectedID());
 
     ImGui::End();
 }

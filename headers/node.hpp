@@ -22,7 +22,8 @@ private:
     friend void drawNodeInspector(const PNT::Window& window);
     friend void drawPopup(node* node);
 public:
-    node(scene* scene, node* node, size_t ID, const char* name);
+    node(scene* scene, node* nodeParent, size_t nodeID, const char* name);
+    node(scene* scene, node* nodeParent, size_t nodeID);
     ~node();
 
     node* addChild();

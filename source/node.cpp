@@ -6,36 +6,31 @@
 #include <imgui.h>
 #include <scene.hpp>
 
-node::node(node* parent) : selectedFlag(ImGuiTreeNodeFlags_None), ID(instances), name(nullptr), imguiName(nullptr), parent(parent), shouldOpen(false) {
-    instancesList.insert({ID, this});
-    instances++;
-    setName("Unnamed");
-}
-
-node::node(node *parent, const char* name) : selectedFlag(ImGuiTreeNodeFlags_None), ID(instances), name(nullptr), imguiName(nullptr), parent(parent), shouldOpen(false) {
-    instancesList.insert({ID, this});
-    instances++;
+node::node(scene* scene, node* nodeParent, size_t nodeID, const char* name) : selectedFlag(ImGuiTreeNodeFlags_None), ID(nodeID), name(nullptr), imguiName(nullptr), parent(nodeParent), shouldOpen(false) {
     setName(name);
 }
 
+node::node(scene* scene, node* nodeParent, size_t nodeID) : selectedFlag(ImGuiTreeNodeFlags_None), ID(nodeID), name(nullptr), imguiName(nullptr), parent(nodeParent), shouldOpen(false) {
+    setName("Unnamed");
+}
+
 node::~node() {
-    instances--;
-    instancesList.erase(instancesList.find(ID));
     parent->children.erase(std::find(parent->children.begin(), parent->children.end(), this));
+    delete[] name;
     delete[] imguiName;
     for(node* node : children) {
-        delete node;
+        parentScene->deleteNode(node->getID());
     }
 }
 
-node* node::addChild() {
-    node* child = scene->newNode(this, "Unnamed");
+node* node::addChild(const char* name) {
+    node* child = parentScene->newNode(this, name);
     children.push_back(child);
     return child;
 }
 
-node* node::addChild(const char* name) {
-    node* child = scene->newNode(this, name);
+node* node::addChild() {
+    node* child = parentScene->newNode(this, "Unnamed");
     children.push_back(child);
     return child;
 }
@@ -43,7 +38,7 @@ node* node::addChild(const char* name) {
 bool node::deleteChild(const char* name) {
     for(node* node : children) {
         if(node->getName() == name) {
-            delete node;
+            parentScene->deleteNode(node->getID());
             return true;
         }
     }
@@ -53,7 +48,7 @@ bool node::deleteChild(const char* name) {
 bool node::deleteChild(size_t ID) {
     for(node* node : children) {
         if(node->getID() == ID) {
-            delete node;
+            parentScene->deleteNode(node->getID());
             return true;
         }
     }
@@ -84,10 +79,6 @@ void node::setName(const char *name) {
 }
 
 node* node::reparent(size_t ID) {
-    instancesList.at(ID)->children.push_back(this);
-    parent->children.erase(std::find(parent->children.begin(), parent->children.end(), this));
-    instancesList.erase(instancesList.find(ID));
-    return nullptr;
 }
 
 std::vector<node*> node::getChildren() const {
@@ -147,7 +138,7 @@ void node::ImGuiDraw() const {
     }
     if(ImGui::TreeNodeEx(imguiName, flags)) {
         if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
-            selectedNode = (node*)this;
+            parentScene->selectID(ID);
         }
         if(ImGui::BeginPopupContextItem()) {
             drawPopup((node*)this);
@@ -165,7 +156,7 @@ void node::ImGuiDraw() const {
         }
     }
 
-    if(selectedNode == this) {
+    if(parentScene->getSelectedID() == ID) {
         selectedFlag = ImGuiTreeNodeFlags_Selected;
     } else {
         selectedFlag = ImGuiTreeNodeFlags_None;

@@ -21,16 +21,15 @@ int main(int argc, char *argv[]) {
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
 
-    node currentWorld(nullptr, "World");
-    currentWorld.addChild("a");
+    scene world = scene("Hello");
 
     while(!window.shouldClose()) {
         PNT::processEvents();
         window.startFrame();
 
         drawGlobalDockingWindow(window);
-        drawNodeTree(window, currentWorld);
-        drawNodeInspector(window);
+        drawNodeTree(window, &world);
+        drawNodeInspector(window, &world);
 
         window.endFrame();
     }
