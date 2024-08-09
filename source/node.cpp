@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <imgui.h>
+#include <scene.hpp>
 
 node::node(node* parent) : selectedFlag(ImGuiTreeNodeFlags_None), ID(instances), name(nullptr), imguiName(nullptr), parent(parent), shouldOpen(false) {
     instancesList.insert({ID, this});
@@ -20,6 +21,7 @@ node::node(node *parent, const char* name) : selectedFlag(ImGuiTreeNodeFlags_Non
 node::~node() {
     instances--;
     instancesList.erase(instancesList.find(ID));
+    parent->children.erase(std::find(parent->children.begin(), parent->children.end(), this));
     delete[] imguiName;
     for(node* node : children) {
         delete node;
@@ -27,13 +29,13 @@ node::~node() {
 }
 
 node* node::addChild() {
-    node* child = new node(this);
+    node* child = scene->newNode(this, "Unnamed");
     children.push_back(child);
     return child;
 }
 
 node* node::addChild(const char* name) {
-    node* child = new node(this, name);
+    node* child = scene->newNode(this, name);
     children.push_back(child);
     return child;
 }
@@ -126,6 +128,10 @@ void drawPopup(node* node) {
     if(ImGui::Button("Add child")) {
         node->addChild();
         node->shouldOpen = true;
+        ImGui::CloseCurrentPopup();
+    }
+    if(ImGui::Button("Remove")) {
+        delete node;
         ImGui::CloseCurrentPopup();
     }
 }

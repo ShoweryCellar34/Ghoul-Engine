@@ -7,10 +7,11 @@ namespace PNT {
     class Window;
 }
 
+struct scene;
+
 struct node {
 private:
-    static inline size_t instances;
-    static inline std::unordered_map<size_t, node*> instancesList;
+    scene* scene;
     static inline node* selectedNode = nullptr;
     mutable int selectedFlag;
     size_t ID;
