@@ -61,7 +61,7 @@ void node::setName(const char *name) {
             delete[] this->name;
         }
         if(strlen(name) > 0) {
-            this->name = new char[strlen(name)];
+            this->name = new char[strlen(name) + 1];
             strcpy(this->name, name);
         } else {
             this->name = new char[1];

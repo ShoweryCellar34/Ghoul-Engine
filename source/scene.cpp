@@ -33,7 +33,7 @@ void scene::setTitle(const char* name) {
             delete[] this->title;
         }
         if(strlen(name) > 0) {
-            this->title = new char[strlen(name)];
+            this->title = new char[strlen(name) + 1];
             strcpy(this->title, name);
         } else {
             this->title = new char[1];
