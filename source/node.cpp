@@ -79,6 +79,7 @@ void node::setName(const char *name) {
 }
 
 node* node::reparent(size_t ID) {
+    return nullptr;
 }
 
 std::vector<node*> node::getChildren() const {
