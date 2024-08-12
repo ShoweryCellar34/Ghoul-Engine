@@ -4,56 +4,72 @@
 #include <string>
 #include <node.hpp>
 
-scene::scene(const char *name) : title(nullptr), selectedNode(0), nodeIDCounter(0) {
-    setTitle(name);
+scene::scene(const char *name) : name(nullptr), selectedNode(0), nodeIDCounter(1) {
+    setName(name);
 }
 
 scene::~scene() {
-    delete[] title;
+    delete[] name;
+    for(nodeID ID = 1; ID < nodeIDCounter; ID++) {
+        deleteNode(ID);
+    }
 }
 
-node* scene::newNode(node* parent, const char* name) {
+nodeID scene::newNode(nodeID parent, const char* name) {
     node* newNode = new node(this, parent, nodeIDCounter++, name);
     nodes.insert({nodeIDCounter, newNode});
-    return newNode;
+    return newNode->getID();
 }
 
-void scene::deleteNode(size_t ID) {
+void scene::deleteNode(nodeID ID) {
     delete nodes.at(ID);
     nodes.erase(ID);
 }
 
-void scene::selectID(size_t ID) {
+void scene::selectID(nodeID ID) {
     selectedNode = ID;
 }
 
-void scene::setTitle(const char* name) {
-    if(name != this->title) {
-        if(this->title != nullptr) {
-            delete[] this->title;
+nodeID scene::getSelectedID() const {
+    return selectedNode;
+}
+
+node* scene::getNode(nodeID ID) const {
+    return nodes.at(ID);
+}
+
+void scene::setName(const char* title) {
+    if(title != this->name) {
+        if(this->name != nullptr) {
+            delete[] this->name;
         }
-        if(strlen(name) > 0) {
-            this->title = new char[strlen(name) + 1];
-            strcpy(this->title, name);
+        if(strlen(title) > 0) {
+            this->name = new char[strlen(title) + 1];
+            strcpy(this->name, title);
         } else {
-            this->title = new char[1];
-            this->title[0] = 0;
+            this->name = new char[1];
+            this->name[0] = 0;
         }
     }
 }
 
-size_t scene::getSelectedID() {
-    return selectedNode;
+nodeID scene::addChild(const char* name) {
+    nodeID child = newNode(0, name);
+    children.push_back(child);
+    return child;
 }
 
-node* scene::getNode(size_t ID) {
-    return nodes.at(ID);
+bool scene::removeChild(nodeID ID) {
+    if(children.erase(std::find(children.begin(), children.end(), ID)) == children.end()) {
+        return false;
+    }
+    return true;
 }
 
-const char* scene::getTitle() {
-    return title;
+const char* scene::getName() const {
+    return name;
 }
 
-std::vector<node*> scene::getChildren() {
-    return std::vector<node*>();
+std::vector<nodeID> scene::getChildren() const {
+    return children;
 }

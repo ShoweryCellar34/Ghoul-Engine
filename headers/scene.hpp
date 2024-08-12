@@ -5,27 +5,33 @@
 
 struct node;
 
+typedef size_t nodeID;
+
 struct scene {
 private:
-    char* title;
-    std::unordered_map<size_t, node*> nodes;
-    std::vector<size_t> children;
-    size_t selectedNode;
-    size_t nodeIDCounter;
+    char* name;
+    std::unordered_map<nodeID, node*> nodes;
+    std::vector<nodeID> children;
+    nodeID selectedNode;
+    nodeID nodeIDCounter;
 
     friend struct node;
 public:
     scene(const char* name);
     ~scene();
 
-    node* newNode(node* parent, const char* name);
-    void deleteNode(size_t ID);
-    void selectID(size_t ID);
-    void setTitle(const char* name);
+    nodeID newNode(nodeID parent, const char* name);
+    void deleteNode(nodeID ID);
+    void selectID(nodeID ID);
 
-    size_t getSelectedID();
-    node* getNode(size_t ID);
-    const char* getTitle();
-    std::vector<node*> getChildren();
+    nodeID getSelectedID() const;
+    node* getNode(nodeID ID) const;
+
+    void setName(const char* title);
+    nodeID addChild(const char* name);
+    bool removeChild(nodeID ID);
+
+    const char* getName() const;
+    std::vector<nodeID> getChildren() const;
 
 };

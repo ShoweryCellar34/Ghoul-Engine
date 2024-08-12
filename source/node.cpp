@@ -6,11 +6,11 @@
 #include <imgui.h>
 #include <scene.hpp>
 
-node::node(scene* scene, node* nodeParent, size_t nodeID, const char* name) : selectedFlag(ImGuiTreeNodeFlags_None), ID(nodeID), name(nullptr), imguiName(nullptr), parent(nodeParent), shouldOpen(false) {
+node::node(scene* scene, size_t nodeParent, size_t nodeID, const char* name) : selectedFlag(ImGuiTreeNodeFlags_None), ID(nodeID), name(nullptr), imguiName(nullptr), parent(nodeParent), shouldOpen(false) {
     setName(name);
 }
 
-node::node(scene* scene, node* nodeParent, size_t nodeID) : selectedFlag(ImGuiTreeNodeFlags_None), ID(nodeID), name(nullptr), imguiName(nullptr), parent(nodeParent), shouldOpen(false) {
+node::node(scene* scene, size_t nodeParent, size_t nodeID) : selectedFlag(ImGuiTreeNodeFlags_None), ID(nodeID), name(nullptr), imguiName(nullptr), parent(nodeParent), shouldOpen(false) {
     setName("Unnamed");
 }
 
@@ -24,15 +24,15 @@ node::~node() {
 }
 
 node* node::addChild(const char* name) {
-    node* child = parentScene->newNode(this, name);
-    children.push_back(child);
-    return child;
+    size_t child = parentScene->newNode(ID, name);
+    children.push_back(parentScene->getNode(child));
+    return parentScene->getNode(child);
 }
 
 node* node::addChild() {
-    node* child = parentScene->newNode(this, "Unnamed");
-    children.push_back(child);
-    return child;
+    size_t child = parentScene->newNode(ID, "Unnamed");
+    children.push_back(parentScene->getNode(child));
+    return parentScene->getNode(child);
 }
 
 bool node::deleteChild(const char* name) {
@@ -161,5 +161,32 @@ void node::ImGuiDraw() const {
         selectedFlag = ImGuiTreeNodeFlags_Selected;
     } else {
         selectedFlag = ImGuiTreeNodeFlags_None;
+    }
+}
+
+node2::node2(scene* scene, nodeID parent, nodeID ID, const char* name) : parent(parent),  {
+    setName(name);
+}
+
+void node2::setName(const char *name) {
+    if(name != this->name) {
+        if(this->name != nullptr) {
+            delete[] this->name;
+        }
+        if(strlen(name) > 0) {
+            this->name = new char[strlen(name) + 1];
+            strcpy(this->name, name);
+        } else {
+            this->name = new char[1];
+            this->name[0] = 0;
+        }
+
+        if(this->imguiName != nullptr) {
+            delete[] imguiName;
+        }
+        imguiName = new char[strlen(this->name) + 2 + strlen(std::to_string(ID).c_str()) + 1];
+        strcpy(imguiName, this->name);
+        strcat(imguiName, "##");
+        strcat(imguiName, std::to_string(ID).c_str());
     }
 }

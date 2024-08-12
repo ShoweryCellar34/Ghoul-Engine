@@ -21,7 +21,7 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
 void drawNodeTree(const PNT::Window& window, scene* currentScene) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
-    ImGui::Begin(currentScene->getTitle(), nullptr);
+    ImGui::Begin(currentScene->getName(), nullptr);
 
     for(node* node : currentScene->getChildren()) {
         node->ImGuiDraw();

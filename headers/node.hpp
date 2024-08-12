@@ -22,8 +22,8 @@ private:
     friend void drawNodeInspector(const PNT::Window& window);
     friend void drawPopup(node* node);
 public:
-    node(scene* scene, node* nodeParent, size_t nodeID, const char* name);
-    node(scene* scene, node* nodeParent, size_t nodeID);
+    node(scene* scene, size_t nodeParent, size_t nodeID, const char* name);
+    node(scene* scene, size_t nodeParent, size_t nodeID);
     ~node();
 
     node* addChild();
@@ -41,4 +41,27 @@ public:
     node* getParent() const;
 
     void ImGuiDraw() const;
+};
+
+struct node2 : scene {
+private:
+    nodeID parent;
+    nodeID ID;
+    char* name;
+    char* imguiName;
+
+public:
+    nodeID newNode(scene* scene, nodeID parent, nodeID ID, const char* name) = delete;
+    void deleteNode(nodeID ID) = delete;
+    void selectID(nodeID ID) = delete;
+    nodeID getSelectedID() const = delete;
+    node* getNode(nodeID ID) const = delete;
+
+    node2(nodeID parent, const char* name);
+    ~node2();
+
+    void setName(const char* name);
+    void reparent(nodeID newParent);
+
+    nodeID getParent() const;
 };
