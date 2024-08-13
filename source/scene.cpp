@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <string>
+#include <algorithm>
 #include <imgui.h>
 #include <node.hpp>
 
