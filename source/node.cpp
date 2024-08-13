@@ -213,8 +213,7 @@ nodeID node::getParent() const {
     return m_Parent;
 }
 
-nodeID node::getID() const
-{
+nodeID node::getID() const {
     return m_ID;
 }
 
