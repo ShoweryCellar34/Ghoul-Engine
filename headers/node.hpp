@@ -4,9 +4,11 @@
 #include <vector>
 
 typedef size_t nodeID;
+struct scene;
 
 struct node {
 private:
+    scene* m_OwnerScene;
     std::string m_name;
     nodeID m_ID;
     std::vector<node> m_children;

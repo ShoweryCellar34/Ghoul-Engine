@@ -2,5 +2,12 @@
 
 #include <node.hpp>
 
-struct scene {
+struct scene : node {
+private:
+    nodeID m_IDCounter;
+
+    nodeID newID();
+    friend struct node;
+public:
+
 };
