@@ -2,10 +2,15 @@
 
 #include <cstring>
 #include <string>
+#include <imgui.h>
 #include <node.hpp>
 
 scene::scene(const char *name) : name(nullptr), selectedNode(0), nodeIDCounter(1) {
     setName(name);
+}
+
+scene::scene() : name(nullptr), selectedNode(0), nodeIDCounter(1) {
+    setName("Unnamed scene");
 }
 
 scene::~scene() {
@@ -72,4 +77,10 @@ const char* scene::getName() const {
 
 std::vector<nodeID> scene::getChildren() const {
     return children;
+}
+
+void scene::ImDraw() const {
+    for(nodeID child : children) {
+        getNode(child)->ImDraw();
+    }
 }

@@ -23,9 +23,7 @@ void drawNodeTree(const PNT::Window& window, scene* currentScene) {
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin(currentScene->getName(), nullptr);
 
-    for(node* node : currentScene->getChildren()) {
-        node->ImGuiDraw();
-    }
+    currentScene->ImDraw();
 
     ImGui::End();
 }

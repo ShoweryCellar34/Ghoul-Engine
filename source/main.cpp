@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
     window.setEventCallback(eventCallback);
 
     scene world = scene("Hello");
+    world.addChild("Child");
 
     while(!window.shouldClose()) {
         PNT::processEvents();

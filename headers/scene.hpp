@@ -18,6 +18,7 @@ private:
     friend struct node;
 public:
     scene(const char* name);
+    scene();
     ~scene();
 
     nodeID newNode(nodeID parent, const char* name);
@@ -34,4 +35,5 @@ public:
     const char* getName() const;
     std::vector<nodeID> getChildren() const;
 
+    void ImDraw() const;
 };
