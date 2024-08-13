@@ -21,8 +21,9 @@ scene::~scene() {
 }
 
 nodeID scene::newNode(nodeID parent, const char* name) {
-    node* newNode = new node(this, parent, nodeIDCounter++, name);
+    node* newNode = new node(this, parent, nodeIDCounter, name);
     nodes.insert({nodeIDCounter, newNode});
+    nodeIDCounter++;
     return newNode->getID();
 }
 
