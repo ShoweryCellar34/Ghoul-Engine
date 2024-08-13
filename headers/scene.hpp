@@ -8,6 +8,8 @@ private:
 
     nodeID newID();
     friend struct node;
-public:
 
+public:
+    void load(std::string saveData);
+    std::string save();
 };

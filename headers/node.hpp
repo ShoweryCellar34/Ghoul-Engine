@@ -8,14 +8,14 @@ struct scene;
 
 struct node {
 private:
-    scene* m_OwnerScene;
+    scene* m_ownerScene;
     std::string m_name;
     nodeID m_ID;
     std::vector<node> m_children;
     node* m_parent;
 
 public:
-    node(const char* name);
+    node(scene* ownerScene, node* parent, const char* name);
     ~node();
 
     void setName(const char* name);
@@ -23,11 +23,14 @@ public:
     void addChild(const char* name);
     void addChild(std::string name);
     void addChild();
-    void reparent(nodeID newParent);
+    void reparent(node* newParent);
 
     const char* getName() const;
-    nodeID getChild(const char* name) const;
-    nodeID getChild(std::string name) const;
-    nodeID getParent() const;
-    nodeID getID() const;
+    node* getChild(const char* name) const;
+    node* getChild(std::string name) const;
+    node* getParent() const;
+    node* getID() const;
+
+    void load(std::string saveData);
+    std::string save();
 };
