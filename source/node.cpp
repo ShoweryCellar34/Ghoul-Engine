@@ -11,7 +11,7 @@ std::string node::save() {
 
     
 
-    for(size_t i; i < m_children.size(); i++) {
+    for(size_t i = 0; i < m_children.size(); i++) {
         saveData += m_children.at(i).save();
     }
 
