@@ -2,8 +2,7 @@
 
 #include <scene.hpp>
 
-node::node(scene* ownerScene, node* parent, const char* name)
- : m_ownerScene(ownerScene), m_name(name), m_ID(m_ownerScene->newID()), m_parent(parent) {
+node::node(scene* ownerScene, node* parent, const char* name) : m_ownerScene(ownerScene), m_name(name), m_ID(m_ownerScene->newID()), m_parent(parent) {
 }
 
 std::string node::save() {
