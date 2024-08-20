@@ -1,3 +1,6 @@
 [submodule "Pentagram"]
 	path = vendors/Pentagram
 	url = https://github.com/ShoweryCellar34/Pentagram.git
+[submodule "vendors/json"]
+	path = vendors/json
+	url = https://github.com/nlohmann/json.git

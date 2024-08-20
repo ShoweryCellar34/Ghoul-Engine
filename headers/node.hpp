@@ -2,20 +2,21 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 typedef size_t nodeID;
 struct scene;
 
 struct node {
 private:
-    scene* m_ownerScene;
+    std::shared_ptr<node> m_ownerScene;
     std::string m_name;
     nodeID m_ID;
-    std::vector<node> m_children;
-    node* m_parent;
+    std::vector<std::shared_ptr<node>> m_children;
+    std::shared_ptr<node> m_parent;
 
 public:
-    node(scene* ownerScene, node* parent, const char* name);
+    node(std::shared_ptr<node> root, std::shared_ptr<node> parent, const char* name);
     ~node();
 
     void setName(const char* name);
@@ -31,6 +32,5 @@ public:
     node* getParent() const;
     node* getID() const;
 
-    void load(std::string saveData);
-    std::string save();
+    std::string saveJSON();
 };
