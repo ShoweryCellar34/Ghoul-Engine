@@ -5,6 +5,10 @@
 node::node(scene* ownerScene, node* parent, const char* name) : m_ownerScene(ownerScene), m_name(name), m_ID(m_ownerScene->newID()), m_parent(parent) {
 }
 
+node *node::getParent() const {
+    return m_parent;
+}
+
 std::string node::save() {
     std::string saveData;
 
