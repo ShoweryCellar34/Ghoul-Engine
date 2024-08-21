@@ -3,7 +3,6 @@
 #include <imgui.h>
 #include <Pentagram.hpp>
 #include <node.hpp>
-#include <scene.hpp>
 
 void drawGlobalDockingWindow(const PNT::Window& window) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -18,27 +17,22 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
     ImGui::PopStyleVar(2);
 }
 
-void drawNodeTree(const PNT::Window& window, scene* currentScene) {
+void drawNodeTree(const PNT::Window& window, std::shared_ptr<node> nodeToDraw) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
-    ImGui::Begin(currentScene->getName(), nullptr);
+    ImGui::Begin(nodeToDraw->getName(), nullptr);
 
-    currentScene->ImDraw();
+    // Draw node
 
     ImGui::End();
 }
 
-void drawNodeInspector(const PNT::Window& window, scene* currentScene) {
+void drawNodeInspector(const PNT::Window& window, std::shared_ptr<node> nodeToInspect) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);
 
-    ImGui::Text("Selected node name: ");
-    ImGui::SameLine();
-    char buffer[256] = {0};
-    ImGui::InputText("Input Label", buffer, sizeof(buffer));
-    //node::selectedNode->setName(buffer);
-    ImGui::Text("node ID: %lu", currentScene->getSelectedID());
+    // Draw details
 
     ImGui::End();
 }

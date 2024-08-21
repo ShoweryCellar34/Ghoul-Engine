@@ -1,7 +1,7 @@
 #include <Pentagram.hpp>
 #include <depracated/file.hpp>
 
-#include <vector>
+#include <memory>
 #include <node.hpp>
 #include <imguiDraw.hpp>
 
@@ -21,8 +21,7 @@ int main(int argc, char *argv[]) {
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
 
-    scene* world = new scene("hello");
-    world->addChild("Child");
+    std::shared_ptr<node> world = std::make_shared<node>();
 
     while(!window.shouldClose()) {
         PNT::processEvents();
@@ -34,8 +33,6 @@ int main(int argc, char *argv[]) {
 
         window.endFrame();
     }
-
-    delete world;
 
     PNT::deinit();
     return 0;
