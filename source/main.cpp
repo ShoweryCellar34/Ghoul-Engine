@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
 
-    std::shared_ptr<node> world = std::make_shared<node>();
+    std::shared_ptr<node> world = std::make_shared<node>(nullptr, nullptr, nullptr, "ROOT");
 
     while(!window.shouldClose()) {
         PNT::processEvents();

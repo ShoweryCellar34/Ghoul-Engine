@@ -11,28 +11,22 @@ struct scene;
 struct node {
 private:
     std::shared_ptr<node> m_root;
-    std::string m_name;
-    nodeID m_ID;
-    std::vector<std::shared_ptr<node>> m_children;
     std::shared_ptr<node> m_parent;
     std::string m_data;
+    std::string m_name;
+    std::vector<node> m_children;
 
 public:
-    node(std::shared_ptr<node> root, std::shared_ptr<node> parent, std::string data, std::string name);
-    ~node();
+    node(std::shared_ptr<node> root, std::shared_ptr<node> parent, const char* data, const char* name);
 
     void setName(const char* name);
-    void setName(std::string name);
     void addChild(const char* name);
-    void addChild(std::string name);
     void addChild();
-    void reparent(node* newParent);
+    void reparent(std::shared_ptr<node> newParent);
 
     const char* getName() const;
-    node* getChild(const char* name) const;
-    node* getChild(std::string name) const;
-    node* getParent() const;
-    node* getID() const;
+    std::shared_ptr<node> getChild(const char* name) const;
+    std::shared_ptr<node> getParent() const;
 
     nlohmann::json getJSON() const;
 };
