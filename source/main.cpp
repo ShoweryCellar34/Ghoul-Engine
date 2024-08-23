@@ -20,8 +20,10 @@ int main(int argc, char *argv[]) {
     PNT::Window window("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
     window.setAspectRatio(16, 9);
     window.setEventCallback(eventCallback);
+    window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    std::shared_ptr<node> world = std::make_shared<node>(nullptr, nullptr, nullptr, "ROOT");
+    std::shared_ptr<node> world = std::make_shared<node>((std::shared_ptr<node>)nullptr, (std::shared_ptr<node>)nullptr, "DATA", "ROOT");
+    world.get()->addChild("CHILD");
 
     while(!window.shouldClose()) {
         PNT::processEvents();

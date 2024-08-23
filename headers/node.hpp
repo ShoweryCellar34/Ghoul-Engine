@@ -14,14 +14,13 @@ private:
     std::shared_ptr<node> m_parent;
     std::string m_data;
     std::string m_name;
-    std::vector<node> m_children;
+    std::vector<std::shared_ptr<node>> m_children;
 
 public:
     node(std::shared_ptr<node> root, std::shared_ptr<node> parent, const char* data, const char* name);
 
     void setName(const char* name);
     void addChild(const char* name);
-    void addChild();
     void reparent(std::shared_ptr<node> newParent);
 
     const char* getName() const;
