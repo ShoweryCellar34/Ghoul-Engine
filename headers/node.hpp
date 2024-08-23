@@ -4,28 +4,28 @@
 #include <vector>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <defines.hpp>
 
 typedef size_t nodeID;
-struct scene;
 
 struct node {
 private:
-    std::shared_ptr<node> m_root;
-    std::shared_ptr<node> m_parent;
+    nodeRef m_root;
+    nodeRef m_parent;
     std::string m_data;
     std::string m_name;
-    std::vector<std::shared_ptr<node>> m_children;
+    std::vector<nodeRef> m_children;
 
 public:
-    node(std::shared_ptr<node> root, std::shared_ptr<node> parent, const char* data, const char* name);
+    node(nodeRef root, nodeRef parent, const char* data, const char* name);
 
     void setName(const char* name);
     void addChild(const char* name);
-    void reparent(std::shared_ptr<node> newParent);
+    void reparent(nodeRef newParent);
 
     const char* getName() const;
-    std::shared_ptr<node> getChild(const char* name) const;
-    std::shared_ptr<node> getParent() const;
+    nodeRef getChild(const char* name) const;
+    nodeRef getParent() const;
 
     nlohmann::json getJSON() const;
 };

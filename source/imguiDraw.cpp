@@ -17,7 +17,7 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
     ImGui::PopStyleVar(2);
 }
 
-void drawNodeTree(const PNT::Window& window, std::shared_ptr<node> nodeToDraw) {
+void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
@@ -27,7 +27,7 @@ void drawNodeTree(const PNT::Window& window, std::shared_ptr<node> nodeToDraw) {
     ImGui::End();
 }
 
-void drawNodeInspector(const PNT::Window& window, std::shared_ptr<node> nodeToInspect) {
+void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);

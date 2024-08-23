@@ -4,6 +4,7 @@
 #include <memory>
 #include <node.hpp>
 #include <imguiDraw.hpp>
+#include <defines.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]) {
     window.setEventCallback(eventCallback);
     window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    std::shared_ptr<node> world = std::make_shared<node>((std::shared_ptr<node>)nullptr, (std::shared_ptr<node>)nullptr, "DATA", "ROOT");
+    nodeRef world = std::make_shared<node>((nodeRef)nullptr, (nodeRef)nullptr, "DATA", "ROOT");
     world.get()->addChild("CHILD");
 
     while(!window.shouldClose()) {

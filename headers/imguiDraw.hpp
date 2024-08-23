@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <defines.hpp>
 
 namespace PNT {
     class Window;
@@ -12,6 +13,6 @@ void drawGlobalDockingWindow(const PNT::Window& window);
 
 struct node;
 
-void drawNodeTree(const PNT::Window& window, std::shared_ptr<node> currentScene);
+void drawNodeTree(const PNT::Window& window, nodeRef currentScene);
 
-void drawNodeInspector(const PNT::Window& window, std::shared_ptr<node> currentScene);
+void drawNodeInspector(const PNT::Window& window, nodeRef currentScene);
