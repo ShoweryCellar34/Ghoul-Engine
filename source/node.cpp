@@ -72,17 +72,26 @@ nlohmann::json node::getJSON() const {
 
 void drawPopup(nodeRef node) {
     if(ImGui::Button("Add child")) {
-        node->addChild("child " + node->m_children.size());
+        node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
         node->m_shouldOpen = true;
         ImGui::CloseCurrentPopup();
     }
     if(ImGui::Button("Remove")) {
+        nodeRef parent = node->m_parent;
+        parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
+        node->m_root->selectNode(nullptr);
         delete node;
         ImGui::CloseCurrentPopup();
     }
 }
 
 void node::imguiDraw() const {
+    if(m_root->getSelectedNode() == this) {
+        m_selectedFlag = ImGuiTreeNodeFlags_Selected;
+    } else {
+        m_selectedFlag = ImGuiTreeNodeFlags_None;
+    }
+
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | m_selectedFlag;
     if(m_children.size() == 0) {
         flags |= ImGuiTreeNodeFlags_Leaf;
@@ -96,7 +105,7 @@ void node::imguiDraw() const {
             m_root->selectNode((nodeRef)this);
         }
         if(ImGui::BeginPopupContextItem()) {
-            drawPopup((node*)this);
+            drawPopup((nodeRef)this);
             ImGui::EndPopup();
         }
 
@@ -109,11 +118,5 @@ void node::imguiDraw() const {
             drawPopup((nodeRef)this);
             ImGui::EndPopup();
         }
-    }
-
-    if(m_root->getSelectedNode() == this) {
-        m_selectedFlag = ImGuiTreeNodeFlags_Selected;
-    } else {
-        m_selectedFlag = ImGuiTreeNodeFlags_None;
     }
 }
