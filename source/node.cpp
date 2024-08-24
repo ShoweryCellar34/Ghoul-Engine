@@ -1,7 +1,12 @@
 #include <node.hpp>
 
-node::node(nodeRef root, nodeRef parent, const char* data, const char* name)
-     : m_root(root), m_parent(parent), m_data(data), m_name(name) {}
+node::node(nodeRef root, nodeRef parent, const char* data, const char* name) : m_parent(parent), m_data(data), m_name(name) {
+    if(root.get() == nullptr) {
+        m_root = (nodeRef)this;
+    } else {
+        m_root = root;
+    }
+}
 
 void node::setName(const char* name) {
     m_name = name;
