@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
         PNT::processEvents();
         window.startFrame();
 
-        drawGlobalDockingWindow(window);
+        // drawGlobalDockingWindow(window);
         drawNodeTree(window, world);
         drawNodeInspector(window, world);
 

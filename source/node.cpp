@@ -28,8 +28,10 @@ void node::setName(const char* name) {
     m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
 }
 
-void node::addChild(const char* name) {
-    m_children.push_back(new node(m_root, (nodeRef)this, "", name));
+nodeRef node::addChild(const char* name) {
+    nodeRef child = new node(m_root, (nodeRef)this, "", name);
+    m_children.push_back(child);
+    return child;
 }
 
 void node::reparent(nodeRef newParent) {
@@ -70,19 +72,44 @@ nlohmann::json node::getJSON() const {
     return json;
 }
 
-void drawPopup(nodeRef node) {
-    if(ImGui::Button("Add child")) {
-        node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
-        node->m_shouldOpen = true;
-        ImGui::CloseCurrentPopup();
+bool drawPopup(nodeRef node, bool rename) {
+    static bool renaming = false;
+    static std::string newName;
+    if(rename) {
+        renaming = true;
     }
-    if(ImGui::Button("Remove")) {
-        nodeRef parent = node->m_parent;
-        parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
-        node->m_root->selectNode(nullptr);
-        delete node;
-        ImGui::CloseCurrentPopup();
+    if(!renaming) {
+        if(ImGui::Button("Add child")) {
+            nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
+            node->m_root->selectNode(child);
+            node->m_shouldOpen = true;
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("Rename")) {
+            renaming = true;
+            newName = node->getName();
+        }
+        if(ImGui::Button("Remove")) {
+            nodeRef parent = node->m_parent;
+            parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
+            node->m_root->selectNode(nullptr);
+            delete node;
+            ImGui::CloseCurrentPopup();
+        }
+    } else {
+        ImGui::Text("New name: ");
+        ImGui::SameLine();
+        ImGui::InputText(("##" + std::to_string((std::uintptr_t)node)).c_str(), &newName);
+        if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
+            node->setName(newName.c_str());
+            ImGui::CloseCurrentPopup();
+            return true;
+        } else if(ImGui::IsKeyDown(ImGuiKey_Escape)) {
+            ImGui::CloseCurrentPopup();
+            return true;
+        }
     }
+    return false;
 }
 
 void node::imguiDraw() const {

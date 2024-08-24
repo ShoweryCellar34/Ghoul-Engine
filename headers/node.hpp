@@ -21,7 +21,7 @@ private:
     mutable bool m_shouldOpen;
     nodeRef m_selectedNode;
 
-    friend void drawPopup(nodeRef node);
+    friend bool drawPopup(nodeRef node, bool rename = false);
     friend void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect);
     friend void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw);
 
@@ -32,7 +32,7 @@ public:
     ~node();
 
     void setName(const char* name);
-    void addChild(const char* name);
+    nodeRef addChild(const char* name);
     void reparent(nodeRef newParent);
 
     const char* getName() const;

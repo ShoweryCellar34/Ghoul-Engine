@@ -22,6 +22,13 @@ void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
 
+    if(ImGui::BeginPopupContextItem()) {
+        if(ImGui::Button("Add node")) {
+            nodeToDraw->addChild(("node " + std::to_string(nodeToDraw->m_children.size())).c_str());
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
     for(nodeRef child : nodeToDraw->m_children) {
         child->imguiDraw();
     }
