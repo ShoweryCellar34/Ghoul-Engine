@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
     window.setEventCallback(eventCallback);
     window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    nodeRef world = std::make_shared<node>((nodeRef)nullptr, (nodeRef)nullptr, "DATA", "ROOT");
-    world.get()->addChild("CHILD");
+    nodeRef world = new node(nullptr, nullptr, "", "ROOT");
+    world->addChild("CHILD");
 
     while(!window.shouldClose()) {
         PNT::processEvents();
@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
 
         window.endFrame();
     }
+
+    delete world;
 
     PNT::deinit();
     return 0;

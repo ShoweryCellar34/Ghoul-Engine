@@ -3,4 +3,4 @@
 #include <memory>
 
 struct node;
-typedef std::shared_ptr<node> nodeRef;
+typedef node* nodeRef;

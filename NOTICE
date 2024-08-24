@@ -1,6 +1,7 @@
 This project uses the following projects:
 
-- Pentagram: The license for Pentagram can be found at `Pentagram/LICENSE`.
-- Others: Other projects are also used in Pentagram, the list can be found in `Pentagram/NOTICE`
+- Pentagram: The license for Pentagram can be found at `vendors/Pentagram/LICENSE`.
+- nlohmann/json: The licenses for nlohmann/json can be found at `vendors/json/LICENSES/`.
+- Others: Other projects are also used in Pentagram, the list can be found in `vendors/Pentagram/NOTICE`
 
 Please ensure to comply with the terms and conditions of each license when using these projects.
