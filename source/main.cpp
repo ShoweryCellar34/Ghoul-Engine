@@ -1,6 +1,7 @@
 #include <Pentagram.hpp>
 #include <depracated/file.hpp>
 
+#include <iostream>
 #include <memory>
 #include <node.hpp>
 #include <imguiDraw.hpp>
@@ -11,8 +12,13 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     case PNT_EVENT_TYPE_KEYBOARD:
         switch(event.keyboard.key) {
         case GLFW_KEY_S:
-            if(event.keyboard.mods == GLFW_MOD_CONTROL) {
-                printf("%s\n", nlohmann::to_string(reinterpret_cast<nodeRef>(window->getUserPointer())->getJSON()).c_str());
+            if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
+                nodeRef node = reinterpret_cast<nodeRef>(window->getUserPointer());
+                nlohmann::json json = node->getJSON();
+                std::cout << json << '\n';
+                std::cin >> json;
+                node->selectNode(node);
+                node->loadJSON(json);
             }
             break;
         }

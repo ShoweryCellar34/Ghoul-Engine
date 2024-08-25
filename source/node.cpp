@@ -1,4 +1,6 @@
 #include <node.hpp>
+    
+#include <iostream>
 
 void node::selectNode(nodeRef node) {
     m_selectedNode = node;
@@ -8,12 +10,34 @@ nodeRef node::getSelectedNode() {
     return m_selectedNode;
 }
 
-node::node(nodeRef root, nodeRef parent, const char *data, const char *name) : m_parent(parent), m_data(data), m_name(name), m_imguiName(m_name + "##" + std::to_string((std::uintptr_t)this)), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr)
-{
+node::node(nodeRef root, nodeRef parent, const char* data, const char* name) : m_parent(parent), m_data(data), m_name(name), 
+        m_imguiName(m_name + "##" + std::to_string((std::uintptr_t)this)), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
     if(root == nullptr) {
-        m_root = (nodeRef)this;
+        m_root = this;
     } else {
         m_root = root;
+    }
+}
+
+node::node(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
+    if(root == nullptr) {
+        m_root = this;
+    } else {
+        m_root = root;
+    }
+
+    if(json.contains("name") && json["name"].is_string()) {
+        setName(json.at("name").get<std::string>().c_str());
+    }
+    if (json.contains("data") && json["data"].is_string()) {
+        m_data = json.at("data").get<std::string>();
+    }
+
+    if(json.contains("children") && json["children"].is_array()) {
+        for (const auto& childJson : json.at("children")) {
+            nodeRef childNode = new node(m_root, this, childJson);
+            m_children.push_back(childNode);
+        }
     }
 }
 
@@ -65,11 +89,31 @@ nlohmann::json node::getJSON() const {
 
     nlohmann::json children = nlohmann::json::array();
     for(nodeRef child : m_children) {
-        children["children"].push_back(child->getJSON());
+        children.push_back(child->getJSON());
     }
     json["children"] = children;
-    
+
     return json;
+}
+
+void node::loadJSON(nlohmann::json json) {
+    if(json.contains("name") && json["name"].is_string()) {
+        setName(json.at("name").get<std::string>().c_str());
+    }
+    if (json.contains("data") && json["data"].is_string()) {
+        m_data = json.at("data").get<std::string>();
+    }
+
+    for(nodeRef child : m_children) {
+        delete child;
+    }
+    m_children.clear();
+    if(json.contains("children") && json["children"].is_array()) {
+        for (const auto& childJson : json.at("children")) {
+            nodeRef childNode = new node(m_root, this, childJson);
+            m_children.push_back(childNode);
+        }
+    }
 }
 
 void drawNodePopup(nodeRef node) {

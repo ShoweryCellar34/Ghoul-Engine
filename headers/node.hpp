@@ -25,11 +25,13 @@ private:
     friend void drawScenePopup(nodeRef node);
     friend void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect);
     friend void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw);
+    friend void eventCallback(PNT::Window* window, PNT::windowEvent event);
 
     void selectNode(nodeRef node);
     nodeRef getSelectedNode();
 public:
     node(nodeRef root, nodeRef parent, const char* data, const char* name);
+    node(nodeRef root, nodeRef parent, nlohmann::json json);
     ~node();
 
     void setName(const char* name);
@@ -41,5 +43,6 @@ public:
     nodeRef getParent() const;
 
     nlohmann::json getJSON() const;
+    void loadJSON(nlohmann::json json);
     void imguiDraw() const;
 };

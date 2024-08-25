@@ -52,16 +52,16 @@ void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
 
-    if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1)) {
+    for(nodeRef child : nodeToDraw->m_children) {
+        child->imguiDraw();
+    }
+
+    if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1) && !ImGui::IsAnyItemHovered()) {
         ImGui::OpenPopup("Window right-click popup");
     }
     if(ImGui::BeginPopup("Window right-click popup")) {
         drawScenePopup(nodeToDraw);
         ImGui::EndPopup();
-    }
-
-    for(nodeRef child : nodeToDraw->m_children) {
-        child->imguiDraw();
     }
 
     ImGui::End();
