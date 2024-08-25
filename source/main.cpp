@@ -8,6 +8,15 @@
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
+    case PNT_EVENT_TYPE_KEYBOARD:
+        switch(event.keyboard.key) {
+        case GLFW_KEY_S:
+            if(event.keyboard.mods == GLFW_MOD_CONTROL) {
+                printf("%s\n", nlohmann::to_string(reinterpret_cast<nodeRef>(window->getUserPointer())->getJSON()).c_str());
+            }
+            break;
+        }
+        break;
     }
 }
 
@@ -24,13 +33,13 @@ int main(int argc, char *argv[]) {
     window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
     nodeRef world = new node(nullptr, nullptr, "", "ROOT");
-    world->addChild("CHILD");
+    window.setUserPointer(world);
 
     while(!window.shouldClose()) {
         PNT::processEvents();
         window.startFrame();
 
-        // drawGlobalDockingWindow(window);
+        drawGlobalDockingWindow(window);
         drawNodeTree(window, world);
         drawNodeInspector(window, world);
 

@@ -72,12 +72,9 @@ nlohmann::json node::getJSON() const {
     return json;
 }
 
-bool drawPopup(nodeRef node, bool rename) {
+void drawNodePopup(nodeRef node) {
     static bool renaming = false;
     static std::string newName;
-    if(rename) {
-        renaming = true;
-    }
     if(!renaming) {
         if(ImGui::Button("Add child")) {
             nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
@@ -102,14 +99,13 @@ bool drawPopup(nodeRef node, bool rename) {
         ImGui::InputText(("##" + std::to_string((std::uintptr_t)node)).c_str(), &newName);
         if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
             node->setName(newName.c_str());
+            renaming = false;
             ImGui::CloseCurrentPopup();
-            return true;
         } else if(ImGui::IsKeyDown(ImGuiKey_Escape)) {
+            renaming = false;
             ImGui::CloseCurrentPopup();
-            return true;
         }
     }
-    return false;
 }
 
 void node::imguiDraw() const {
@@ -132,7 +128,7 @@ void node::imguiDraw() const {
             m_root->selectNode((nodeRef)this);
         }
         if(ImGui::BeginPopupContextItem()) {
-            drawPopup((nodeRef)this);
+            drawNodePopup((nodeRef)this);
             ImGui::EndPopup();
         }
 
@@ -142,7 +138,7 @@ void node::imguiDraw() const {
         ImGui::TreePop();
     } else {
         if(ImGui::BeginPopupContextItem()) {
-            drawPopup((nodeRef)this);
+            drawNodePopup((nodeRef)this);
             ImGui::EndPopup();
         }
     }

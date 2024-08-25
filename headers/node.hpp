@@ -21,7 +21,8 @@ private:
     mutable bool m_shouldOpen;
     nodeRef m_selectedNode;
 
-    friend bool drawPopup(nodeRef node, bool rename = false);
+    friend void drawNodePopup(nodeRef node);
+    friend void drawScenePopup(nodeRef node);
     friend void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect);
     friend void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw);
 
