@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
         window.startFrame();
 
         drawGlobalDockingWindow(window);
+        drawMainMenuBar();
         drawNodeTree(window, world);
         drawNodeInspector(window, world);
 

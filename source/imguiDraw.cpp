@@ -18,6 +18,14 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
     ImGui::PopStyleVar(3);
 }
 
+void drawMainMenuBar() {
+    ImGui::BeginMainMenuBar();
+
+
+
+    ImGui::EndMainMenuBar();
+}
+
 void drawScenePopup(nodeRef node) {
     static bool renaming = false;
     static std::string newName;

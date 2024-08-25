@@ -7,9 +7,9 @@ namespace PNT {
     class Window;
 }
 
-struct scene;
-
 void drawGlobalDockingWindow(const PNT::Window& window);
+
+void drawMainMenuBar();
 
 struct node;
 
