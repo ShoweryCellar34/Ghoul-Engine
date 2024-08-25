@@ -7,7 +7,6 @@
 void drawGlobalDockingWindow(const PNT::Window& window) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.0f);
     ImGui::SetNextWindowSize(ImVec2(window.getWidth(), window.getHeight()));
     ImGui::SetNextWindowPos(ImVec2(window.getXPos(), window.getYPos()));
     ImGui::Begin("Global docking are host window", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoBringToFrontOnFocus |
@@ -15,7 +14,7 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
                                                 ImGuiWindowFlags_NoMove);
     ImGui::DockSpace(ImGui::GetID("Global docking area"), ImVec2(window.getWidth(), window.getHeight()));
     ImGui::End();
-    ImGui::PopStyleVar(3);
+    ImGui::PopStyleVar(2);
 }
 
 void drawMainMenuBar() {
@@ -56,8 +55,8 @@ void drawScenePopup(nodeRef node) {
 }
 
 void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
-    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
-    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos()), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight() - 17), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos() + 17), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
 
     for(nodeRef child : nodeToDraw->m_children) {
@@ -76,8 +75,8 @@ void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
 }
 
 void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect) {
-    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight()), ImGuiCond_Once);
-    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos()), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight() - 17), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos() + 17), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);
 
     // Draw details
