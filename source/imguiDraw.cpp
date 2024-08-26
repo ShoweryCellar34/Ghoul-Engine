@@ -1,20 +1,12 @@
 #include <imguiDraw.hpp>
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <Pentagram.hpp>
 #include <node.hpp>
 
 void drawGlobalDockingWindow(const PNT::Window& window) {
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowSize(ImVec2(window.getWidth(), window.getHeight()));
-    ImGui::SetNextWindowPos(ImVec2(window.getXPos(), window.getYPos()));
-    ImGui::Begin("Global docking are host window", nullptr, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoBringToFrontOnFocus |
-                                                ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoFocusOnAppearing |
-                                                ImGuiWindowFlags_NoMove);
-    ImGui::DockSpace(ImGui::GetID("Global docking area"), ImVec2(window.getWidth(), window.getHeight()));
-    ImGui::End();
-    ImGui::PopStyleVar(2);
+    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 }
 
 void drawMainMenuBar() {
@@ -57,6 +49,8 @@ void drawScenePopup(nodeRef node) {
 void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight() - 17), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos() + 17), ImGuiCond_Once);
+    auto dock_id_left = ImGui::DockBuilderSplitNode(0, ImGuiDir_Left, 0.2f, nullptr, nullptr);
+    ImGui::DockBuilderDockWindow(nodeToDraw->getName(), dock_id_left);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
 
     for(nodeRef child : nodeToDraw->m_children) {

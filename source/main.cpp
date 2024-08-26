@@ -1,5 +1,4 @@
 #include <Pentagram.hpp>
-#include <depracated/file.hpp>
 
 #include <iostream>
 #include <memory>
@@ -15,10 +14,6 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
                 nodeRef node = reinterpret_cast<nodeRef>(window->getUserPointer());
                 nlohmann::json json = node->getJSON();
-                std::cout << json << '\n';
-                std::cin >> json;
-                node->selectNode(node);
-                node->loadJSON(json);
             }
             break;
         }
