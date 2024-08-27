@@ -1,11 +1,14 @@
+set(POSITION_INDEPENDENT_CODE true)
+
 cmake_minimum_required(VERSION 3.20)
 project(Ghoul-Engine DESCRIPTION "A Basic Game Engine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
 file(GLOB source source/*.cpp)
 add_executable(Ghoul-Engine ${source})
 add_subdirectory(vendors/Pentagram)
 add_subdirectory(vendors/json)
-target_include_directories(Ghoul-Engine PUBLIC Pentagram headers)
-target_link_libraries(Ghoul-Engine PUBLIC Pentagram nlohmann_json::nlohmann_json)
+add_subdirectory(vendors/tinyfiledialogs)
+target_include_directories(Ghoul-Engine PUBLIC headers)
+target_link_libraries(Ghoul-Engine PUBLIC Pentagram nlohmann_json::nlohmann_json tinyfiledialogs)
 
 add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/res ${PROJECT_BINARY_DIR}/res COMMENT "Copying resources into binary directory")
 

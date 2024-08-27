@@ -1,7 +1,7 @@
 #include <imguiDraw.hpp>
 
 #include <imgui.h>
-#include <imgui_internal.h>
+#include <tinyfiledialogs.h>
 #include <Pentagram.hpp>
 #include <node.hpp>
 
@@ -12,7 +12,15 @@ void drawGlobalDockingWindow(const PNT::Window& window) {
 void drawMainMenuBar() {
     ImGui::BeginMainMenuBar();
 
-
+    if(ImGui::BeginMenu("File")) {
+        if(ImGui::Button("Save As")) {
+            const char* filter = ".json";
+            if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr); file != nullptr) {
+                printf("Save path: %s\n", file);
+            }
+        }
+        ImGui::EndMenu();
+    }
 
     ImGui::EndMainMenuBar();
 }
@@ -49,8 +57,6 @@ void drawScenePopup(nodeRef node) {
 void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
     ImGui::SetNextWindowSize(ImVec2(265, window.getHeight() - 17), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos() + 17), ImGuiCond_Once);
-    auto dock_id_left = ImGui::DockBuilderSplitNode(0, ImGuiDir_Left, 0.2f, nullptr, nullptr);
-    ImGui::DockBuilderDockWindow(nodeToDraw->getName(), dock_id_left);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
 
     for(nodeRef child : nodeToDraw->m_children) {
