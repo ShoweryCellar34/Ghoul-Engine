@@ -13,7 +13,16 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         case GLFW_KEY_S:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
                 nodeRef node = reinterpret_cast<nodeRef>(window->getUserPointer());
-                nlohmann::json json = node->getJSON();
+                std::string input;
+                std::string filename = "a";
+                std::cin >> input;
+                nlohmann::json json;
+                try {
+                    json = nlohmann::json::parse(input);
+                    node->loadJSON(json);
+                } catch(const nlohmann::json::exception& exeption) {
+                    userLogger.get()->error("Failed to parse file \"{}\": {}", filename, exeption.what());
+                }
             }
             break;
         }
