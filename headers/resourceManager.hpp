@@ -7,18 +7,15 @@
 
 class resourceManager {
 private:
-    std::unordered_map<fileHandle, std::filesystem::path, char*> handles;
-
-    void internalClose(fileHandle handle);
+    std::unordered_map<char*, std::pair<fileHandle, std::filesystem::path>> handles;
 
 public:
     resourceManager();
     ~resourceManager();
 
-    bool closeFile(const char* path);
-    bool closeFile(fileHandle path);
+    bool closeFile(const char* nameRef);
 
-    bool openFile(const char* path);
+    bool openFile(const char* nameRef);
 
-    fileHandle getFile(const char* path);
+    fileHandle getFile(const char* nameRef);
 };
