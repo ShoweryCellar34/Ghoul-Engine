@@ -7,7 +7,7 @@ resourceManager::~resourceManager() {
         const fileHandle& resourceHandle = data.second;
         const filePath& resourcePath = data.first;
 
-        userLogger.get()->debug("Freeing file resource \"{}\" at path: {}", resourcePath, resourcePath);
+        userLogger.get()->debug("Freeing file resource at path \"{}\"", resourcePath.string());
         resourceHandle.get()->close();
         if(!resourceHandle.get()->good()) {
             userLogger.get()->warn("Error closing file resource, goodbit not set");
@@ -15,18 +15,18 @@ resourceManager::~resourceManager() {
     }
 }
 
-bool resourceManager::freeResource(const char* resourcePath) {
+bool resourceManager::freeResource(filePath resourcePath) {
     if(resourceHandles.find(resourcePath) != resourceHandles.end()) {
         const fileHandle& resourceHandle = resourceHandles.at(resourcePath);
 
-        userLogger.get()->debug("Freeing file resource \"{}\" at path: {}", resourcePath, resourcePath);
+        userLogger.get()->debug("Freeing file resource at path \"{}\"", resourcePath.string());
         resourceHandle.get()->close();
         if(!resourceHandle.get()->good()) {
             userLogger.get()->warn("Error closing file resource, goodbit not set");
             return false;
         }
     } else {
-        userLogger.get()->warn("Unable to find file resource \"{}\" to close", resourcePath);
+        userLogger.get()->warn("Unable to find file resource \"{}\" to close", resourcePath.string());
         return false;
     }
     return true;
@@ -44,11 +44,11 @@ fileHandle resourceManager::preloadResource(filePath resourcePath) {
         }
         if(!pathRefExists) {
             if(!std::filesystem::exists(resourcePath)) {
-                userLogger.get()->debug("Path \"{}\" does not exist, file will be created on write.", resourcePath);
+                userLogger.get()->debug("Path \"{}\" does not exist, file will be created on write.", resourcePath.string());
             } else {
-                userLogger.get()->debug("Opening path \"{}\".", resourcePath);
+                userLogger.get()->debug("Opening path \"{}\".", resourcePath.string());
             }
-            fileHandle newResource = fileHandle(&std::fstream(resourcePath));
+            fileHandle newResource = std::make_shared<std::fstream>(resourcePath);
             resourceHandles.insert({resourcePath, newResource});
             bool good = newResource.get()->good() ? true : false;
             if(!good) {
@@ -57,11 +57,12 @@ fileHandle resourceManager::preloadResource(filePath resourcePath) {
             }
             return newResource;
         } else {
-            userLogger.get()->warn("File \"{}\" is already a registered resource, aborting operation.", resourcePath);
+            userLogger.get()->warn("File \"{}\" is already a registered resource, aborting operation.", resourcePath.string());
             return fileHandle(nullptr);
         }
     } else {
-        userLogger.get()->warn("File \"{}\" is not a valid path, aborting operation.", resourcePath);
+        userLogger.get()->warn("File \"{}\" is not a valid path, aborting operation.", resourcePath.string());
+        return fileHandle(nullptr);
     }
 }
 

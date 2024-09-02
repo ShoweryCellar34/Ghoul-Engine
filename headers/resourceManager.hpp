@@ -10,10 +10,9 @@ private:
     std::unordered_map<std::filesystem::path, fileHandle> resourceHandles;
 
 public:
-    resourceManager();
     ~resourceManager();
 
-    bool freeResource(const char* nameRef);
+    bool freeResource(filePath nameRef);
 
     fileHandle preloadResource(filePath resourcePath);
 

@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <tinyfiledialogs.h>
 #include <Pentagram.hpp>
+#include <resourceManager.hpp>
 #include <node.hpp>
 
 void drawGlobalDockingWindow(const PNT::Window& window) {
@@ -16,7 +17,8 @@ void drawMainMenuBar() {
         if(ImGui::Button("Save As")) {
             const char* filter = ".json";
             if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr); file != nullptr) {
-                printf("Save path: %s\n", file);
+                resourceManager manager;
+                *manager.getResource(file).get() << "Hi.";
             }
         }
         ImGui::EndMenu();
