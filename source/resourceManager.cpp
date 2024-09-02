@@ -3,79 +3,79 @@
 #include <Pentagram.hpp>
 
 resourceManager::~resourceManager() {
-    for(std::pair<const std::string&, std::pair<const fileHandle, filePath>> data : resourceHandles) {
-        const std::pair<const fileHandle, filePath>& handleData = data.second;
-        const fileHandle& handle = handleData.first;
-        const filePath& path = handleData.second;
+    for(std::pair<const std::filesystem::path&, const fileHandle&> data : resourceHandles) {
+        const fileHandle& resourceHandle = data.second;
+        const filePath& resourcePath = data.first;
 
-        userLogger.get()->debug("Freeing file resource \"{}\" at path: {}", data.first, path);
-        handle.get()->close();
-        if(!handle.get()->good()) {
-            userLogger.get()->warn("Error closing file resource goodbit not set");
+        userLogger.get()->debug("Freeing file resource \"{}\" at path: {}", resourcePath, resourcePath);
+        resourceHandle.get()->close();
+        if(!resourceHandle.get()->good()) {
+            userLogger.get()->warn("Error closing file resource, goodbit not set");
         }
     }
 }
 
-bool resourceManager::freeResource(const char* nameRef) {
-    if(resourceHandles.find(nameRef) != resourceHandles.end()) {
-        const std::pair<const fileHandle, filePath>& handleData = resourceHandles.at(nameRef);
-        const fileHandle& handle = handleData.first;
-        const filePath& path = handleData.second;
+bool resourceManager::freeResource(const char* resourcePath) {
+    if(resourceHandles.find(resourcePath) != resourceHandles.end()) {
+        const fileHandle& resourceHandle = resourceHandles.at(resourcePath);
 
-        userLogger.get()->debug("Freeing file resource \"{}\" at path: {}", nameRef, path);
-        handle.get()->close();
-        if(!handle.get()->good()) {
+        userLogger.get()->debug("Freeing file resource \"{}\" at path: {}", resourcePath, resourcePath);
+        resourceHandle.get()->close();
+        if(!resourceHandle.get()->good()) {
             userLogger.get()->warn("Error closing file resource, goodbit not set");
             return false;
         }
     } else {
-        userLogger.get()->warn("Unable to find file resource \"{}\" to close", nameRef);
+        userLogger.get()->warn("Unable to find file resource \"{}\" to close", resourcePath);
         return false;
     }
     return true;
 }
 
-bool resourceManager::preloadResource(filePath resourcePath, const char* nameRef) {
-    bool nameExists = false;
-    for(std::pair<const std::string&, std::pair<const fileHandle, filePath>> data : resourceHandles) {
-        const fileHandle& name = handleData.first;
+fileHandle resourceManager::preloadResource(filePath resourcePath) {
+    if(std::filesystem::status(resourcePath).type() != std::filesystem::file_type::none) {
+        bool pathRefExists = false;
+        for(std::pair<const std::filesystem::path&, const fileHandle&> data : resourceHandles) {
+            const filePath& path = data.first;
 
-        if(nameRef == name) {
-            nameExists = true;
+            if(resourcePath == path) {
+                pathRefExists = true;
+            }
         }
-    }
-    if(!nameExists) {
-        if(!std::filesystem::exists(resourcePath)) {
-            userLogger.get()->debug("Path \"{}\" does not exist, file will be created on write.", resourcePath);
+        if(!pathRefExists) {
+            if(!std::filesystem::exists(resourcePath)) {
+                userLogger.get()->debug("Path \"{}\" does not exist, file will be created on write.", resourcePath);
+            } else {
+                userLogger.get()->debug("Opening path \"{}\".", resourcePath);
+            }
+            fileHandle newResource = fileHandle(&std::fstream(resourcePath));
+            resourceHandles.insert({resourcePath, newResource});
+            bool good = newResource.get()->good() ? true : false;
+            if(!good) {
+                userLogger.get()->warn("Good bit not set, stream may be corrupted, aborting operation.");
+                return fileHandle(nullptr);
+            }
+            return newResource;
         } else {
-            userLogger.get()->debug("Opening path \"{}\".", resourcePath);
-        }
-        fileHandle newHandle = fileHandle(std::fstream(resourcePath));
-        resourceHandles.insert(nameRef, std::make_pair<fileHandle, resourcePath>(newHandle, resourcePath));
-        bool good = newHandle.get()->good() ? true : false;
-        if(!good) {
-            userLogger.get()->warn("Good bit not set, stream may be corrupted, aborting operation.");
+            userLogger.get()->warn("File \"{}\" is already a registered resource, aborting operation.", resourcePath);
             return fileHandle(nullptr);
         }
-        return newHandle;
     } else {
-        userLogger.get()->warn("File name reference \"{}\" already exists, aborting operation.", nameRef);
-        return fileHandle(nullptr);
+        userLogger.get()->warn("File \"{}\" is not a valid path, aborting operation.", resourcePath);
     }
 }
 
-fileHandle resourceManager::getResource(const char* nameRef) {
-    if(resourceHandles.find(nameRef) != resourceHandles.end()) {
-        return resourceHandles.at(nameRef).first;
+fileHandle resourceManager::getResource(const char* resourcePath) {
+    if(resourceHandles.find(resourcePath) != resourceHandles.end()) {
+        return resourceHandles.at(resourcePath);
     } else {
-        // path arg check
-        return fileHandle(nullptr);
+        return preloadResource(resourcePath);
     }
 }
 
-filePath resourceManager::getResourcePath(const char* nameRef) {
-    if(resourceHandles.find(nameRef) != resourceHandles.end()) {
-        return resourceHandles.at(nameRef).second;
+filePath resourceManager::getResourcePath(const char* resourcePath) {
+    if(resourceHandles.find(resourcePath) != resourceHandles.end()) {
+        return resourcePath;
     } else {
         return "";
     }
