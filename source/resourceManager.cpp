@@ -68,6 +68,7 @@ fileHandle resourceManager::getResource(const char* nameRef) {
     if(resourceHandles.find(nameRef) != resourceHandles.end()) {
         return resourceHandles.at(nameRef).first;
     } else {
+        // path arg check
         return fileHandle(nullptr);
     }
 }
