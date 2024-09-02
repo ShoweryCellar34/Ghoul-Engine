@@ -7,15 +7,16 @@
 
 class resourceManager {
 private:
-    std::unordered_map<char*, std::pair<fileHandle, std::filesystem::path>> handles;
+    std::unordered_map<std::string, std::pair<fileHandle, std::filesystem::path>> resourceHandles;
 
 public:
     resourceManager();
     ~resourceManager();
 
-    bool closeFile(const char* nameRef);
+    bool freeResource(const char* nameRef);
 
-    bool openFile(const char* nameRef);
+    bool preloadResource(filePath path, const char* nameRef = "");
 
-    fileHandle getFile(const char* nameRef);
+    fileHandle getResource(const char* nameRef);
+    filePath getResourcePath(const char* nameRef);
 };
