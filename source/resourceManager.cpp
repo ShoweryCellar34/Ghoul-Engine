@@ -8,6 +8,7 @@ resourceManager::~resourceManager() {
         const filePath& resourcePath = data.first;
 
         userLogger.get()->debug("Freeing file resource at path \"{}\"", resourcePath.string());
+        resourceHandle.get()->flush();
         resourceHandle.get()->close();
         if(!resourceHandle.get()->good()) {
             userLogger.get()->warn("Error closing file resource, goodbit not set");
@@ -20,6 +21,7 @@ bool resourceManager::freeResource(filePath resourcePath) {
         const fileHandle& resourceHandle = resourceHandles.at(resourcePath);
 
         userLogger.get()->debug("Freeing file resource at path \"{}\"", resourcePath.string());
+        resourceHandle.get()->flush();
         resourceHandle.get()->close();
         if(!resourceHandle.get()->good()) {
             userLogger.get()->warn("Error closing file resource, goodbit not set");
@@ -52,8 +54,16 @@ fileHandle resourceManager::preloadResource(filePath resourcePath) {
             resourceHandles.insert({resourcePath, newResource});
             bool good = newResource.get()->good() ? true : false;
             if(!good) {
-                userLogger.get()->warn("Good bit not set, stream may be corrupted, aborting operation.");
-                return fileHandle(nullptr);
+                switch(newResource.get()->rdstate()) {
+                case std::ios_base::badbit:
+                    userLogger.get()->warn("Bad bit is set, stream may be corrupted, aborting operation.");
+                    return fileHandle(nullptr);
+                    break;
+                case std::ios_base::failbit:
+                    userLogger.get()->warn("Fail bit is set, operation may have failed, aborting operation.");
+                    return fileHandle(nullptr);
+                    break;
+                }
             }
             return newResource;
         } else {
