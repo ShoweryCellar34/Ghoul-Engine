@@ -9,10 +9,12 @@ class resourceManager {
 private:
     std::unordered_map<std::filesystem::path, fileHandle> resourceHandles;
 
+    void bitCheck(std::ios_base::iostate bit);
+
 public:
     ~resourceManager();
 
-    bool freeResource(filePath nameRef);
+    void freeResource(filePath nameRef);
 
     fileHandle preloadResource(filePath resourcePath);
 

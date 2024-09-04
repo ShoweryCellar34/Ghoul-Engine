@@ -2,7 +2,24 @@
 
 #include <Pentagram.hpp>
 
-resourceManager::~resourceManager() {
+void resourceManager::bitCheck(std::ios_base::iostate bit) {
+    if(bit != std::ios_base::goodbit) {
+        switch(bit) {
+        case std::ios_base::badbit:
+            throw "Bad bit is set, stream may be corrupted, aborting operation.";
+            break;
+        case std::ios_base::failbit:
+            throw "Fail bit is set, operation may have failed, aborting operation.";
+            break;
+        default:
+            throw "Good bit not set, unknown error, aborting operation";
+            break;
+        }
+    }
+}
+
+resourceManager::~resourceManager()
+{
     for(std::pair<const std::filesystem::path&, const fileHandle&> data : resourceHandles) {
         const fileHandle& resourceHandle = data.second;
         const filePath& resourcePath = data.first;
@@ -10,28 +27,21 @@ resourceManager::~resourceManager() {
         userLogger.get()->debug("Freeing file resource at path \"{}\"", resourcePath.string());
         resourceHandle.get()->flush();
         resourceHandle.get()->close();
-        if(!resourceHandle.get()->good()) {
-            userLogger.get()->warn("Error closing file resource, goodbit not set");
-        }
+        bitCheck(resourceHandle.get()->rdstate());
     }
 }
 
-bool resourceManager::freeResource(filePath resourcePath) {
+void resourceManager::freeResource(filePath resourcePath) {
     if(resourceHandles.find(resourcePath) != resourceHandles.end()) {
         const fileHandle& resourceHandle = resourceHandles.at(resourcePath);
 
         userLogger.get()->debug("Freeing file resource at path \"{}\"", resourcePath.string());
         resourceHandle.get()->flush();
         resourceHandle.get()->close();
-        if(!resourceHandle.get()->good()) {
-            userLogger.get()->warn("Error closing file resource, goodbit not set");
-            return false;
-        }
+        bitCheck(resourceHandle.get()->rdstate());
     } else {
-        userLogger.get()->warn("Unable to find file resource \"{}\" to close", resourcePath.string());
-        return false;
+        throw "Unable to find file resource \"" + resourcePath.string() + "\" to close.";
     }
-    return true;
 }
 
 fileHandle resourceManager::preloadResource(filePath resourcePath) {
@@ -52,26 +62,14 @@ fileHandle resourceManager::preloadResource(filePath resourcePath) {
             }
             fileHandle newResource = std::make_shared<std::fstream>(resourcePath);
             resourceHandles.insert({resourcePath, newResource});
-            bool good = newResource.get()->good() ? true : false;
-            if(!good) {
-                switch(newResource.get()->rdstate()) {
-                case std::ios_base::badbit:
-                    userLogger.get()->warn("Bad bit is set, stream may be corrupted, aborting operation.");
-                    return fileHandle(nullptr);
-                    break;
-                case std::ios_base::failbit:
-                    userLogger.get()->warn("Fail bit is set, operation may have failed, aborting operation.");
-                    return fileHandle(nullptr);
-                    break;
-                }
-            }
+            bitCheck(newResource.get()->rdstate());
             return newResource;
         } else {
-            userLogger.get()->warn("File \"{}\" is already a registered resource, aborting operation.", resourcePath.string());
+            throw "File \"" + resourcePath.string() + "\" is already a registered resource, aborting operation.";
             return fileHandle(nullptr);
         }
     } else {
-        userLogger.get()->warn("File \"{}\" is not a valid path, aborting operation.", resourcePath.string());
+        throw "File \"" + resourcePath.string() + "\" is not a valid path, aborting operation.";
         return fileHandle(nullptr);
     }
 }
@@ -81,13 +79,5 @@ fileHandle resourceManager::getResource(const char* resourcePath) {
         return resourceHandles.at(resourcePath);
     } else {
         return preloadResource(resourcePath);
-    }
-}
-
-filePath resourceManager::getResourcePath(const char* resourcePath) {
-    if(resourceHandles.find(resourcePath) != resourceHandles.end()) {
-        return resourcePath;
-    } else {
-        return "";
     }
 }
