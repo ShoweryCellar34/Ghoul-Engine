@@ -5,19 +5,14 @@
 #include <filesystem>
 #include <defines.hpp>
 
-class resourceManager {
+class resource {
 private:
-    std::unordered_map<std::filesystem::path, fileHandle> resourceHandles;
-
-    void bitCheck(std::ios_base::iostate bit);
+    std::fstream m_handle;
+    std::filesystem::path m_path;
+    std::string m_fileName;
+    std::string m_reference;
 
 public:
-    ~resourceManager();
-
-    void freeResource(filePath nameRef);
-
-    fileHandle preloadResource(filePath resourcePath);
-
-    fileHandle getResource(const char* nameRef);
-    filePath getResourcePath(const char* nameRef);
+    resource(const char* path);
+    ~resource();
 };
