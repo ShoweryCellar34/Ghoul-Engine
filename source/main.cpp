@@ -4,7 +4,7 @@
 #include <memory>
 #include <node.hpp>
 #include <imguiDraw.hpp>
-#include <defines.hpp>
+#include <defines_and_globals.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {

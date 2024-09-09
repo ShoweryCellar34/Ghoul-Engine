@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <defines.hpp>
+#include <defines_and_globals.hpp>
 
 namespace PNT {
     class Window;

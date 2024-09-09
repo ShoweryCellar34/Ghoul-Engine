@@ -4,3 +4,6 @@
 
 struct node;
 typedef node* nodeRef;
+
+class resourceManager;
+extern resourceManager g_resourceManager;

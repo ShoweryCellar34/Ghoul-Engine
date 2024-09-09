@@ -5,7 +5,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <Pentagram.hpp>
-#include <defines.hpp>
+#include <defines_and_globals.hpp>
 
 typedef size_t nodeID;
 

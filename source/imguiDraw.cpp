@@ -17,8 +17,9 @@ void drawMainMenuBar() {
         if(ImGui::Button("Save As")) {
             const char* filter = "*.json";
             if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr); file != nullptr) {
-                resource json(file);
-                json.write("Hi!");
+                g_resourceManager.loadResource(file, "json");
+                g_resourceManager.write("json", "Hello!");
+                g_resourceManager.unloadResource("json");
             }
         }
         ImGui::EndMenu();
