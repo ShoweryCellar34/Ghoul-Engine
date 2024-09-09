@@ -6,6 +6,9 @@
 resource::resource(const fs::path& path) {
     fs::file_status status = fs::status(path);
     if(!fs::is_directory(path)) {
+        if(!fs::exists(path)) {
+            m_handle.open(path, std::ios::out);
+        }
         m_handle.open(path);
         m_path = path;
         m_filename = path.filename();

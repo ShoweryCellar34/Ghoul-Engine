@@ -15,7 +15,7 @@ void drawMainMenuBar() {
 
     if(ImGui::BeginMenu("File")) {
         if(ImGui::Button("Save As")) {
-            const char* filter = ".json";
+            const char* filter = "*.json";
             if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr); file != nullptr) {
                 resource json(file);
                 json.write("Hi!");
