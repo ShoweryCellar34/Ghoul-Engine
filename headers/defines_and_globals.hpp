@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace PNT {
     class Window;
 }
@@ -10,3 +12,5 @@ typedef node* nodeRef;
 
 class resourceManager;
 extern resourceManager g_resourceManager;
+
+extern std::string g_openPath;

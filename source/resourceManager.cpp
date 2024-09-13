@@ -1,6 +1,5 @@
 #include <resourceManager.hpp>
 
-#include <memory>
 #include <Pentagram.hpp>
 
 // Global resourceManager.
@@ -71,7 +70,7 @@ fs::path resource::getAbsolutePath() const {
 resourceManager::resourceManager() : m_resources() {
 }
 
-std::shared_ptr<resource> resourceManager::getResource(const char *alias) const
+std::shared_ptr<resource> resourceManager::getResource(std::string alias) const
 {
     if(m_resources.find(alias) != m_resources.end()) {
         return m_resources.at(alias);
@@ -81,76 +80,68 @@ std::shared_ptr<resource> resourceManager::getResource(const char *alias) const
     return (std::shared_ptr<resource>)nullptr;
 }
 
-void resourceManager::flush(const char* alias) {
+void resourceManager::flush(std::string alias) {
     if(m_resources.find(alias) != m_resources.end()) {
         m_resources.at(alias).get()->flush();
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }
 
-void resourceManager::write(const char* alias, const char* data) {
+void resourceManager::write(std::string alias, std::string data) {
     if(m_resources.find(alias) != m_resources.end()) {
-        m_resources.at(alias).get()->write(data);
+        m_resources.at(alias).get()->write(data.c_str());
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }
 
-std::shared_ptr<resource> resourceManager::loadResource(fs::path path, const char* alias) {
+std::shared_ptr<resource> resourceManager::loadResource(std::string alias, fs::path path) {
     if(m_resources.find(alias) == m_resources.end()) {
         std::shared_ptr<resource> newResource = std::make_shared<resource>(path);
         m_resources.insert({alias, newResource});
         return newResource;
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is already registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is already registered.";
     }
 }
 
-void resourceManager::unloadResource(const char* alias) {
+void resourceManager::unloadResource(std::string alias) {
     if(m_resources.find(alias) != m_resources.end()) {
         m_resources.erase(alias);
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }
 
-std::string resourceManager::getData(const char* alias) const {
+std::string resourceManager::getData(std::string alias) const {
     if(m_resources.find(alias) != m_resources.end()) {
         return m_resources.at(alias).get()->getData();
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }
 
-fs::path resourceManager::getFilename(const char* alias) const {
+fs::path resourceManager::getFilename(std::string alias) const {
     if(m_resources.find(alias) != m_resources.end()) {
         return m_resources.at(alias).get()->getFilename();
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }
 
-fs::path resourceManager::getRelativePath(const char* alias) const {
+fs::path resourceManager::getRelativePath(std::string alias) const {
     if(m_resources.find(alias) != m_resources.end()) {
         return m_resources.at(alias).get()->getRelativePath();
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }
 
-fs::path resourceManager::getAbsolutePath(const char* alias) const {
+fs::path resourceManager::getAbsolutePath(std::string alias) const {
     if(m_resources.find(alias) != m_resources.end()) {
         return m_resources.at(alias).get()->getAbsolutePath();
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered.";
-        throw message.c_str();
+        throw "Alias \"" + (std::string)alias + "\" is not registered.";
     }
 }

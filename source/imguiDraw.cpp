@@ -13,9 +13,18 @@ void drawMainMenuBar() {
     ImGui::BeginMainMenuBar();
 
     if(ImGui::BeginMenu("File")) {
-        if(ImGui::Button("Save As")) {
+        if(ImGui::MenuItem("Save", "CTRL+S")) {
             saveNode((nodeRef)g_window.getUserPointer());
         }
+
+        if(ImGui::MenuItem("Save As", "CTRL+SHIFT+S")) {
+            saveAsNode((nodeRef)g_window.getUserPointer());
+        }
+
+        if(ImGui::MenuItem("Open", "CTRL+O")) {
+            loadNode((nodeRef)g_window.getUserPointer());
+        }
+
         ImGui::EndMenu();
     }
 

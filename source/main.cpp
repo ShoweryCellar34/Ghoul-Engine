@@ -14,8 +14,16 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     case PNT_EVENT_TYPE_KEYBOARD:
         switch(event.keyboard.key) {
         case GLFW_KEY_S:
-            if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
+            if(event.keyboard.mods == GLFW_MOD_CONTROL + GLFW_MOD_SHIFT && event.keyboard.action == GLFW_RELEASE) {
+                saveAsNode((nodeRef)g_window.getUserPointer());
+            } else if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
                 saveNode((nodeRef)g_window.getUserPointer());
+            }
+            break;
+
+        case GLFW_KEY_O:
+            if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
+                loadNode((nodeRef)g_window.getUserPointer());
             }
             break;
         }

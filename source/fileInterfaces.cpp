@@ -6,7 +6,11 @@
 #include <nlohmann/json.hpp>
 #include <node.hpp>
 
-void saveNode(nodeRef node) {
+// OpenFile definition
+
+std::string g_openPath = "";
+
+void saveAsNode(nodeRef node) {
     const char* filter = "*.json";
     if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr); file != nullptr) {
         const int length = strlen(file);
@@ -20,23 +24,47 @@ void saveNode(nodeRef node) {
 
         try {
             if(hasEnding(file, ".json")) {
-                g_resourceManager.loadResource(file, "scene");
+                g_resourceManager.loadResource("scene", file);
             } else {
                 g_resourceManager.loadResource((std::string)file + ".json", "scene");
             }
             try {
-                g_resourceManager.write("scene", nlohmann::to_string(node->getJSON()).c_str());
-            } catch(const std::exception& exception) {
-                userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", file, exception.what());
+                g_resourceManager.write("scene", nlohmann::to_string(node->getJSON()));
+                g_openPath = file;
+            } catch(const std::string& exception) {
+                userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", file, exception);
             }
-        } catch(const std::exception& exception) {
-            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", file, exception.what());
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", file, exception);
         }
 
         try {
             g_resourceManager.unloadResource("scene");
-        } catch(const std::exception& exception) {
-            userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception.what());
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception);
+        }
+    }
+}
+
+void saveNode(nodeRef node) {
+    if(g_openPath == "") {
+        saveAsNode(node);
+    } else {
+        try {
+            g_resourceManager.loadResource("scene", g_openPath);
+            try {
+                g_resourceManager.write("scene", nlohmann::to_string(node->getJSON()));
+            } catch(const std::string& exception) {
+                userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", g_openPath, exception);
+            }
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", g_openPath, exception);
+        }
+
+        try {
+            g_resourceManager.unloadResource("scene");
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception);
         }
     }
 }
@@ -49,17 +77,18 @@ void loadNode(nodeRef node) {
             try {
                 nlohmann::json data = nlohmann::json::parse(g_resourceManager.getData("scene"));
                 node->loadJSON(data);
+                g_openPath = file;
             } catch(const nlohmann::json::exception& exception) {
                 userLogger.get()->error("[JSONParser]Failed to parse file \"{}\": {}", file, exception.what());
             }
-        } catch(const std::exception& exception) {
-            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", file, exception.what());
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", file, exception);
         }
 
         try {
             g_resourceManager.unloadResource("scene");
-        } catch(const std::exception& exception) {
-            userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception.what());
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception);
         }
     }
 }

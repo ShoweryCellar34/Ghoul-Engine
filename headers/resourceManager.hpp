@@ -3,7 +3,7 @@
 #include <fstream>
 #include <filesystem>
 #include <unordered_map>
-#include <memory>
+#include <string>
 #include <defines_and_globals.hpp>
 
 namespace fs = std::filesystem;
@@ -38,14 +38,14 @@ public:
     resourceManager(const resourceManager&) = delete;
     resourceManager& operator=(const resourceManager&) = delete;
 
-    std::shared_ptr<resource> getResource(const char* alias) const;
-    void flush(const char* alias);
-    void write(const char* alias, const char* data);
+    std::shared_ptr<resource> getResource(std::string alias) const;
+    void flush(std::string alias);
+    void write(std::string alias, std::string data);
 
-    std::shared_ptr<resource> loadResource(fs::path path, const char* alias);
-    void unloadResource(const char* alias);
-    std::string getData(const char* alias) const;
-    fs::path getFilename(const char* alias) const;
-    fs::path getRelativePath(const char* alias) const;
-    fs::path getAbsolutePath(const char* alias) const;
+    std::shared_ptr<resource> loadResource(std::string alias, fs::path path);
+    void unloadResource(std::string alias);
+    std::string getData(std::string alias) const;
+    fs::path getFilename(std::string alias) const;
+    fs::path getRelativePath(std::string alias) const;
+    fs::path getAbsolutePath(std::string alias) const;
 };
