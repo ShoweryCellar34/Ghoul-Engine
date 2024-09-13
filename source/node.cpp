@@ -1,6 +1,8 @@
-#include "node.hpp"
+#include <node.hpp>
     
 #include <iostream>
+
+// Node definitions
 
 void node::selectNode(nodeRef node) {
     m_selectedNode = node;

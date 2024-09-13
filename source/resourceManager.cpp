@@ -1,4 +1,4 @@
-#include "resourceManager.hpp"
+#include <resourceManager.hpp>
 
 #include <cstring>
 #include <Pentagram.hpp>

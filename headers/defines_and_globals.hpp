@@ -1,6 +1,9 @@
 #pragma once
 
-#include <memory>
+namespace PNT {
+    class Window;
+}
+extern PNT::Window g_window;
 
 struct node;
 typedef node* nodeRef;

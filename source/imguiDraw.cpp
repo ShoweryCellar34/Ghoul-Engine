@@ -1,12 +1,11 @@
-#include "imguiDraw.hpp"
+#include <imguiDraw.hpp>
 
 #include <imgui.h>
-#include <tinyfiledialogs.h>
 #include <Pentagram.hpp>
-#include <resourceManager.hpp>
+#include <fileInterfaces.hpp>
 #include <node.hpp>
 
-void drawGlobalDockingWindow(const PNT::Window& window) {
+void drawGlobalDockingWindow() {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 }
 
@@ -15,12 +14,7 @@ void drawMainMenuBar() {
 
     if(ImGui::BeginMenu("File")) {
         if(ImGui::Button("Save As")) {
-            const char* filter = "*.json";
-            if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr); file != nullptr) {
-                g_resourceManager.loadResource(file, "json");
-                g_resourceManager.write("json", "Hello!");
-                g_resourceManager.unloadResource("json");
-            }
+            saveNode((nodeRef)g_window.getUserPointer());
         }
         ImGui::EndMenu();
     }
@@ -28,7 +22,7 @@ void drawMainMenuBar() {
     ImGui::EndMainMenuBar();
 }
 
-void drawScenePopup(nodeRef node) {
+void drawScenePopup(const nodeRef node) {
     static bool renaming = false;
     static std::string newName;
     if(!renaming) {
@@ -57,9 +51,9 @@ void drawScenePopup(nodeRef node) {
     }
 }
 
-void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
-    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight() - 17), ImGuiCond_Once);
-    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + window.getWidth() - 265, window.getYPos() + 17), ImGuiCond_Once);
+void drawNodeTree(const nodeRef nodeToDraw) {
+    ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + g_window.getWidth() - 265, g_window.getYPos() + 17), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
 
     for(nodeRef child : nodeToDraw->m_children) {
@@ -77,9 +71,9 @@ void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw) {
     ImGui::End();
 }
 
-void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect) {
-    ImGui::SetNextWindowSize(ImVec2(265, window.getHeight() - 17), ImGuiCond_Once);
-    ImGui::SetNextWindowPos(ImVec2(window.getXPos() + 0, window.getYPos() + 17), ImGuiCond_Once);
+void drawNodeInspector(const nodeRef nodeToInspect) {
+    ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + 0, g_window.getYPos() + 17), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);
 
     // Draw details

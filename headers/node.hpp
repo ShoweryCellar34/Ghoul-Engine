@@ -23,8 +23,8 @@ private:
 
     friend void drawNodePopup(nodeRef node);
     friend void drawScenePopup(nodeRef node);
-    friend void drawNodeInspector(const PNT::Window& window, nodeRef nodeToInspect);
-    friend void drawNodeTree(const PNT::Window& window, nodeRef nodeToDraw);
+    friend void drawNodeInspector(const nodeRef nodeToInspect);
+    friend void drawNodeTree(const nodeRef nodeToDraw);
     friend void eventCallback(PNT::Window* window, PNT::windowEvent event);
 
     void selectNode(nodeRef node);

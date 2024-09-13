@@ -1,10 +1,13 @@
-#include <Pentagram.hpp>
-
 #include <iostream>
-#include <memory>
+#include <Pentagram.hpp>
+#include <defines_and_globals.hpp>
+#include <fileInterfaces.hpp>
 #include <node.hpp>
 #include <imguiDraw.hpp>
-#include <defines_and_globals.hpp>
+
+// Global Window Definition
+
+PNT::Window g_window;
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -12,17 +15,7 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         switch(event.keyboard.key) {
         case GLFW_KEY_S:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                nodeRef node = reinterpret_cast<nodeRef>(window->getUserPointer());
-                std::string input;
-                std::string filename = "a";
-                std::cin >> input;
-                nlohmann::json json;
-                try {
-                    json = nlohmann::json::parse(input);
-                    node->loadJSON(json);
-                } catch(const nlohmann::json::exception& exeption) {
-                    userLogger.get()->error("Failed to parse file \"{}\": {}", filename, exeption.what());
-                }
+                saveNode((nodeRef)g_window.getUserPointer());
             }
             break;
         }
@@ -37,27 +30,28 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    PNT::Window window("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
-    window.setAspectRatio(16, 9);
-    window.setEventCallback(eventCallback);
-    window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
+    g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
+    g_window.setAspectRatio(16, 9);
+    g_window.setEventCallback(eventCallback);
+    g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
     nodeRef world = new node(nullptr, nullptr, "", "ROOT");
-    window.setUserPointer(world);
+    g_window.setUserPointer(world);
 
-    while(!window.shouldClose()) {
+    while(!g_window.shouldClose()) {
         PNT::processEvents();
-        window.startFrame();
+        g_window.startFrame();
 
-        drawGlobalDockingWindow(window);
+        drawGlobalDockingWindow();
         drawMainMenuBar();
-        drawNodeTree(window, world);
-        drawNodeInspector(window, world);
+        drawNodeTree(world);
+        drawNodeInspector(world);
 
-        window.endFrame();
+        g_window.endFrame();
     }
 
     delete world;
+    g_window.setUserPointer(nullptr);
 
     PNT::deinit();
     return 0;
