@@ -1,6 +1,4 @@
 #include <node.hpp>
-    
-#include <iostream>
 
 // Node definitions
 
@@ -12,7 +10,7 @@ nodeRef node::getSelectedNode() {
     return m_selectedNode;
 }
 
-node::node(nodeRef root, nodeRef parent, const char* data, const char* name) : m_parent(parent), m_data(data), m_name(name), 
+node::node(nodeRef root, nodeRef parent, std::string data, std::string name) : m_parent(parent), m_data(data), m_name(name), 
         m_imguiName(m_name + "##" + std::to_string((std::uintptr_t)this)), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
     if(root == nullptr) {
         m_root = this;
@@ -49,12 +47,12 @@ node::~node() {
     }
 }
 
-void node::setName(const char* name) {
+void node::setName(std::string name) {
     m_name = name;
     m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
 }
 
-nodeRef node::addChild(const char* name) {
+nodeRef node::addChild(std::string name) {
     nodeRef child = new node(m_root, (nodeRef)this, "", name);
     m_children.push_back(child);
     return child;
@@ -70,7 +68,7 @@ const char* node::getName() const {
     return m_name.c_str();
 }
 
-nodeRef node::getChild(const char* name) const {
+nodeRef node::getChild(std::string name) const {
     nodeRef result = nullptr;
     for(nodeRef child : m_children) {
         if(child->m_name == name) {

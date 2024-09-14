@@ -7,8 +7,6 @@
 #include <Pentagram.hpp>
 #include <defines_and_globals.hpp>
 
-typedef size_t nodeID;
-
 struct node {
 private:
     nodeRef m_root;
@@ -30,16 +28,16 @@ private:
     void selectNode(nodeRef node);
     nodeRef getSelectedNode();
 public:
-    node(nodeRef root, nodeRef parent, const char* data, const char* name);
+    node(nodeRef root, nodeRef parent, std::string data, std::string name);
     node(nodeRef root, nodeRef parent, nlohmann::json json);
     ~node();
 
-    void setName(const char* name);
-    nodeRef addChild(const char* name);
+    void setName(std::string name);
+    nodeRef addChild(std::string name);
     void reparent(nodeRef newParent);
 
     const char* getName() const;
-    nodeRef getChild(const char* name) const;
+    nodeRef getChild(std::string name) const;
     nodeRef getParent() const;
 
     nlohmann::json getJSON() const;

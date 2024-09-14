@@ -6,8 +6,6 @@
 #include <string>
 #include <defines_and_globals.hpp>
 
-namespace fs = std::filesystem;
-
 class resource {
 private:
     mutable std::fstream m_handle;
