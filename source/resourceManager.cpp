@@ -1,6 +1,6 @@
 #include <resourceManager.hpp>
 
-#include <cstring>
+#include <memory>
 #include <Pentagram.hpp>
 
 // Global resourceManager.
@@ -24,8 +24,7 @@ resource::resource(const fs::path& path) {
         m_path = path;
         m_filename = path.filename();
     } else {
-        std::string message = "Path \"" + path.string() + "\" is not a file path.";
-        throw std::exception(message.c_str());
+        throw "Path \"" + path.string() + "\" is not a file path.";
     }
 }
 
@@ -77,9 +76,9 @@ std::shared_ptr<resource> resourceManager::getResource(const char *alias) const
     if(m_resources.find(alias) != m_resources.end()) {
         return m_resources.at(alias);
     } else {
-        std::string message = "Alias \"" + (std::string)alias + "\" is not registered, maybe you haven't loaded it yet.";
-        throw std::exception(message.c_str());
+        throw "Alias \"" + (std::string)alias + "\" is not registered, maybe you haven't loaded it yet.";
     }
+    return (std::shared_ptr<resource>)nullptr;
 }
 
 void resourceManager::flush(const char* alias) {
