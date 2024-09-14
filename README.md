@@ -18,4 +18,10 @@ run this command with [git](https://git-scm.com/) installed to clone this reposi
 1. Move into the cloned directory `cd Ghoul-Engine`
 2. Make the build directory `mkdir build` and move into it `cd build`
 3. Generate the project file `cmake -G"MinGW Makefiles" ./..`
-4. Build Ghoul Engine with `mingw32-make` and run with the produced `Ghoul-Engine.exe` file.
+4. Build Ghoul Engine with `mingw32-make` and run the produced `Ghoul-Engine.exe` file.
+
+### Ubuntu (GCC)
+1. Move into the cloned directory `cd Ghoul-Engine`
+2. Make the build directory `mkdir build` and move into it `cd build`
+3. Generate the project file `cmake -G"Unix Makefiles" ./..`
+4. Build Ghoul Engine with `make` and run the produced `Ghoul-Engine` file.
