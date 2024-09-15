@@ -14,7 +14,7 @@ void drawMainMenuBar() {
 
     if(ImGui::BeginMenu("File")) {
         if(ImGui::MenuItem("Save", "CTRL+S")) {
-            saveNode((nodeRef)g_window.getUserPointer());
+            saveScene((nodeRef)g_window.getUserPointer());
         }
 
         if(ImGui::MenuItem("Save As", "CTRL+SHIFT+S")) {
@@ -22,7 +22,7 @@ void drawMainMenuBar() {
         }
 
         if(ImGui::MenuItem("Open", "CTRL+O")) {
-            loadNode((nodeRef)g_window.getUserPointer());
+            loadProject((nodeRef)g_window.getUserPointer());
         }
 
         ImGui::EndMenu();

@@ -1,13 +1,9 @@
-#include <iostream>
+#include <string>
 #include <Pentagram.hpp>
 #include <defines_and_globals.hpp>
 #include <fileInterfaces.hpp>
 #include <node.hpp>
 #include <imguiDraw.hpp>
-
-// Global Window Definition
-
-PNT::Window g_window;
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -17,13 +13,13 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
             if(event.keyboard.mods == GLFW_MOD_CONTROL + GLFW_MOD_SHIFT && event.keyboard.action == GLFW_RELEASE) {
                 saveAsNode((nodeRef)g_window.getUserPointer());
             } else if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                saveNode((nodeRef)g_window.getUserPointer());
+                saveScene((nodeRef)g_window.getUserPointer());
             }
             break;
 
         case GLFW_KEY_O:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                loadNode((nodeRef)g_window.getUserPointer());
+                loadProject((nodeRef)g_window.getUserPointer());
             }
             break;
         }
@@ -31,7 +27,18 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     }
 }
 
-int main(int argc, char *argv[]) {
+void refreshTitle() {
+    std::string title;
+    if(g_openFolder != "") {
+        title += g_openFolder.string() + " | Ghoul Engine";
+    } else {
+        title = "New project | Ghoul Engine";
+    }
+
+    g_window.setTitle(title);
+}
+
+int main(int argc, char* argv[]) {
     stbi_set_flip_vertically_on_load(true);
 
     if(!PNT::init()) {
@@ -39,6 +46,7 @@ int main(int argc, char *argv[]) {
     }
 
     g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
+    refreshTitle();
     g_window.setAspectRatio(16, 9);
     g_window.setEventCallback(eventCallback);
     g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
