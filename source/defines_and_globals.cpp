@@ -4,4 +4,4 @@
 #include <Pentagram.hpp>
 
 PNT::Window g_window;
-fs::path g_openFolder;
+fs::path g_openFile;

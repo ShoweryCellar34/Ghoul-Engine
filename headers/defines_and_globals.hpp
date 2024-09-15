@@ -14,7 +14,7 @@ namespace PNT {
     class Window;
 }
 extern PNT::Window g_window;
-extern fs::path g_openFolder;
+extern fs::path g_openFile;
 
 extern void refreshTitle();
 

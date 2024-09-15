@@ -7,52 +7,49 @@
 #include <nlohmann/json.hpp>
 #include <node.hpp>
 
-void setOpenFolder(std::string path) {
-    g_openFolder = path;
+void setOpenFile(std::string path) {
+    g_openFile = path;
     refreshTitle();
 }
 
 void saveAsNode(nodeRef node) {
-    if(const char* folder = tinyfd_selectFolderDialog("Where to save project?", nullptr)) {
+    const char* filter = "*.json";
+    if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr)) {
         try {
-
-        } catch() {
-
+            g_resourceManager.loadResource("scene", file);
+            try {
+                std::string JSONString = nlohmann::to_string(node->getJSON());
+                g_resourceManager.write("scene", JSONString);
+                setOpenFile(file);
+            } catch(const std::string& exception) {
+                userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", file, exception);
+            }
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", file, exception);
         }
-        // try {
-        //     try {
-        //         std::string JSONString = nlohmann::to_string(node->getJSON());
-        //         g_resourceManager.write("scene", JSONString);
-        //         setOpenFolder(file);
-        //     } catch(const std::string& exception) {
-        //         userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", file, exception);
-        //     }
-        // } catch(const std::string& exception) {
-        //     userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", file, exception);
-        // }
 
-        // try {
-        //     g_resourceManager.unloadResource("scene");
-        // } catch(const std::string& exception) {
-        //     userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception);
-        // }
+        try {
+            g_resourceManager.unloadResource("scene");
+        } catch(const std::string& exception) {
+            userLogger.get()->error("[ResourceManager]Failed to close handle \"scene\": {}", exception);
+        }
     }
 }
 
 void saveScene(nodeRef node) {
-    if(g_openFolder == "") {
+    if(g_openFile == "") {
         saveAsNode(node);
     } else {
         try {
-            g_resourceManager.loadResource("scene", g_openFolder);
+            g_resourceManager.loadResource("scene", g_openFile);
             try {
                 std::string JSONString = nlohmann::to_string(node->getJSON());
                 g_resourceManager.write("scene", JSONString);
             } catch(const std::string& exception) {
-                userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", g_openFolder.string(), exception);
+                userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", g_openFile.string(), exception);
             }
         } catch(const std::string& exception) {
-            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", g_openFolder.string(), exception);
+            userLogger.get()->error("[ResourceManager]Failed to open file \"{}\": {}", g_openFile.string(), exception);
         }
 
         try {
@@ -71,7 +68,7 @@ void loadProject(nodeRef node) {
             try {
                 nlohmann::json data = nlohmann::json::parse(g_resourceManager.getData("scene"));
                 node->loadJSON(data);
-                setOpenFolder(file);
+                setOpenFile(file);
             } catch(const nlohmann::json::exception& exception) {
                 userLogger.get()->error("[JSONParser]Failed to parse file \"{}\": {}", file, exception.what());
             }
