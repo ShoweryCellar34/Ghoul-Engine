@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <Pentagram.hpp>
 #include <defines_and_globals.hpp>
 #include <fileInterfaces.hpp>
@@ -11,31 +12,20 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         switch(event.keyboard.key) {
         case GLFW_KEY_S:
             if(event.keyboard.mods == GLFW_MOD_CONTROL + GLFW_MOD_SHIFT && event.keyboard.action == GLFW_RELEASE) {
-                saveAsNode((nodeRef)g_window.getUserPointer());
+                saveAsNode(g_currentScene);
             } else if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                saveScene((nodeRef)g_window.getUserPointer());
+                saveScene(g_currentScene);
             }
             break;
 
         case GLFW_KEY_O:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                loadProject((nodeRef)g_window.getUserPointer());
+                loadProject(g_currentScene);
             }
             break;
         }
         break;
     }
-}
-
-void refreshTitle() {
-    std::string title;
-    if(g_projectName != "") {
-        title += g_projectName + " | Ghoul Engine";
-    } else {
-        title = "Unnamed Project | Ghoul Engine";
-    }
-
-    g_window.setTitle(title);
 }
 
 int main(int argc, char* argv[]) {
@@ -51,8 +41,8 @@ int main(int argc, char* argv[]) {
     g_window.setEventCallback(eventCallback);
     g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    nodeRef world = new node(nullptr, nullptr, "", "ROOT");
-    g_window.setUserPointer(world);
+    g_currentScene = new node(nullptr, nullptr, "", "ROOT");
+    g_scenes.push_back(g_currentScene);
 
     while(!g_window.shouldClose()) {
         PNT::processEvents();
@@ -60,14 +50,17 @@ int main(int argc, char* argv[]) {
 
         drawGlobalDockingWindow();
         drawMainMenuBar();
-        drawNodeTree(world);
-        drawNodeInspector(world);
+        drawNodeTree(g_currentScene);
+        drawNodeInspector(g_currentScene);
 
         g_window.endFrame();
     }
 
-    delete world;
-    g_window.setUserPointer(nullptr);
+    for(nodeRef scene : g_scenes) {
+        delete scene;
+    }
+    g_scenes.clear();
+    g_currentScene = nullptr;
 
     PNT::deinit();
     return 0;

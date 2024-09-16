@@ -73,6 +73,17 @@ void loadProject(nodeRef node) {
             try {
                 nlohmann::json json = nlohmann::json::parse(g_resourceManager.getData("scene"));
                 g_projectName = json["name"];
+
+                for(nodeRef scene : g_scenes) {
+                    delete scene;
+                }
+                g_scenes.clear();
+                if(json.contains("scenes") && json["scenes"].is_array()) {
+                    for (const auto& sceneJson : json.at("scenes")) {
+                        node* childNode = new node(nullptr, nullptr, "", "");
+                        g_scenes.push_back(childNode);
+                    }
+                }
                 node->loadJSON(json["scene"]);
                 setOpenFile(file);
             } catch(const nlohmann::json::exception& exception) {
