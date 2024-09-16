@@ -23,7 +23,7 @@ int drawRenameWindow(bool* renaming, std::string* output, std::string* buffer, s
     return 0;
 }
 
-int drawRenameWindow(bool *renaming, void (*output)(std::string), std::string *buffer, std::string title) {
+int drawRenameWindow(bool* renaming, void(*output)(std::string), std::string* buffer, std::string title) {
     ImGui::SetNextWindowSize(ImVec2(200, 54));
     ImGui::SetNextWindowPos(ImVec2((g_window.getXPos() + g_window.getWidth() / 2) - 100, (g_window.getYPos() + g_window.getHeight() / 2) - 27));
     ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);

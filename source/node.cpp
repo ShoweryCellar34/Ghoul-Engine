@@ -121,28 +121,24 @@ void node::loadJSON(nlohmann::json json) {
 void drawNodePopup(nodeRef node) {
     static bool renaming = false;
     static std::string newName;
-    if(!renaming) {
-        if(ImGui::BeginPopupContextItem()) {
-            if(ImGui::Button("Add child")) {
-                nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
-                node->m_root->selectNode(child);
-                node->m_shouldOpen = true;
-                ImGui::CloseCurrentPopup();
-            }
-            if(ImGui::Button("Rename")) {
-                renaming = true;
-                newName = node->getName();
-            }
-            if(ImGui::Button("Remove")) {
-                nodeRef parent = node->m_parent;
-                parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
-                node->m_root->selectNode(nullptr);
-                delete node;
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-    } else {
+    if(ImGui::Button("Add child")) {
+        nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
+        node->m_root->selectNode(child);
+        node->m_shouldOpen = true;
+        ImGui::CloseCurrentPopup();
+    }
+    if(ImGui::Button("Rename")) {
+        renaming = true;
+        newName = node->getName();
+    }
+    if(ImGui::Button("Remove")) {
+        nodeRef parent = node->m_parent;
+        parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
+        node->m_root->selectNode(nullptr);
+        delete node;
+        ImGui::CloseCurrentPopup();
+    }
+    if(renaming) {
         if(drawRenameWindow(&renaming, &node->m_name, &newName, (std::string)"Rename " + node->m_imguiName)) {
             node->setName(node->getName());
             ImGui::CloseCurrentPopup();
@@ -169,13 +165,21 @@ void node::imguiDraw() const {
         if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
             m_root->selectNode((nodeRef)this);
         }
-        drawNodePopup((nodeRef)this);
+        if(ImGui::BeginPopupContextItem()) {
+            m_root->selectNode((nodeRef)this);
+            drawNodePopup((nodeRef)this);
+            ImGui::EndPopup();
+        }
 
         for(nodeRef child : m_children) {
             child->imguiDraw();
         }
         ImGui::TreePop();
     } else {
-        drawNodePopup((nodeRef)this);
+        if(ImGui::BeginPopupContextItem()) {
+            m_root->selectNode((nodeRef)this);
+            drawNodePopup((nodeRef)this);
+            ImGui::EndPopup();
+        }
     }
 }
