@@ -19,8 +19,8 @@ void saveAsNode(nodeRef node) {
             g_resourceManager.loadResource("scene", file);
             try {
                 nlohmann::json json;
-                json["name"] = g_projectName != "" ? g_projectName : "Unnamed Project";
-                json["scene"] = nlohmann::to_string(node->getJSON());
+                json["name"] = g_projectName;
+                json["scene"] = node->getJSON();
                 g_resourceManager.write("scene", nlohmann::to_string(json));
                 setOpenFile(file);
             } catch(const std::string& exception) {
@@ -47,8 +47,8 @@ void saveScene(nodeRef node) {
             g_resourceManager.loadResource("scene", g_openFile);
             try {
                 nlohmann::json json;
-                json["name"] = g_projectName != "" ? g_projectName : "Unnamed Project";
-                json["scene"] = nlohmann::to_string(node->getJSON());
+                json["name"] = g_projectName;
+                json["scene"] = node->getJSON();
                 g_resourceManager.write("scene", nlohmann::to_string(json));
             } catch(const std::string& exception) {
                 userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", g_openFile.string(), exception);
@@ -73,7 +73,6 @@ void loadProject(nodeRef node) {
             try {
                 nlohmann::json json = nlohmann::json::parse(g_resourceManager.getData("scene"));
                 g_projectName = json["name"];
-                nlohmann::to_string(node->getJSON()) = json["scene"];
                 node->loadJSON(json["scene"]);
                 setOpenFile(file);
             } catch(const nlohmann::json::exception& exception) {

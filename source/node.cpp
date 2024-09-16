@@ -100,7 +100,7 @@ nlohmann::json node::getJSON() const {
 
 void node::loadJSON(nlohmann::json json) {
     if(json.contains("name") && json["name"].is_string()) {
-        setName(json.at("name").get<std::string>().c_str());
+        setName(json.at("name").get<std::string>());
     }
     if (json.contains("data") && json["data"].is_string()) {
         m_data = json.at("data").get<std::string>();

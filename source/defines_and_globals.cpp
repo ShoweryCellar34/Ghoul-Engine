@@ -5,4 +5,4 @@
 
 PNT::Window g_window;
 fs::path g_openFile;
-std::string g_projectName;
+std::string g_projectName = "Unnamed Project";

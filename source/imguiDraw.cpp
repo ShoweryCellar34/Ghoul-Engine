@@ -64,7 +64,11 @@ void drawMainMenuBar() {
             loadProject((nodeRef)g_window.getUserPointer());
         }
 
-        if(ImGui::MenuItem("Rename Project", "CTRL+R")) {
+        ImGui::EndMenu();
+    }
+
+    if(ImGui::BeginMenu("Edit")) {
+        if(ImGui::MenuItem("Rename Project")) {
             renaming = true;
             newName = g_projectName;
         }
