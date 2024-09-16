@@ -15,6 +15,7 @@ namespace PNT {
 }
 extern PNT::Window g_window;
 extern fs::path g_openFile;
+extern std::string g_projectName;
 
 extern void refreshTitle();
 

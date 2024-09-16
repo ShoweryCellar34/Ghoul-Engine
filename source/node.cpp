@@ -1,5 +1,7 @@
 #include <node.hpp>
 
+#include <imguiDraw.hpp>
+
 // Node definitions
 
 void node::selectNode(nodeRef node) {
@@ -120,33 +122,29 @@ void drawNodePopup(nodeRef node) {
     static bool renaming = false;
     static std::string newName;
     if(!renaming) {
-        if(ImGui::Button("Add child")) {
-            nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
-            node->m_root->selectNode(child);
-            node->m_shouldOpen = true;
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("Rename")) {
-            renaming = true;
-            newName = node->getName();
-        }
-        if(ImGui::Button("Remove")) {
-            nodeRef parent = node->m_parent;
-            parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
-            node->m_root->selectNode(nullptr);
-            delete node;
-            ImGui::CloseCurrentPopup();
+        if(ImGui::BeginPopupContextItem()) {
+            if(ImGui::Button("Add child")) {
+                nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
+                node->m_root->selectNode(child);
+                node->m_shouldOpen = true;
+                ImGui::CloseCurrentPopup();
+            }
+            if(ImGui::Button("Rename")) {
+                renaming = true;
+                newName = node->getName();
+            }
+            if(ImGui::Button("Remove")) {
+                nodeRef parent = node->m_parent;
+                parent->m_children.erase(std::find(parent->m_children.begin(), parent->m_children.end(), node));
+                node->m_root->selectNode(nullptr);
+                delete node;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
         }
     } else {
-        ImGui::Text("New name: ");
-        ImGui::SameLine();
-        ImGui::InputText(("##" + std::to_string((std::uintptr_t)node)).c_str(), &newName);
-        if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
-            node->setName(newName.c_str());
-            renaming = false;
-            ImGui::CloseCurrentPopup();
-        } else if(ImGui::IsKeyDown(ImGuiKey_Escape)) {
-            renaming = false;
+        if(drawRenameWindow(&renaming, &node->m_name, &newName, (std::string)"Rename " + node->m_imguiName)) {
+            node->setName(node->getName());
             ImGui::CloseCurrentPopup();
         }
     }
@@ -171,19 +169,13 @@ void node::imguiDraw() const {
         if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
             m_root->selectNode((nodeRef)this);
         }
-        if(ImGui::BeginPopupContextItem()) {
-            drawNodePopup((nodeRef)this);
-            ImGui::EndPopup();
-        }
+        drawNodePopup((nodeRef)this);
 
         for(nodeRef child : m_children) {
             child->imguiDraw();
         }
         ImGui::TreePop();
     } else {
-        if(ImGui::BeginPopupContextItem()) {
-            drawNodePopup((nodeRef)this);
-            ImGui::EndPopup();
-        }
+        drawNodePopup((nodeRef)this);
     }
 }

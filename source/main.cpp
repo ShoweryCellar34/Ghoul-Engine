@@ -29,10 +29,10 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
 
 void refreshTitle() {
     std::string title;
-    if(g_openFile != "") {
-        title += g_openFile.string() + " | Ghoul Engine";
+    if(g_projectName != "") {
+        title += g_projectName + " | Ghoul Engine";
     } else {
-        title = "New project | Ghoul Engine";
+        title = "Unnamed Project | Ghoul Engine";
     }
 
     g_window.setTitle(title);
