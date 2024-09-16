@@ -6,11 +6,11 @@
 #include <node.hpp>
 
 int drawRenameWindow(bool* renaming, std::string* output, std::string* buffer, std::string title) {
-    ImGui::SetNextWindowFocus();
     ImGui::SetNextWindowSize(ImVec2(200, 54));
     ImGui::SetNextWindowPos(ImVec2((g_window.getXPos() + g_window.getWidth() / 2) - 100, (g_window.getYPos() + g_window.getHeight() / 2) - 27));
     ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     ImGui::InputText((("##" + std::to_string((std::uintptr_t)buffer))).c_str(), buffer);
+    ImGui::SetKeyboardFocusHere();
     ImGui::End();
     if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
         *output = *buffer;
@@ -24,11 +24,11 @@ int drawRenameWindow(bool* renaming, std::string* output, std::string* buffer, s
 }
 
 int drawRenameWindow(bool *renaming, void (*output)(std::string), std::string *buffer, std::string title) {
-    ImGui::SetNextWindowFocus();
     ImGui::SetNextWindowSize(ImVec2(200, 54));
     ImGui::SetNextWindowPos(ImVec2((g_window.getXPos() + g_window.getWidth() / 2) - 100, (g_window.getYPos() + g_window.getHeight() / 2) - 27));
     ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     ImGui::InputText((("##" + std::to_string((std::uintptr_t)buffer))).c_str(), buffer);
+    ImGui::SetKeyboardFocusHere();
     ImGui::End();
     if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
         output(*buffer);
