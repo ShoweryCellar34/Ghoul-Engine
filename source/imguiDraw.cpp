@@ -53,15 +53,15 @@ void drawMainMenuBar() {
 
     if(ImGui::BeginMenu("File")) {
         if(ImGui::MenuItem("Save", "CTRL+S")) {
-            saveScene(g_currentScene);
+            saveScene();
         }
 
         if(ImGui::MenuItem("Save As", "CTRL+SHIFT+S")) {
-            saveAsNode(g_currentScene);
+            saveAs();
         }
 
         if(ImGui::MenuItem("Open", "CTRL+O")) {
-            loadProject(g_currentScene);
+            loadProject();
         }
 
         ImGui::EndMenu();

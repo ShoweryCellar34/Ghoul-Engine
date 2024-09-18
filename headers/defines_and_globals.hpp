@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-struct node;
-typedef node* nodeRef;
+struct treeNode;
+typedef treeNode* nodeRef;
 
 namespace fs = std::filesystem;
 class resourceManager;

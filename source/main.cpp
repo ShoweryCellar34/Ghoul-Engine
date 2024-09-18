@@ -12,15 +12,15 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         switch(event.keyboard.key) {
         case GLFW_KEY_S:
             if(event.keyboard.mods == GLFW_MOD_CONTROL + GLFW_MOD_SHIFT && event.keyboard.action == GLFW_RELEASE) {
-                saveAsNode(g_currentScene);
+                saveAs();
             } else if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                saveScene(g_currentScene);
+                saveScene();
             }
             break;
 
         case GLFW_KEY_O:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                loadProject(g_currentScene);
+                loadProject();
             }
             break;
         }
@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     g_window.setEventCallback(eventCallback);
     g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    g_currentScene = new node(nullptr, nullptr, "", "ROOT");
+    g_currentScene = new treeNode(nullptr, nullptr, "", "ROOT");
     g_scenes.push_back(g_currentScene);
 
     while(!g_window.shouldClose()) {

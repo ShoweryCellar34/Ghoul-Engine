@@ -12,7 +12,7 @@ void setOpenFile(std::string path) {
     refreshTitle();
 }
 
-void saveAsNode(nodeRef node) {
+void saveAs() {
     const char* filter = "*.json";
     if(const char* file = tinyfd_saveFileDialog("Where to save project?", nullptr, 1, &filter, nullptr)) {
         try {
@@ -20,7 +20,13 @@ void saveAsNode(nodeRef node) {
             try {
                 nlohmann::json json;
                 json["name"] = g_projectName;
-                json["scene"] = node->getJSON();
+
+                nlohmann::json scenes = nlohmann::json::array();
+                for(nodeRef child : g_scenes) {
+                    scenes.push_back(child->getJSON());
+                }
+                json["scenes"] = scenes;
+
                 g_resourceManager.write("scene", nlohmann::to_string(json));
                 setOpenFile(file);
             } catch(const std::string& exception) {
@@ -38,17 +44,23 @@ void saveAsNode(nodeRef node) {
     }
 }
 
-void saveScene(nodeRef node) {
+void saveScene() {
     if(g_openFile == "") {
         g_projectName = "Unnamed Project";
-        saveAsNode(node);
+        saveAs();
     } else {
         try {
             g_resourceManager.loadResource("scene", g_openFile);
             try {
                 nlohmann::json json;
                 json["name"] = g_projectName;
-                json["scene"] = node->getJSON();
+
+                nlohmann::json scenes = nlohmann::json::array();
+                for(nodeRef child : g_scenes) {
+                    scenes.push_back(child->getJSON());
+                }
+                json["scenes"] = scenes;
+
                 g_resourceManager.write("scene", nlohmann::to_string(json));
             } catch(const std::string& exception) {
                 userLogger.get()->error("[JSONParser]Failed to write to file \"{}\": {}", g_openFile.string(), exception);
@@ -65,7 +77,7 @@ void saveScene(nodeRef node) {
     }
 }
 
-void loadProject(nodeRef node) {
+void loadProject() {
     const char* filter = "*.json";
     if(const char* file = tinyfd_openFileDialog("Open Scene", nullptr, 1, &filter, nullptr, 0); file != nullptr) {
         try {
@@ -80,11 +92,11 @@ void loadProject(nodeRef node) {
                 g_scenes.clear();
                 if(json.contains("scenes") && json["scenes"].is_array()) {
                     for (const auto& sceneJson : json.at("scenes")) {
-                        node* childNode = new node(nullptr, nullptr, "", "");
+                        nodeRef childNode = new treeNode(nullptr, nullptr, sceneJson);
                         g_scenes.push_back(childNode);
+                        g_currentScene = childNode;
                     }
                 }
-                node->loadJSON(json["scene"]);
                 setOpenFile(file);
             } catch(const nlohmann::json::exception& exception) {
                 userLogger.get()->error("[JSONParser]Failed to parse file \"{}\": {}", file, exception.what());

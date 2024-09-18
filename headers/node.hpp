@@ -7,7 +7,7 @@
 #include <Pentagram.hpp>
 #include <defines_and_globals.hpp>
 
-struct node {
+struct treeNode {
 private:
     nodeRef m_root;
     nodeRef m_parent;
@@ -28,9 +28,9 @@ private:
     void selectNode(nodeRef node);
     nodeRef getSelectedNode();
 public:
-    node(nodeRef root, nodeRef parent, std::string data, std::string name);
-    node(nodeRef root, nodeRef parent, nlohmann::json json);
-    ~node();
+    treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name);
+    treeNode(nodeRef root, nodeRef parent, nlohmann::json json);
+    ~treeNode();
 
     void setName(std::string name);
     nodeRef addChild(std::string name);

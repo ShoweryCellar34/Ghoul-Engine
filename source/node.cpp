@@ -4,15 +4,15 @@
 
 // Node definitions
 
-void node::selectNode(nodeRef node) {
+void treeNode::selectNode(nodeRef node) {
     m_selectedNode = node;
 }
 
-nodeRef node::getSelectedNode() {
+nodeRef treeNode::getSelectedNode() {
     return m_selectedNode;
 }
 
-node::node(nodeRef root, nodeRef parent, std::string data, std::string name) : m_parent(parent), m_data(data), m_name(name), 
+treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name) : m_parent(parent), m_data(data), m_name(name), 
         m_imguiName(m_name + "##" + std::to_string((std::uintptr_t)this)), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
     if(root == nullptr) {
         m_root = this;
@@ -21,7 +21,7 @@ node::node(nodeRef root, nodeRef parent, std::string data, std::string name) : m
     }
 }
 
-node::node(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
+treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
     if(root == nullptr) {
         m_root = this;
     } else {
@@ -37,40 +37,40 @@ node::node(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent)
 
     if(json.contains("children") && json["children"].is_array()) {
         for (const auto& childJson : json.at("children")) {
-            nodeRef childNode = new node(m_root, this, childJson);
+            nodeRef childNode = new treeNode(m_root, this, childJson);
             m_children.push_back(childNode);
         }
     }
 }
 
-node::~node() {
+treeNode::~treeNode() {
     for(nodeRef child : m_children) {
         delete child;
     }
 }
 
-void node::setName(std::string name) {
+void treeNode::setName(std::string name) {
     m_name = name;
     m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
 }
 
-nodeRef node::addChild(std::string name) {
-    nodeRef child = new node(m_root, (nodeRef)this, "", name);
+nodeRef treeNode::addChild(std::string name) {
+    nodeRef child = new treeNode(m_root, (nodeRef)this, "", name);
     m_children.push_back(child);
     return child;
 }
 
-void node::reparent(nodeRef newParent) {
+void treeNode::reparent(nodeRef newParent) {
     m_parent = newParent;
     newParent->m_children.push_back(this);
     m_children.erase(std::find(m_children.begin(), m_children.end(), (nodeRef)this));
 }
 
-const char* node::getName() const {
+const char* treeNode::getName() const {
     return m_name.c_str();
 }
 
-nodeRef node::getChild(std::string name) const {
+nodeRef treeNode::getChild(std::string name) const {
     nodeRef result = nullptr;
     for(nodeRef child : m_children) {
         if(child->m_name == name) {
@@ -80,11 +80,11 @@ nodeRef node::getChild(std::string name) const {
     return result;
 }
 
-nodeRef node::getParent() const {
+nodeRef treeNode::getParent() const {
     return m_parent;
 }
 
-nlohmann::json node::getJSON() const {
+nlohmann::json treeNode::getJSON() const {
     nlohmann::json json;
     json["name"] = m_name;
     json["data"] = m_data;
@@ -98,7 +98,7 @@ nlohmann::json node::getJSON() const {
     return json;
 }
 
-void node::loadJSON(nlohmann::json json) {
+void treeNode::loadJSON(nlohmann::json json) {
     if(json.contains("name") && json["name"].is_string()) {
         setName(json.at("name").get<std::string>());
     }
@@ -112,7 +112,7 @@ void node::loadJSON(nlohmann::json json) {
     m_children.clear();
     if(json.contains("children") && json["children"].is_array()) {
         for (const auto& childJson : json.at("children")) {
-            nodeRef childNode = new node(m_root, this, childJson);
+            nodeRef childNode = new treeNode(m_root, this, childJson);
             m_children.push_back(childNode);
         }
     }
@@ -146,7 +146,7 @@ void drawNodePopup(nodeRef node) {
     }
 }
 
-void node::imguiDraw() const {
+void treeNode::imguiDraw() const {
     if(m_root->getSelectedNode() == this) {
         m_selectedFlag = ImGuiTreeNodeFlags_Selected;
     } else {
