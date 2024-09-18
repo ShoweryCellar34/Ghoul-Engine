@@ -110,6 +110,10 @@ void drawScenePopup(const nodeRef node) {
 }
 
 void drawNodeTree(const nodeRef nodeToDraw) {
+    if(nodeToDraw == nullptr) {
+        return;
+    }
+
     ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + g_window.getWidth() - 265, g_window.getYPos() + 17), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName(), nullptr);
@@ -127,6 +131,10 @@ void drawNodeTree(const nodeRef nodeToDraw) {
 }
 
 void drawNodeInspector(const nodeRef nodeToInspect) {
+    if(nodeToInspect == nullptr) {
+        return;
+    }
+
     ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + 0, g_window.getYPos() + 17), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);

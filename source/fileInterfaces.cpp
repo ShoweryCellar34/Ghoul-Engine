@@ -86,6 +86,7 @@ void loadProject() {
                 nlohmann::json json = nlohmann::json::parse(g_resourceManager.getData("scene"));
                 g_projectName = json["name"];
 
+                g_currentScene = nullptr;
                 for(nodeRef scene : g_scenes) {
                     delete scene;
                 }
