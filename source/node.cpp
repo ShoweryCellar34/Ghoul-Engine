@@ -12,7 +12,6 @@ std::string nameCheck(const nodeRef node, const std::string& name) {
         stringVector.push_back(child->getName());
     }
 
-    // Check if the string is already in the vector
     while (std::find(stringVector.begin(), stringVector.end(), newString) != stringVector.end()) {
         newString = name + " (" + std::to_string(count) + ")";
         count++;
