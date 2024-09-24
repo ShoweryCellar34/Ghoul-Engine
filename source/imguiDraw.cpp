@@ -68,6 +68,17 @@ void drawMainMenuBar() {
     }
 
     if(ImGui::BeginMenu("Edit")) {
+        if(ImGui::MenuItem("Copy")) {
+            g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
+        }
+        if(ImGui::MenuItem("Copy")) {
+            g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
+            g_currentScene->getSelectedNode()->kys();
+        }
+        if(ImGui::MenuItem("Paste")) {
+            g_currentScene->getSelectedNode()->addChild(g_nodeClipboard);
+            g_currentScene->getSelectedNode()->m_shouldOpen = true;
+        }
         if(ImGui::MenuItem("Rename Project")) {
             renaming = true;
             newName = g_projectName;
@@ -91,9 +102,17 @@ void drawScenePopup(const nodeRef node) {
     if(!renaming) {
         if(ImGui::BeginPopup("Window right-click popup")) {
             if(ImGui::Button("Add node")) {
-                nodeRef child = node->addChild(("node " + std::to_string(node->m_children.size())).c_str());
+                nodeRef child = node->addChild("node " + std::to_string(node->m_children.size()));
                 node->m_root->selectNode(child);
                 node->m_shouldOpen = true;
+                ImGui::CloseCurrentPopup();
+            }
+            if(ImGui::Button("Paste")) {
+                if(!g_nodeClipboard.empty()) {
+                    nodeRef child = node->addChild(g_nodeClipboard);
+                    node->m_root->selectNode(child);
+                    node->m_shouldOpen = true;
+                }
                 ImGui::CloseCurrentPopup();
             }
             if(ImGui::Button("Rename scene")) {

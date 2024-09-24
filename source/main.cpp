@@ -23,6 +23,27 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
                 loadProject();
             }
             break;
+
+        case GLFW_KEY_C:
+            if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
+                g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
+            }
+            break;
+
+        case GLFW_KEY_X:
+            if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
+                g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
+                g_currentScene->getSelectedNode()->kys();
+            }
+            break;
+
+        case GLFW_KEY_V:
+            if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
+                g_currentScene->getSelectedNode()->addChild(g_nodeClipboard);
+                g_currentScene->getSelectedNode()->m_shouldOpen = true;
+
+            }
+            break;
         }
         break;
     }

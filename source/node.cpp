@@ -1,6 +1,7 @@
 #include <node.hpp>
 
 #include <imguiDraw.hpp>
+#include <defines_and_globals.hpp>
 
 // Node definitions
 
@@ -55,7 +56,23 @@ void treeNode::setName(std::string name) {
 }
 
 nodeRef treeNode::addChild(std::string name) {
-    nodeRef child = new treeNode(m_root, (nodeRef)this, "", name);
+    std::function<std::string(nodeRef, std::string, int)> nameCheck = [](nodeRef node, std::string name, int attempt){
+        std::string goodName = name;
+        for(nodeRef child : node->getChildren()) {
+            if(child->getName() == name) {
+                std::string fixedName = name + " (" + std::to_string(attempt) + ")";
+                goodName = nameCheck(node, fixedName, attempt + 1);
+            }
+        }
+        return goodName;
+    };
+    nodeRef child = new treeNode(m_root, (nodeRef)this, "", nameCheck(this, name, 1));
+    m_children.push_back(child);
+    return child;
+}
+
+nodeRef treeNode::addChild(nlohmann::json data) {
+    nodeRef child = new treeNode(m_root, (nodeRef)this, data);
     m_children.push_back(child);
     return child;
 }
@@ -78,6 +95,10 @@ nodeRef treeNode::getChild(std::string name) const {
         }
     }
     return result;
+}
+
+std::vector<nodeRef> treeNode::getChildren() const {
+    return m_children;
 }
 
 nodeRef treeNode::getParent() const {
@@ -118,11 +139,11 @@ void treeNode::loadJSON(nlohmann::json json) {
     }
 }
 
-void drawNodePopup(nodeRef node) {
+void drawNodePopup(const nodeRef node) {
     static bool renaming = false;
     static std::string newName;
     if(ImGui::Button("Add child")) {
-        nodeRef child = node->addChild(("child " + std::to_string(node->m_children.size())).c_str());
+        nodeRef child = node->addChild("child " + std::to_string(node->m_children.size()));
         node->m_root->selectNode(child);
         node->m_shouldOpen = true;
         ImGui::CloseCurrentPopup();
@@ -130,6 +151,22 @@ void drawNodePopup(nodeRef node) {
     if(ImGui::Button("Rename")) {
         renaming = true;
         newName = node->getName();
+    }
+    if(ImGui::Button("Copy")) {
+        g_nodeClipboard = node->getJSON();
+        ImGui::CloseCurrentPopup();
+    }
+    if(ImGui::Button("Cut")) {
+        g_nodeClipboard = node->getJSON();
+        ImGui::CloseCurrentPopup();
+    }
+    if(ImGui::Button("Paste")) {
+        if(!g_nodeClipboard.empty()) {
+            nodeRef child = node->addChild(g_nodeClipboard);
+            node->m_root->selectNode(child);
+            node->m_shouldOpen = true;
+        }
+        ImGui::CloseCurrentPopup();
     }
     if(ImGui::Button("Remove")) {
         nodeRef parent = node->m_parent;
@@ -176,6 +213,9 @@ void treeNode::imguiDraw() const {
         }
         ImGui::TreePop();
     } else {
+        if(ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+            m_root->selectNode((nodeRef)this);
+        }
         if(ImGui::BeginPopupContextItem()) {
             m_root->selectNode((nodeRef)this);
             drawNodePopup((nodeRef)this);

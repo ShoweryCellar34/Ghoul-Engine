@@ -19,6 +19,7 @@ private:
     mutable bool m_shouldOpen;
     nodeRef m_selectedNode;
 
+    friend void drawMainMenuBar();
     friend void drawNodePopup(nodeRef node);
     friend void drawScenePopup(nodeRef node);
     friend void drawNodeInspector(const nodeRef nodeToInspect);
@@ -34,10 +35,13 @@ public:
 
     void setName(std::string name);
     nodeRef addChild(std::string name);
+    nodeRef addChild(nlohmann::json data);
+    bool removeChild(std::string name);
     void reparent(nodeRef newParent);
 
     const char* getName() const;
     nodeRef getChild(std::string name) const;
+    std::vector<nodeRef> getChildren() const;
     nodeRef getParent() const;
 
     nlohmann::json getJSON() const;

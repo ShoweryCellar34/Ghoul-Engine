@@ -7,6 +7,7 @@ fs::path g_openFile;
 std::string g_projectName = "Unnamed Project";
 std::vector<nodeRef> g_scenes;
 nodeRef g_currentScene = nullptr;
+nlohmann::json g_nodeClipboard;
 
 void refreshTitle() {
     std::string title;
