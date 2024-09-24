@@ -72,8 +72,9 @@ void drawMainMenuBar() {
             g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
         }
         if(ImGui::MenuItem("Copy")) {
-            g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
-            g_currentScene->getSelectedNode()->kys();
+            nodeRef selectedNode = g_currentScene->getSelectedNode();
+            g_nodeClipboard = selectedNode->getJSON();
+            selectedNode->getParent()->removeChild(selectedNode->getName());
         }
         if(ImGui::MenuItem("Paste")) {
             g_currentScene->getSelectedNode()->addChild(g_nodeClipboard);
@@ -102,7 +103,7 @@ void drawScenePopup(const nodeRef node) {
     if(!renaming) {
         if(ImGui::BeginPopup("Window right-click popup")) {
             if(ImGui::Button("Add node")) {
-                nodeRef child = node->addChild("node " + std::to_string(node->m_children.size()));
+                nodeRef child = node->addChild((std::string)"node");
                 node->m_root->selectNode(child);
                 node->m_shouldOpen = true;
                 ImGui::CloseCurrentPopup();

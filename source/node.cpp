@@ -3,6 +3,25 @@
 #include <imguiDraw.hpp>
 #include <defines_and_globals.hpp>
 
+std::string nameCheck(nodeRef node, std::string name, int attempt) {
+    std::string goodName = name;
+    bool nameFound = false;
+    int iterator = 1;
+    while(!nameFound) {
+        for(nodeRef child : node->getChildren()) {
+            if(child->getName() == name) {
+                if(child->getName() == (goodName + " (" + std::to_string(iterator) + ")")) {
+                    iterator++;
+                } else {
+                    nameFound = true;
+                    goodName += " (" + std::to_string(iterator) + ")";
+                }
+            }
+        }
+    }
+    return goodName;
+}
+
 // Node definitions
 
 void treeNode::selectNode(nodeRef node) {
@@ -13,7 +32,7 @@ nodeRef treeNode::getSelectedNode() {
     return m_selectedNode;
 }
 
-treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name) : m_parent(parent), m_data(data), m_name(name), 
+treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name) : m_parent(parent), m_data(data), m_name(nameCheck(this->getParent(), name, 1)), 
         m_imguiName(m_name + "##" + std::to_string((std::uintptr_t)this)), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
     if(root == nullptr) {
         m_root = this;
@@ -30,7 +49,7 @@ treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent
     }
 
     if(json.contains("name") && json["name"].is_string()) {
-        setName(json.at("name").get<std::string>().c_str());
+        setName(nameCheck(this->getParent(), json.at("name").get<std::string>(), 1));
     }
     if (json.contains("data") && json["data"].is_string()) {
         m_data = json.at("data").get<std::string>();
@@ -51,22 +70,12 @@ treeNode::~treeNode() {
 }
 
 void treeNode::setName(std::string name) {
-    m_name = name;
+    m_name = nameCheck(this->getParent(), name, 1);
     m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
 }
 
 nodeRef treeNode::addChild(std::string name) {
-    std::function<std::string(nodeRef, std::string, int)> nameCheck = [](nodeRef node, std::string name, int attempt){
-        std::string goodName = name;
-        for(nodeRef child : node->getChildren()) {
-            if(child->getName() == name) {
-                std::string fixedName = name + " (" + std::to_string(attempt) + ")";
-                goodName = nameCheck(node, fixedName, attempt + 1);
-            }
-        }
-        return goodName;
-    };
-    nodeRef child = new treeNode(m_root, (nodeRef)this, "", nameCheck(this, name, 1));
+    nodeRef child = new treeNode(m_root, (nodeRef)this, "", name);
     m_children.push_back(child);
     return child;
 }
@@ -75,6 +84,18 @@ nodeRef treeNode::addChild(nlohmann::json data) {
     nodeRef child = new treeNode(m_root, (nodeRef)this, data);
     m_children.push_back(child);
     return child;
+}
+
+bool treeNode::removeChild(std::string name) {
+    bool found = false;
+    for(nodeRef child : m_children) {
+        if(child->getName() == name) {
+            found = true;
+            delete child;
+            m_children.erase(std::find(m_children.begin(), m_children.end(), child));
+        }
+    }
+    return found;
 }
 
 void treeNode::reparent(nodeRef newParent) {
@@ -102,7 +123,7 @@ std::vector<nodeRef> treeNode::getChildren() const {
 }
 
 nodeRef treeNode::getParent() const {
-    return m_parent;
+    return (m_parent == nullptr ? (nodeRef)this : m_parent);
 }
 
 nlohmann::json treeNode::getJSON() const {
@@ -121,7 +142,7 @@ nlohmann::json treeNode::getJSON() const {
 
 void treeNode::loadJSON(nlohmann::json json) {
     if(json.contains("name") && json["name"].is_string()) {
-        setName(json.at("name").get<std::string>());
+        setName(nameCheck(this->getParent(), json.at("name").get<std::string>(), 1));
     }
     if (json.contains("data") && json["data"].is_string()) {
         m_data = json.at("data").get<std::string>();
@@ -143,7 +164,7 @@ void drawNodePopup(const nodeRef node) {
     static bool renaming = false;
     static std::string newName;
     if(ImGui::Button("Add child")) {
-        nodeRef child = node->addChild("child " + std::to_string(node->m_children.size()));
+        nodeRef child = node->addChild((std::string)"child");
         node->m_root->selectNode(child);
         node->m_shouldOpen = true;
         ImGui::CloseCurrentPopup();
