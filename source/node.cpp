@@ -3,23 +3,22 @@
 #include <imguiDraw.hpp>
 #include <defines_and_globals.hpp>
 
-std::string nameCheck(nodeRef node, std::string name, int attempt) {
-    std::string goodName = name;
-    bool nameFound = false;
-    int iterator = 1;
-    while(!nameFound) {
-        for(nodeRef child : node->getChildren()) {
-            if(child->getName() == name) {
-                if(child->getName() == (goodName + " (" + std::to_string(iterator) + ")")) {
-                    iterator++;
-                } else {
-                    nameFound = true;
-                    goodName += " (" + std::to_string(iterator) + ")";
-                }
-            }
-        }
+std::string nameCheck(const nodeRef node, const std::string& name) {
+    std::string newString = name;
+    int count = 1;
+
+    std::vector<std::string> stringVector;
+    for(nodeRef child : node->getChildren()) {
+        stringVector.push_back(child->getName());
     }
-    return goodName;
+
+    // Check if the string is already in the vector
+    while (std::find(stringVector.begin(), stringVector.end(), newString) != stringVector.end()) {
+        newString = name + " (" + std::to_string(count) + ")";
+        count++;
+    }
+
+    return newString;
 }
 
 // Node definitions

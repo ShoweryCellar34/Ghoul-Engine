@@ -8,6 +8,7 @@ Ghoul Engine uses strictly cross-platform libraries \(Windows, Mac, and Linux su
 run this command with [git](https://git-scm.com/) installed to clone this repository: `git clone --recursive https://github.com/ShoweryCellar34/Ghoul-Engine.git`
 
 ## How to build \(CMake required\)
+Warning: the "res/" directory may not be copyed over to the binary directory when using MSVC.
 ### Windows \([Visual Studio](https://visualstudio.microsoft.com/)\)
 1. Move into the cloned directory `cd Ghoul-Engine`.
 2. Make the build directory `mkdir build` and move into it `cd build`.
