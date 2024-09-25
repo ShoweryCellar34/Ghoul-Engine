@@ -11,10 +11,10 @@ struct treeNode {
 private:
     nodeRef m_root;
     nodeRef m_parent;
+    std::vector<nodeRef> m_children;
     nlohmann::json m_data;
     std::string m_name;
     std::string m_imguiName;
-    std::vector<nodeRef> m_children;
     mutable int m_selectedFlag;
     mutable bool m_shouldOpen;
     nodeRef m_selectedNode;
@@ -37,9 +37,10 @@ public:
     nodeRef addChild(std::string name);
     nodeRef addChild(nlohmann::json data);
     bool removeChild(std::string name);
+    void removeSelf();
     void reparent(nodeRef newParent);
 
-    const char* getName() const;
+    std::string getName() const;
     nodeRef getChild(std::string name) const;
     std::vector<nodeRef> getChildren() const;
     nodeRef getParent() const;

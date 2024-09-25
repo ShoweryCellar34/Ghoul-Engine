@@ -71,10 +71,10 @@ void drawMainMenuBar() {
         if(ImGui::MenuItem("Copy")) {
             g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
         }
-        if(ImGui::MenuItem("Copy")) {
+        if(ImGui::MenuItem("Cut")) {
             nodeRef selectedNode = g_currentScene->getSelectedNode();
             g_nodeClipboard = selectedNode->getJSON();
-            selectedNode->getParent()->removeChild(selectedNode->getName());
+            selectedNode->removeSelf();
         }
         if(ImGui::MenuItem("Paste")) {
             g_currentScene->getSelectedNode()->addChild(g_nodeClipboard);
@@ -136,7 +136,7 @@ void drawNodeTree(const nodeRef nodeToDraw) {
 
     ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + g_window.getWidth() - 265, g_window.getYPos() + 17), ImGuiCond_Once);
-    ImGui::Begin(nodeToDraw->getName(), nullptr);
+    ImGui::Begin(nodeToDraw->getName().c_str(), nullptr);
 
     for(nodeRef child : nodeToDraw->m_children) {
         child->imguiDraw();

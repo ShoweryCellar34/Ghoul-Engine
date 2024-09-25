@@ -33,7 +33,7 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         case GLFW_KEY_X:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
                 g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
-                // g_currentScene->getSelectedNode()->kys();
+                g_currentScene->getSelectedNode()->removeSelf();
             }
             break;
 
