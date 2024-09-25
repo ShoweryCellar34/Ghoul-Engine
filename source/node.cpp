@@ -4,29 +4,20 @@
 #include <defines_and_globals.hpp>
 
 std::string nameCheck(const nodeRef node, const std::string& name) {
-    // I'm going insane
+    std::string newString = name;
+    int count = 1;
 
-    static int a = 0;
-    if(a != 0) {
-        std::string newString = name;
-        int count = 1;
-
-        std::vector<std::string> stringVector;
-        for(nodeRef child : node->getChildren()) {
-            stringVector.push_back(child->getName());
-        }
-
-        while (std::find(stringVector.begin(), stringVector.end(), newString) != stringVector.end()) {
-            newString = name + " (" + std::to_string(count) + ")";
-            count++;
-        }
-
-        return newString;
+    std::vector<std::string> stringVector;
+    for(nodeRef child : node->getChildren()) {
+        stringVector.push_back(child->getName());
     }
 
-    a++;
+    while (std::find(stringVector.begin(), stringVector.end(), newString) != stringVector.end()) {
+        newString = name + " (" + std::to_string(count) + ")";
+        count++;
+    }
 
-    return name;
+    return newString;
 }
 
 // Node definitions
@@ -45,7 +36,11 @@ treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::strin
     } else {
         m_root = root;
     }
-    m_name = nameCheck(this->getParent(), name);
+    if(parent != nullptr) {
+        m_name = nameCheck(this->getParent(), name);
+    } else {
+        m_name = name;
+    }
     m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
 }
 
