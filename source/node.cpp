@@ -1,5 +1,6 @@
 #include <node.hpp>
 
+#include <format>
 #include <imguiDraw.hpp>
 #include <defines_and_globals.hpp>
 
@@ -13,7 +14,7 @@ std::string nameCheck(const nodeRef node, const std::string& name) {
     }
 
     while (std::find(stringVector.begin(), stringVector.end(), newString) != stringVector.end()) {
-        newString = name + " (" + std::to_string(count) + ")";
+        newString = name + std::format(" ({})", count);
         count++;
     }
 
@@ -41,7 +42,7 @@ treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::strin
     } else {
         m_name = name;
     }
-    m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
+    m_imguiName = m_name + std::format("##{}", this);
 }
 
 treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
@@ -74,7 +75,7 @@ treeNode::~treeNode() {
 
 void treeNode::setName(std::string name) {
     m_name = nameCheck(this->getParent(), name);
-    m_imguiName = m_name + "##" + std::to_string((std::uintptr_t)this);
+    m_imguiName = m_name + std::format("##{}", this);
 }
 
 nodeRef treeNode::addChild(std::string name) {
