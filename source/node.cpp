@@ -6,6 +6,10 @@
 
 namespace GH {
     std::string nameCheck(const nodeRef node, const std::string& name) {
+        if(node->getParent() == nullptr) {
+            return name;
+        }
+
         std::string newString = name;
         int count = 1;
 
