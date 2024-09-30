@@ -58,12 +58,15 @@ int main(int argc, char* argv[]) {
 
     g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
     refreshTitle();
-    g_window.setAspectRatio(16, 9);
     g_window.setEventCallback(eventCallback);
     g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
     g_currentScene = new treeNode(nullptr, nullptr, "", "ROOT");
     g_scenes.push_back(g_currentScene);
+
+    g_window.startFrame();
+    ImGui::GetFont()->Scale = 1.2f;
+    g_window.endFrame();
 
     while(!g_window.shouldClose()) {
         PNT::processEvents();
@@ -72,7 +75,7 @@ int main(int argc, char* argv[]) {
         drawGlobalDockingWindow();
         drawMainMenuBar();
         drawNodeTree(g_currentScene);
-        drawNodeInspector(g_currentScene);
+        drawNodeInspector(g_currentScene->getSelectedNode());
 
         g_window.endFrame();
     }

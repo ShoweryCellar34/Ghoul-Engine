@@ -3,43 +3,52 @@
 #include <format>
 #include <imgui.h>
 #include <Pentagram.hpp>
+#include <defines_and_globals.hpp>
 #include <fileInterfaces.hpp>
 #include <node.hpp>
 
-int drawRenameWindow(bool* renaming, std::string* output, std::string* buffer, std::string title) {
-    ImGui::SetNextWindowSize(ImVec2(200, 54));
+RENAME_STATUS drawRenameWindow(bool* renaming, std::string* output, std::string* buffer, std::string title) {
+    ImGui::SetNextWindowSize(ImVec2(200, 59));
     ImGui::SetNextWindowPos(ImVec2((g_window.getXPos() + g_window.getWidth() / 2) - 100, (g_window.getYPos() + g_window.getHeight() / 2) - 27));
     ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     ImGui::InputText(std::format("##{}", (std::uintptr_t)buffer).c_str(), buffer);
     ImGui::SetKeyboardFocusHere();
     ImGui::End();
     if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
-        *output = *buffer;
-        *renaming = false;
-        return 2;
+        if(*buffer != "") {
+            *output = *buffer;
+            *renaming = false;
+            return RENAME_STATUS::SUCCESS;
+        } else {
+            return RENAME_STATUS::CANCLED;
+        }
     } else if(ImGui::IsKeyDown(ImGuiKey_Escape)) {
         *renaming = false;
-        return 1;
+        return RENAME_STATUS::CANCLED;
     }
-    return 0;
+    return RENAME_STATUS::AWATING;
 }
 
-int drawRenameWindow(bool* renaming, void(*output)(std::string), std::string* buffer, std::string title) {
-    ImGui::SetNextWindowSize(ImVec2(200, 54));
+RENAME_STATUS drawRenameWindow(bool* renaming, void(*output)(std::string), std::string* buffer, std::string title) {
+    ImGui::SetNextWindowSize(ImVec2(200, 59));
     ImGui::SetNextWindowPos(ImVec2((g_window.getXPos() + g_window.getWidth() / 2) - 100, (g_window.getYPos() + g_window.getHeight() / 2) - 27));
     ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     ImGui::InputText(std::format("##{}", (std::uintptr_t)buffer).c_str(), buffer);
     ImGui::SetKeyboardFocusHere();
     ImGui::End();
     if(ImGui::IsKeyDown(ImGuiKey_Enter)) {
-        output(*buffer);
-        *renaming = false;
-        return 2;
+        if(*buffer != "") {
+            output(*buffer);
+            *renaming = false;
+            return RENAME_STATUS::SUCCESS;
+        } else {
+            return RENAME_STATUS::CANCLED;
+        }
     } else if(ImGui::IsKeyDown(ImGuiKey_Escape)) {
         *renaming = false;
-        return 1;
+        return RENAME_STATUS::CANCLED;
     }
-    return 0;
+    return RENAME_STATUS::AWATING;
 }
 
 void drawGlobalDockingWindow() {
@@ -90,7 +99,7 @@ void drawMainMenuBar() {
     }
 
     if(renaming) {
-        if(drawRenameWindow(&renaming, &g_projectName, &newName, "Rename Project") == 2) {
+        if(drawRenameWindow(&renaming, &g_projectName, &newName, "Rename Project") == RENAME_STATUS::SUCCESS) {
             refreshTitle();
         }
     }
@@ -124,7 +133,7 @@ void drawScenePopup(const nodeRef node) {
             ImGui::EndPopup();
         }
     } else {
-        if(drawRenameWindow(&renaming, &node->m_name, &newName, "Rename Scene")) {
+        if(drawRenameWindow(&renaming, &node->m_name, &newName, "Rename Scene") != RENAME_STATUS::CANCLED) {
             ImGui::CloseCurrentPopup();
         }
     }
@@ -135,8 +144,8 @@ void drawNodeTree(const nodeRef nodeToDraw) {
         return;
     }
 
-    ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
-    ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + g_window.getWidth() - 265, g_window.getYPos() + 17), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 21), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + g_window.getWidth() - 265, g_window.getYPos() + 21), ImGuiCond_Once);
     ImGui::Begin(nodeToDraw->getName().c_str(), nullptr);
 
     for(nodeRef child : nodeToDraw->m_children) {
@@ -148,19 +157,35 @@ void drawNodeTree(const nodeRef nodeToDraw) {
     }
     drawScenePopup(nodeToDraw);
 
+    if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
+        nodeToDraw->selectNode(nodeToDraw);
+    }
+
     ImGui::End();
 }
 
 void drawNodeInspector(const nodeRef nodeToInspect) {
-    if(nodeToInspect == nullptr) {
-        return;
-    }
-
-    ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 17), ImGuiCond_Once);
-    ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + 0, g_window.getYPos() + 17), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 21), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + 0, g_window.getYPos() + 21), ImGuiCond_Once);
     ImGui::Begin("Node Inspector", nullptr);
 
-    // Draw details
+    if(nodeToInspect != nullptr) {
+        static bool renaming = false;
+        static std::string newName;
+        if(ImGui::ImageButton(std::to_string((std::uintptr_t)nodeToInspect).c_str(), 0, ImVec2(12, 12))) {
+            renaming = true;
+            newName = nodeToInspect->getName();
+        }
+        ImGui::SameLine();
+        ImGui::Text("Name: %s", nodeToInspect->getName().c_str());
+        ImGui::Text("   ImGui name: %s", nodeToInspect->getImGuiName().c_str());
+
+        if(renaming) {
+            drawRenameWindow(&renaming, &nodeToInspect->m_name, &newName, "Rename Scene");
+        }
+    } else {
+        ImGui::Text("Select a node in the node tree panel.");
+    }
 
     ImGui::End();
 }

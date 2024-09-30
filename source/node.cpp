@@ -9,8 +9,11 @@ std::string nameCheck(const nodeRef node, const std::string& name) {
     int count = 1;
 
     std::vector<std::string> stringVector;
-    for(nodeRef child : node->getChildren()) {
-        stringVector.push_back(child->getName());
+    stringVector.reserve(node->getParent()->getChildren().size());
+    for(nodeRef child : node->getParent()->getChildren()) {
+        if(child != node) {
+            stringVector.push_back(child->getName());
+        }
     }
 
     while (std::find(stringVector.begin(), stringVector.end(), newString) != stringVector.end()) {
@@ -31,25 +34,29 @@ nodeRef treeNode::getSelectedNode() {
     return m_selectedNode;
 }
 
-treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
+treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false) {
     if(root == nullptr) {
         m_root = this;
+        m_selectedNode = this;
     } else {
         m_root = root;
+        m_selectedNode = nullptr;
     }
     if(parent != nullptr) {
-        m_name = nameCheck(this->getParent(), name);
+        m_name = nameCheck(this, name);
     } else {
         m_name = name;
     }
-    m_imguiName = m_name + std::format("##{}", this);
+    m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
 }
 
-treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
+treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false) {
     if(root == nullptr) {
         m_root = this;
+        m_selectedNode = this;
     } else {
         m_root = root;
+        m_selectedNode = nullptr;
     }
 
     if(json.contains("name") && json["name"].is_string()) {
@@ -74,8 +81,15 @@ treeNode::~treeNode() {
 }
 
 void treeNode::setName(std::string name) {
-    m_name = nameCheck(this->getParent(), name);
-    m_imguiName = m_name + std::format("##{}", this);
+    if((name == "") or (name == m_name)) {
+        return;
+    }
+    m_name = nameCheck(this, name);
+    m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+}
+
+void treeNode::updateImGuiName() {
+    m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
 }
 
 nodeRef treeNode::addChild(std::string name) {
@@ -120,6 +134,10 @@ std::string treeNode::getName() const {
     return m_name;
 }
 
+std::string treeNode::getImGuiName() const {
+    return m_imguiName;
+}
+
 nodeRef treeNode::getChild(std::string name) const {
     nodeRef result = nullptr;
     for(nodeRef child : m_children) {
@@ -154,7 +172,7 @@ nlohmann::json treeNode::getJSON() const {
 
 void treeNode::loadJSON(nlohmann::json json) {
     if(json.contains("name") && json["name"].is_string()) {
-        setName(nameCheck(this->getParent(), json.at("name").get<std::string>()));
+        setName(nameCheck(this, json.at("name").get<std::string>()));
     }
     if (json.contains("data") && json["data"].is_string()) {
         m_data = json.at("data").get<std::string>();
@@ -210,7 +228,7 @@ void drawNodePopup(const nodeRef node) {
         ImGui::CloseCurrentPopup();
     }
     if(renaming) {
-        if(drawRenameWindow(&renaming, &node->m_name, &newName, (std::string)"Rename " + node->m_imguiName)) {
+        if(drawRenameWindow(&renaming, &node->m_name, &newName, "Rename Scene") == RENAME_STATUS::SUCCESS) {
             node->setName(node->getName());
             ImGui::CloseCurrentPopup();
         }

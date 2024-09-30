@@ -22,25 +22,27 @@ private:
     friend void drawMainMenuBar();
     friend void drawNodePopup(nodeRef node);
     friend void drawScenePopup(nodeRef node);
-    friend void drawNodeInspector(const nodeRef nodeToInspect);
     friend void drawNodeTree(const nodeRef nodeToDraw);
+    friend void drawNodeInspector(const nodeRef nodeToInspect);
     friend void eventCallback(PNT::Window* window, PNT::windowEvent event);
 
-    void selectNode(nodeRef node);
-    nodeRef getSelectedNode();
 public:
     treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name);
     treeNode(nodeRef root, nodeRef parent, nlohmann::json json);
     ~treeNode();
 
+    void selectNode(nodeRef node);
     void setName(std::string name);
+    void updateImGuiName();
     nodeRef addChild(std::string name);
     nodeRef addChild(nlohmann::json data);
     bool removeChild(std::string name);
     void removeSelf();
     void reparent(nodeRef newParent);
 
+    nodeRef getSelectedNode();
     std::string getName() const;
+    std::string getImGuiName() const;
     nodeRef getChild(std::string name) const;
     std::vector<nodeRef> getChildren() const;
     nodeRef getParent() const;
