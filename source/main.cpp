@@ -12,36 +12,35 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         switch(event.keyboard.key) {
         case GLFW_KEY_S:
             if(event.keyboard.mods == GLFW_MOD_CONTROL + GLFW_MOD_SHIFT && event.keyboard.action == GLFW_RELEASE) {
-                saveAs();
+                GH::saveAs();
             } else if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                saveScene();
+                GH::saveScene();
             }
             break;
 
         case GLFW_KEY_O:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                loadProject();
+                GH::loadProject();
             }
             break;
 
         case GLFW_KEY_C:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
+                GH::g_nodeClipboard = GH::g_currentScene->getSelectedNode()->getJSON();
             }
             break;
 
         case GLFW_KEY_X:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
-                g_currentScene->getSelectedNode()->removeSelf();
+                GH::g_nodeClipboard = GH::g_currentScene->getSelectedNode()->getJSON();
+                GH::g_currentScene->getSelectedNode()->removeSelf();
             }
             break;
 
         case GLFW_KEY_V:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                g_currentScene->getSelectedNode()->addChild(g_nodeClipboard);
-                g_currentScene->getSelectedNode()->m_shouldOpen = true;
-
+                GH::g_currentScene->getSelectedNode()->addChild(GH::g_nodeClipboard);
+                GH::g_currentScene->getSelectedNode()->m_shouldOpen = true;
             }
             break;
         }
@@ -56,35 +55,35 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
-    refreshTitle();
-    g_window.setEventCallback(eventCallback);
-    g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
+    GH::g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
+    GH::refreshTitle();
+    GH::g_window.setEventCallback(eventCallback);
+    GH::g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    g_currentScene = new treeNode(nullptr, nullptr, "", "ROOT");
-    g_scenes.push_back(g_currentScene);
+    GH::g_currentScene = new GH::treeNode(nullptr, nullptr, "", "ROOT");
+    GH::g_scenes.push_back(GH::g_currentScene);
 
-    g_window.startFrame();
+    GH::g_window.startFrame();
     ImGui::GetFont()->Scale = 1.2f;
-    g_window.endFrame();
+    GH::g_window.endFrame();
 
-    while(!g_window.shouldClose()) {
+    while(!GH::g_window.shouldClose()) {
         PNT::processEvents();
-        g_window.startFrame();
+        GH::g_window.startFrame();
 
-        drawGlobalDockingWindow();
-        drawMainMenuBar();
-        drawNodeTree(g_currentScene);
-        drawNodeInspector(g_currentScene->getSelectedNode());
+        GH::drawGlobalDockingWindow();
+        GH::drawMainMenuBar();
+        GH::drawNodeTree(GH::g_currentScene);
+        GH::drawNodeInspector(GH::g_currentScene->getSelectedNode());
 
-        g_window.endFrame();
+        GH::g_window.endFrame();
     }
 
-    for(nodeRef scene : g_scenes) {
+    for(GH::nodeRef scene : GH::g_scenes) {
         delete scene;
     }
-    g_scenes.clear();
-    g_currentScene = nullptr;
+    GH::g_scenes.clear();
+    GH::g_currentScene = nullptr;
 
     PNT::deinit();
     return 0;
