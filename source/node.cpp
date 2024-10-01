@@ -39,7 +39,7 @@ namespace GH {
         return m_selectedNode;
     }
 
-    treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false) {
+    treeNode::treeNode(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false) {
         if(root == nullptr) {
             m_root = this;
             m_selectedNode = this;
@@ -55,7 +55,7 @@ namespace GH {
         m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
     }
 
-    treeNode::treeNode(nodeRef root, nodeRef parent, nlohmann::json json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false) {
+    treeNode::treeNode(const nodeRef root, const nodeRef parent, const nlohmann::json& json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false) {
         if(root == nullptr) {
             m_root = this;
             m_selectedNode = this;
@@ -85,7 +85,7 @@ namespace GH {
         }
     }
 
-    void treeNode::setName(std::string name) {
+    void treeNode::setName(const std::string& name) {
         if((name == "") or (name == m_name)) {
             return;
         }
@@ -97,19 +97,19 @@ namespace GH {
         m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
     }
 
-    nodeRef treeNode::addChild(std::string name) {
+    nodeRef treeNode::addChild(const std::string& name) {
         nodeRef child = new treeNode(m_root, (nodeRef)this, "", name);
         m_children.push_back(child);
         return child;
     }
 
-    nodeRef treeNode::addChild(nlohmann::json data) {
+    nodeRef treeNode::addChild(const nlohmann::json& data) {
         nodeRef child = new treeNode(m_root, (nodeRef)this, data);
         m_children.push_back(child);
         return child;
     }
 
-    bool treeNode::removeChild(std::string name) {
+    bool treeNode::removeChild(const std::string& name) {
         bool found = false;
         for(nodeRef child : m_children) {
             if(child->getName() == name) {
@@ -127,7 +127,7 @@ namespace GH {
         }
     }
 
-    void treeNode::reparent(nodeRef newParent) {
+    void treeNode::reparent(const nodeRef newParent) {
         m_parent = newParent;
         newParent->m_children.push_back(this);
         if(m_parent != nullptr) {
@@ -143,7 +143,7 @@ namespace GH {
         return m_imguiName;
     }
 
-    nodeRef treeNode::getChild(std::string name) const {
+    nodeRef treeNode::getChild(const std::string& name) const {
         nodeRef result = nullptr;
         for(nodeRef child : m_children) {
             if(child->m_name == name) {
@@ -175,7 +175,7 @@ namespace GH {
         return json;
     }
 
-    void treeNode::loadJSON(nlohmann::json json) {
+    void treeNode::loadJSON(const nlohmann::json& json) {
         if(json.contains("name") && json["name"].is_string()) {
             setName(nameCheck(this, json.at("name").get<std::string>()));
         }

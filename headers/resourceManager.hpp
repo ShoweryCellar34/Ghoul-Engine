@@ -37,15 +37,15 @@ namespace GH {
         resourceManager(const resourceManager&) = delete;
         resourceManager& operator=(const resourceManager&) = delete;
 
-        std::shared_ptr<resource> getResource(std::string alias) const;
-        void flush(std::string alias);
-        void write(std::string alias, std::string data);
+        void flush(const std::string& alias);
+        void write(const std::string& alias, const std::string& data);
+        std::shared_ptr<resource> loadResource(const std::string& alias, fs::path path);
+        void unloadResource(const std::string& alias);
 
-        std::shared_ptr<resource> loadResource(std::string alias, fs::path path);
-        void unloadResource(std::string alias);
-        std::string getData(std::string alias) const;
-        fs::path getFilename(std::string alias) const;
-        fs::path getRelativePath(std::string alias) const;
-        fs::path getAbsolutePath(std::string alias) const;
+        std::shared_ptr<resource> getResource(const std::string& alias) const;
+        std::string getData(const std::string& alias) const;
+        fs::path getFilename(const std::string& alias) const;
+        fs::path getRelativePath(const std::string& alias) const;
+        fs::path getAbsolutePath(const std::string& alias) const;
     };
 }

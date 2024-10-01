@@ -30,28 +30,28 @@ namespace GH {
         friend void ::eventCallback(PNT::Window* window, PNT::windowEvent event);
 
     public:
-        treeNode(nodeRef root, nodeRef parent, nlohmann::json data, std::string name);
-        treeNode(nodeRef root, nodeRef parent, nlohmann::json json);
+        treeNode(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name);
+        treeNode(const nodeRef root, const nodeRef parent, const nlohmann::json& json);
         ~treeNode();
 
-        void selectNode(nodeRef node);
-        void setName(std::string name);
+        void selectNode(const nodeRef node);
+        void setName(const std::string& name);
         void updateImGuiName();
-        nodeRef addChild(std::string name);
-        nodeRef addChild(nlohmann::json data);
-        bool removeChild(std::string name);
+        nodeRef addChild(const std::string& name);
+        nodeRef addChild(const nlohmann::json& data);
+        bool removeChild(const std::string& name);
         void removeSelf();
-        void reparent(nodeRef newParent);
+        void reparent(const nodeRef newParent);
 
         nodeRef getSelectedNode();
         std::string getName() const;
         std::string getImGuiName() const;
-        nodeRef getChild(std::string name) const;
+        nodeRef getChild(const std::string& name) const;
         std::vector<nodeRef> getChildren() const;
         nodeRef getParent() const;
 
         nlohmann::json getJSON() const;
-        void loadJSON(nlohmann::json json);
+        void loadJSON(const nlohmann::json& json);
         void imguiDraw() const;
     };
 }
