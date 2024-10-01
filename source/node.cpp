@@ -73,7 +73,8 @@ namespace GH {
 
         if(json.contains("children") && json["children"].is_array()) {
             for (const auto& childJson : json.at("children")) {
-                m_children.emplace_back(m_root, this, childJson);
+                nodeRef childNode = new treeNode(m_root, this, childJson);
+                m_children.emplace_back(childNode);
             }
         }
     }
@@ -97,13 +98,15 @@ namespace GH {
     }
 
     nodeRef treeNode::addChild(const std::string& name) {
-        m_children.emplace_back(m_root, (nodeRef)this, "", name);
-        return m_children[m_children.size()];
+        nodeRef child = new treeNode(m_root, (nodeRef)this, "", name);
+        m_children.emplace_back(child);
+        return child;
     }
 
     nodeRef treeNode::addChild(const nlohmann::json& data) {
-        m_children.emplace_back(m_root, (nodeRef)this, data);
-        return m_children[m_children.size()];
+        nodeRef child = new treeNode(m_root, (nodeRef)this, data);
+        m_children.emplace_back(child);
+        return child;
     }
 
     bool treeNode::removeChild(const std::string& name) {
@@ -186,7 +189,8 @@ namespace GH {
         m_children.clear();
         if(json.contains("children") && json["children"].is_array()) {
             for (const auto& childJson : json.at("children")) {
-                m_children.emplace_back(m_root, this, childJson);
+                nodeRef childNode = new treeNode(m_root, this, childJson);
+                m_children.emplace_back(childNode);
             }
         }
     }
