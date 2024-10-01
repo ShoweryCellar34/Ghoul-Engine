@@ -17,7 +17,7 @@ namespace GH {
         stringVector.reserve(node->getParent()->getChildren().size());
         for(nodeRef child : node->getParent()->getChildren()) {
             if(child != node) {
-                stringVector.push_back(child->getName());
+                stringVector.emplace_back(child->getName());
             }
         }
 
