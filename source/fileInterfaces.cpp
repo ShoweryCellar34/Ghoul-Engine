@@ -24,7 +24,7 @@ namespace GH {
 
                     nlohmann::json scenes = nlohmann::json::array();
                     for(nodeRef child : g_scenes) {
-                        scenes.push_back(child->getJSON());
+                        scenes.emplace_back(child->getJSON());
                     }
                     json["scenes"] = scenes;
 
@@ -58,7 +58,7 @@ namespace GH {
 
                     nlohmann::json scenes = nlohmann::json::array();
                     for(nodeRef child : g_scenes) {
-                        scenes.push_back(child->getJSON());
+                        scenes.emplace_back(child->getJSON());
                     }
                     json["scenes"] = scenes;
 
@@ -95,7 +95,7 @@ namespace GH {
                     if(json.contains("scenes") && json["scenes"].is_array()) {
                         for (const auto& sceneJson : json.at("scenes")) {
                             nodeRef childNode = new treeNode(nullptr, nullptr, sceneJson);
-                            g_scenes.push_back(childNode);
+                            g_scenes.emplace_back(childNode);
                             g_currentScene = childNode;
                         }
                     }

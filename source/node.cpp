@@ -73,8 +73,7 @@ namespace GH {
 
         if(json.contains("children") && json["children"].is_array()) {
             for (const auto& childJson : json.at("children")) {
-                nodeRef childNode = new treeNode(m_root, this, childJson);
-                m_children.push_back(childNode);
+                m_children.emplace_back(m_root, this, childJson);
             }
         }
     }
@@ -98,15 +97,13 @@ namespace GH {
     }
 
     nodeRef treeNode::addChild(const std::string& name) {
-        nodeRef child = new treeNode(m_root, (nodeRef)this, "", name);
-        m_children.push_back(child);
-        return child;
+        m_children.emplace_back(m_root, (nodeRef)this, "", name);
+        return m_children[m_children.size()];
     }
 
     nodeRef treeNode::addChild(const nlohmann::json& data) {
-        nodeRef child = new treeNode(m_root, (nodeRef)this, data);
-        m_children.push_back(child);
-        return child;
+        m_children.emplace_back(m_root, (nodeRef)this, data);
+        return m_children[m_children.size()];
     }
 
     bool treeNode::removeChild(const std::string& name) {
@@ -129,7 +126,7 @@ namespace GH {
 
     void treeNode::reparent(const nodeRef newParent) {
         m_parent = newParent;
-        newParent->m_children.push_back(this);
+        newParent->m_children.emplace_back(this);
         if(m_parent != nullptr) {
             m_children.erase(std::find(m_children.begin(), m_children.end(), (nodeRef)this));
         }
@@ -168,7 +165,7 @@ namespace GH {
 
         nlohmann::json children = nlohmann::json::array();
         for(nodeRef child : m_children) {
-            children.push_back(child->getJSON());
+            children.emplace_back(child->getJSON());
         }
         json["children"] = children;
 
@@ -189,8 +186,7 @@ namespace GH {
         m_children.clear();
         if(json.contains("children") && json["children"].is_array()) {
             for (const auto& childJson : json.at("children")) {
-                nodeRef childNode = new treeNode(m_root, this, childJson);
-                m_children.push_back(childNode);
+                m_children.emplace_back(m_root, this, childJson);
             }
         }
     }

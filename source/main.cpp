@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     GH::g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
     GH::g_currentScene = new GH::treeNode(nullptr, nullptr, "", "ROOT");
-    GH::g_scenes.push_back(GH::g_currentScene);
+    GH::g_scenes.emplace_back(GH::g_currentScene);
 
     GH::g_window.startFrame();
     ImGui::GetFont()->Scale = 1.2f;
