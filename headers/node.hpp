@@ -10,7 +10,7 @@
 void eventCallback(PNT::Window* window, PNT::windowEvent event);
 
 namespace GH {
-    struct treeNode {
+    struct node {
     private:
         nodeRef m_root;
         nodeRef m_parent;
@@ -30,9 +30,11 @@ namespace GH {
         friend void ::eventCallback(PNT::Window* window, PNT::windowEvent event);
 
     public:
-        treeNode(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name);
-        treeNode(const nodeRef root, const nodeRef parent, const nlohmann::json& json);
-        ~treeNode();
+        node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name);
+        node(const nodeRef root, const nodeRef parent, const nlohmann::json& json);
+        ~node();
+        node(const node&) = delete;
+        node& operator=(const node&) = delete;
 
         void selectNode(const nodeRef node);
         void setName(const std::string& name);

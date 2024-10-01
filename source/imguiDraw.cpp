@@ -182,7 +182,7 @@ namespace GH {
             ImGui::Text("   ImGui name: %s", nodeToInspect->getImGuiName().c_str());
 
             if(renaming) {
-                drawRenameWindow(&renaming, &nodeToInspect->m_name, &newName, "Rename Scene");
+                drawRenameWindow(&renaming, &nodeToInspect->m_name, &newName, std::format("Rename {}", nodeToInspect->getName()));
             }
         } else {
             ImGui::Text("Select a node in the node tree panel.");

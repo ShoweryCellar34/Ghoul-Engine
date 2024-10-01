@@ -94,7 +94,7 @@ namespace GH {
                     g_scenes.clear();
                     if(json.contains("scenes") && json["scenes"].is_array()) {
                         for (const auto& sceneJson : json.at("scenes")) {
-                            nodeRef childNode = new treeNode(nullptr, nullptr, sceneJson);
+                            nodeRef childNode = new node(nullptr, nullptr, sceneJson);
                             g_scenes.emplace_back(childNode);
                             g_currentScene = childNode;
                         }

@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     GH::g_window.setEventCallback(eventCallback);
     GH::g_window.setClearColor(0.33f, 0.33f, 0.33f, 1.0f);
 
-    GH::g_currentScene = new GH::treeNode(nullptr, nullptr, "", "ROOT");
+    GH::g_currentScene = new GH::node(nullptr, nullptr, "", "ROOT");
     GH::g_scenes.emplace_back(GH::g_currentScene);
 
     GH::g_window.startFrame();

@@ -13,8 +13,8 @@ namespace GH {
         SUCCESS
     };
 
-    struct treeNode;
-    typedef treeNode* nodeRef;
+    struct node;
+    typedef node* nodeRef;
 
     namespace fs = std::filesystem;
     class resourceManager;
