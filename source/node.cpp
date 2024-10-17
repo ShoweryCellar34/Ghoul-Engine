@@ -236,7 +236,7 @@ namespace GH {
         }
         if(renaming) {
             if(drawRenameWindow(&renaming, &node->m_name, &newName, "Rename Scene") == RENAME_STATUS::SUCCESS) {
-                node->setName(node->getName());
+                node->updateImGuiName();
                 ImGui::CloseCurrentPopup();
             }
         }
