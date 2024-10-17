@@ -25,8 +25,8 @@ namespace GH {
         friend void drawMainMenuBar();
         friend void drawNodePopup(nodeRef node);
         friend void drawScenePopup(nodeRef node);
-        friend void drawNodeTree(const nodeRef nodeToDraw);
-        friend void drawNodeInspector(const nodeRef nodeToInspect);
+        friend void drawNodeTree();
+        friend void drawNodeInspector();
         friend void ::eventCallback(PNT::Window* window, PNT::windowEvent event);
 
     public:

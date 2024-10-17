@@ -5,11 +5,7 @@
 namespace GH {
     void refreshTitle() {
         std::string title;
-        if(g_projectName != "") {
-            title += g_projectName + " | Ghoul Engine";
-        } else {
-            title = "Unnamed Project | Ghoul Engine";
-        }
+        title += g_projectName + " | Ghoul Engine";
 
         g_window.setTitle(title);
     }

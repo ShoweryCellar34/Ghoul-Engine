@@ -73,8 +73,8 @@ int main(int argc, char* argv[]) {
 
         GH::drawGlobalDockingWindow();
         GH::drawMainMenuBar();
-        GH::drawNodeTree(GH::g_currentScene);
-        GH::drawNodeInspector(GH::g_currentScene->getSelectedNode());
+        GH::drawNodeTree();
+        GH::drawNodeInspector();
 
         GH::g_window.endFrame();
     }

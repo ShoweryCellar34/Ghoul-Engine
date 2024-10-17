@@ -101,6 +101,7 @@ namespace GH {
 
         if(renaming) {
             if(drawRenameWindow(&renaming, &g_projectName, &newName, "Rename Project") == RENAME_STATUS::SUCCESS) {
+                g_projectName = newName;
                 refreshTitle();
             }
         }
@@ -140,49 +141,49 @@ namespace GH {
         }
     }
 
-    void drawNodeTree(const nodeRef nodeToDraw) {
-        if(nodeToDraw == nullptr) {
+    void drawNodeTree() {
+        if(g_currentScene == nullptr) {
             return;
         }
 
         ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 21), ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + g_window.getWidth() - 265, g_window.getYPos() + 21), ImGuiCond_Once);
-        ImGui::Begin(nodeToDraw->getName().c_str(), nullptr);
+        ImGui::Begin(g_currentScene->getName().c_str(), nullptr);
 
-        for(nodeRef child : nodeToDraw->m_children) {
+        for(nodeRef child : g_currentScene->m_children) {
             child->imguiDraw();
         }
 
         if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1) && !ImGui::IsAnyItemHovered()) {
             ImGui::OpenPopup("Window right-click popup");
         }
-        drawScenePopup(nodeToDraw);
+        drawScenePopup(g_currentScene);
 
         if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
-            nodeToDraw->selectNode(nodeToDraw);
+            g_currentScene->selectNode(g_currentScene);
         }
 
         ImGui::End();
     }
 
-    void drawNodeInspector(const nodeRef nodeToInspect) {
+    void drawNodeInspector() {
         ImGui::SetNextWindowSize(ImVec2(265, g_window.getHeight() - 21), ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(g_window.getXPos() + 0, g_window.getYPos() + 21), ImGuiCond_Once);
         ImGui::Begin("Node Inspector", nullptr);
 
-        if(nodeToInspect != nullptr) {
+        if(g_currentScene->getSelectedNode() != nullptr) {
             static bool renaming = false;
             static std::string newName;
-            if(ImGui::ImageButton(std::to_string((std::uintptr_t)nodeToInspect).c_str(), 0, ImVec2(12, 12))) {
+            if(ImGui::ImageButton(std::to_string((std::uintptr_t)g_currentScene->getSelectedNode()).c_str(), 0, ImVec2(12, 12))) {
                 renaming = true;
-                newName = nodeToInspect->getName();
+                newName = g_currentScene->getSelectedNode()->getName();
             }
             ImGui::SameLine();
-            ImGui::Text("Name: %s", nodeToInspect->getName().c_str());
-            ImGui::Text("   ImGui name: %s", nodeToInspect->getImGuiName().c_str());
+            ImGui::Text("Name: %s", g_currentScene->getSelectedNode()->getName().c_str());
+            ImGui::Text("   ImGui name: %s", g_currentScene->getSelectedNode()->getImGuiName().c_str());
 
             if(renaming) {
-                drawRenameWindow(&renaming, &nodeToInspect->m_name, &newName, std::format("Rename {}", nodeToInspect->getName()));
+                drawRenameWindow(&renaming, &g_currentScene->getSelectedNode()->m_name, &newName, std::format("Rename {}", g_currentScene->getSelectedNode()->getName()));
             }
         } else {
             ImGui::Text("Select a node in the node tree panel.");

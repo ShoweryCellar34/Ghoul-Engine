@@ -124,6 +124,8 @@ namespace GH {
     void node::removeSelf() {
         if(m_parent != nullptr) {
             m_parent->removeChild(m_name);
+        } else {
+            delete this;
         }
     }
 
