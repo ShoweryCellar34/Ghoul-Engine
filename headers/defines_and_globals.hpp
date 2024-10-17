@@ -8,7 +8,6 @@
 
 namespace GH {
     enum class RENAME_STATUS : int {
-        AWATING,
         CANCLED,
         SUCCESS
     };

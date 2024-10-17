@@ -198,8 +198,6 @@ namespace GH {
     }
 
     void drawNodePopup(const nodeRef node) {
-        static bool renaming = false;
-        static std::string newName;
         if(ImGui::Button("Add child")) {
             nodeRef child = node->addChild((std::string)"child");
             node->m_root->selectNode(child);
@@ -207,8 +205,10 @@ namespace GH {
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Rename")) {
-            renaming = true;
-            newName = node->getName();
+            if(drawRenameWindow(node->m_name, std::format("Rename {}", node->getName())) == RENAME_STATUS::SUCCESS) {
+                node->updateImGuiName();
+                ImGui::CloseCurrentPopup();
+            }
         }
         if(ImGui::Button("Copy")) {
             g_nodeClipboard = node->getJSON();
@@ -233,12 +233,6 @@ namespace GH {
             node->m_root->selectNode(nullptr);
             delete node;
             ImGui::CloseCurrentPopup();
-        }
-        if(renaming) {
-            if(drawRenameWindow(&renaming, &node->m_name, &newName, "Rename Scene") == RENAME_STATUS::SUCCESS) {
-                node->updateImGuiName();
-                ImGui::CloseCurrentPopup();
-            }
         }
     }
 
