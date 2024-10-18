@@ -52,7 +52,7 @@ namespace GH {
         } else {
             m_name = name;
         }
-        m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+        m_imguiName = m_name + std::format("##{}", newID());
     }
 
     node::node(const nodeRef root, const nodeRef parent, const nlohmann::json& json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false) {
@@ -90,11 +90,11 @@ namespace GH {
             return;
         }
         m_name = nameCheck(this, name);
-        m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+        m_imguiName = m_name + std::format("##{}", newID());
     }
 
     void node::updateImGuiName() {
-        m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+        m_imguiName = m_name + std::format("##{}", newID());
     }
 
     nodeRef node::addChild(const std::string& name) {
@@ -205,8 +205,7 @@ namespace GH {
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Rename")) {
-            if(drawRenameWindow(node->m_name, std::format("Rename {}", node->getName())) == RENAME_STATUS::SUCCESS) {
-                node->updateImGuiName();
+            if(node->renameGUI() == RENAME_STATUS::SUCCESS) {
                 ImGui::CloseCurrentPopup();
             }
         }
@@ -275,5 +274,13 @@ namespace GH {
                 ImGui::EndPopup();
             }
         }
+    }
+
+    RENAME_STATUS node::renameGUI() {
+        RENAME_STATUS result = drawRenameWindow(m_name, std::format("Rename {}", m_name));
+        if(result == RENAME_STATUS::SUCCESS) {
+            updateImGuiName();
+        }
+        return result;
     }
 }

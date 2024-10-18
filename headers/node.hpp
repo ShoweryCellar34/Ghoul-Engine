@@ -55,5 +55,6 @@ namespace GH {
         nlohmann::json getJSON() const;
         void loadJSON(const nlohmann::json& json);
         void imguiDraw() const;
+        RENAME_STATUS renameGUI();
     };
 }

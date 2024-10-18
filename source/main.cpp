@@ -55,6 +55,7 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     GH::g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
     GH::refreshTitle();
     GH::g_window.setEventCallback(eventCallback);
@@ -68,6 +69,7 @@ int main(int argc, char* argv[]) {
     GH::g_window.endFrame();
 
     while(!GH::g_window.shouldClose()) {
+        GH::clearFrameIDs();
         PNT::processEvents();
         GH::g_window.startFrame();
 
