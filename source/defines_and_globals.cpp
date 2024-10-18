@@ -1,6 +1,8 @@
 #include <defines_and_globals.hpp>
 
 #include <Pentagram.hpp>
+#include <resourceManager.hpp>
+#include <texture.hpp>
 
 namespace GH {
     void refreshTitle() {
@@ -30,5 +32,14 @@ namespace GH {
 
     void clearFrameIDs() {
         frameIDs = 0;
+    }
+
+    void loadUITextures() {
+        g_resourceManager.loadResource("editIcon", "./res/textures/icons/edit.png");
+        std::string editIconData = g_resourceManager.getData("editIcon");
+        UITextures[0].setGL(g_window.getGL());
+        UITextures[0].setData(editIconData);
+        UITextures[0].load();
+        UITextureIDs::edit = UITextures[0].getID();
     }
 }

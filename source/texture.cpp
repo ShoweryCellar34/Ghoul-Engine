@@ -9,12 +9,13 @@ namespace GH {
     }
 
     texture::texture(GladGLContext* GL, const std::string& data) : m_GL(GL), m_ID(0) {
-        size_t length = strlen(data.c_str());
         m_data = stbi_load_from_memory((unsigned char*)data.c_str(), data.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, 4);
     }
 
     texture::~texture() {
-        stbi_image_free(m_data);
+        if(m_data != nullptr) {
+            stbi_image_free(m_data);
+        }
     }
 
     void texture::load() {
@@ -52,10 +53,11 @@ namespace GH {
             throw std::format("Image loaded with ID: {}.", m_ID);
         }
 
-        stbi_image_free(m_data);
+        if(m_data != nullptr) {
+            stbi_image_free(m_data);
+        }
 
-        size_t length = strlen(data.c_str());
-        m_data = stbi_load_from_memory((unsigned char*)data.c_str(), length, (int*)&m_width, (int*)&m_height, (int*)&m_channels, 4);
+        m_data = stbi_load_from_memory((unsigned char*)data.c_str(), data.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, 4);
     }
 
     void texture::setGL(GladGLContext* GL) {

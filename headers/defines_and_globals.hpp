@@ -1,16 +1,20 @@
 #pragma once
 
+#include <array>
 #include <cstddef>
 #include <filesystem>
 #include <string>
 #include <vector>
 #include <Pentagram.hpp>
 #include <nlohmann/json.hpp>
+#include <texture.hpp>
 #include <resourceManager.hpp>
 
 namespace GH {
-    namespace textureIDList {
-        inline size_t edit = 0, exit = 0, maximize = 0, minimize = 0, iconify = 0;
+    inline std::array<texture, 1> UITextures;
+
+    namespace UITextureIDs {
+        inline int edit = 0;
     }
 
     enum class RENAME_STATUS : int {
@@ -23,6 +27,7 @@ namespace GH {
 
     inline resourceManager g_resourceManager;
 
+    inline bool g_toReload = false;
     inline PNT::Window g_window;
     inline fs::path g_openFile;
     inline std::string g_projectName = "Unnamed Project";
@@ -36,4 +41,6 @@ namespace GH {
     size_t newFrameID();
     std::string newFrameIDstr();
     void clearFrameIDs();
+
+    void loadUITextures();
 }

@@ -13,7 +13,7 @@ namespace GH {
     RENAME_STATUS drawRenameWindow(std::string& output, const std::string& title) {
         const char* result = tinyfd_inputBox(title.c_str(), nullptr, "");
 
-        if(!result) {
+        if(!strlen(result)) {
             return RENAME_STATUS::CANCLED;
         }
 
@@ -24,7 +24,7 @@ namespace GH {
     RENAME_STATUS drawRenameWindow(void(*output)(std::string), std::string title) {
         const char* result = tinyfd_inputBox(title.c_str(), nullptr, "");
 
-        if(!result) {
+        if(strlen(result)) {
             return RENAME_STATUS::CANCLED;
         }
 
@@ -48,6 +48,12 @@ namespace GH {
             }
             if(ImGui::MenuItem("Open", "CTRL+O")) {
                 loadProject();
+            }
+            if(ImGui::MenuItem("Exit", "ALT+F4")) {
+                g_window.setShouldClose(true);
+            }
+            if(ImGui::MenuItem("Reload")) {
+                g_toReload = true;
             }
 
             ImGui::EndMenu();
@@ -134,7 +140,7 @@ namespace GH {
         ImGui::Begin("Node Inspector", nullptr);
 
         if(g_currentScene->getSelectedNode() != nullptr) {
-            if(ImGui::ImageButton(newFrameIDstr().c_str(), textureIDList::edit, ImVec2(12, 12))) {
+            if(ImGui::ImageButton(newFrameIDstr().c_str(), UITextureIDs::edit, ImVec2(12, 12))) {
                 g_currentScene->getSelectedNode()->renameGUI();
             }
             ImGui::SameLine();

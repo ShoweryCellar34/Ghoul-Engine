@@ -69,12 +69,7 @@ int main(int argc, char* argv[]) {
     GH::g_window.startFrame();
     ImGui::GetFont()->Scale = 1.2f;
     GH::g_window.endFrame();
-
-    GH::g_resourceManager.loadResource("edit", "./res/textures/icons/edit.png");
-    std::string editdata = GH::g_resourceManager.getData("edit");
-    GH::texture edit(GH::g_window.getGL(), editdata);
-    edit.load();
-    GH::textureIDList::edit = edit.getID();
+    GH::loadUITextures();
 
     while(!GH::g_window.shouldClose()) {
         GH::clearFrameIDs();
@@ -87,6 +82,15 @@ int main(int argc, char* argv[]) {
         GH::drawNodeInspector();
 
         GH::g_window.endFrame();
+
+        if(GH::g_toReload) {
+            GH::g_toReload = false;
+            PNT::windowData data = GH::g_window.getWindowData();
+            GH::g_window.destroyWindow();
+            GH::g_window.createWindow(data);
+
+            GH::loadUITextures();
+        }
     }
 
     for(GH::nodeRef scene : GH::g_scenes) {

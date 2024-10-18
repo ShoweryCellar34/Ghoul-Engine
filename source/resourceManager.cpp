@@ -67,6 +67,14 @@ namespace GH {
     resourceManager::resourceManager() : m_resources() {
     }
 
+    bool resourceManager::exists(const std::string& alias) {
+        if(m_resources.find(alias) != m_resources.end()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     void resourceManager::flush(const std::string& alias) {
         if(m_resources.find(alias) != m_resources.end()) {
             m_resources.at(alias).get()->flush();
