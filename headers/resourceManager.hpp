@@ -4,7 +4,8 @@
 #include <filesystem>
 #include <unordered_map>
 #include <string>
-#include <defines_and_globals.hpp>
+
+namespace fs = std::filesystem;
 
 namespace GH {
     class resource {

@@ -3,10 +3,6 @@
 #include <Pentagram.hpp>
 
 namespace GH {
-    // Global resourceManager.
-
-    resourceManager g_resourceManager;
-
     // Resource definitions.
 
     resource::resource(const fs::path& path) {

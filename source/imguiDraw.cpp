@@ -75,30 +75,6 @@ namespace GH {
             ImGui::EndMenu();
         }
 
-        ImGui::SameLine(g_window.getWidth()-32);
-        if(ImGui::ImageButton(newFrameIDstr().c_str(), textureIDList::exit, ImVec2(12, 12))) {
-            g_window.setShouldClose(true);
-        }
-
-        ImGui::SameLine(g_window.getWidth()-56);
-        size_t icon = (g_windowMaxed ? textureIDList::minimize : textureIDList::maximize);
-        if(ImGui::ImageButton(newFrameIDstr().c_str(), icon, ImVec2(12, 12))) {
-            g_windowMaxed = !g_windowMaxed;
-            const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            if(g_windowMaxed) {
-                g_prevWidth = g_window.getWidth();
-                g_prevHeight = g_window.getHeight();
-                g_window.setDimentions(mode->width, mode->height);
-            } else {
-                g_window.setDimentions(g_prevWidth, g_prevHeight);
-            }
-        }
-
-        ImGui::SameLine(g_window.getWidth()-80);
-        if(ImGui::ImageButton(newFrameIDstr().c_str(), textureIDList::iconify, ImVec2(12, 12))) {
-            g_window.minimize();
-        }
-
         ImGui::EndMainMenuBar();
     }
 

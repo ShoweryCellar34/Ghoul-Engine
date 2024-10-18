@@ -8,12 +8,12 @@ namespace GH {
     class texture {
     private:
         GladGLContext* m_GL;
-        size_t m_ID, m_width, m_height;
+        unsigned int m_ID, m_width, m_height, m_channels;
         unsigned char* m_data;
 
     public:
         texture();
-        texture(GladGLContext* GL, unsigned char* data, size_t width, size_t height);
+        texture(GladGLContext* GL, const std::string& data);
         ~texture();
 
         texture(const texture&) = delete;
@@ -25,7 +25,9 @@ namespace GH {
         void setGL(GladGLContext* GL);
 
         const unsigned char* getData();
-        size_t getID();
         const GladGLContext* getGL();
+        unsigned int getID();
+        unsigned int getWidth();
+        unsigned int getHeight();
     };
 }

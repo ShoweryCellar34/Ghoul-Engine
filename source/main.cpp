@@ -5,6 +5,8 @@
 #include <fileInterfaces.hpp>
 #include <node.hpp>
 #include <imguiDraw.hpp>
+#include <resourceManager.hpp>
+#include <texture.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -49,13 +51,13 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
 }
 
 int main(int argc, char* argv[]) {
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
 
     if(!PNT::init()) {
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+
     GH::g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
     GH::refreshTitle();
     GH::g_window.setEventCallback(eventCallback);
@@ -67,6 +69,12 @@ int main(int argc, char* argv[]) {
     GH::g_window.startFrame();
     ImGui::GetFont()->Scale = 1.2f;
     GH::g_window.endFrame();
+
+    GH::g_resourceManager.loadResource("edit", "./res/textures/icons/edit.png");
+    std::string editdata = GH::g_resourceManager.getData("edit");
+    GH::texture edit(GH::g_window.getGL(), editdata);
+    edit.load();
+    GH::textureIDList::edit = edit.getID();
 
     while(!GH::g_window.shouldClose()) {
         GH::clearFrameIDs();

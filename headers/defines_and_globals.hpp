@@ -6,6 +6,7 @@
 #include <vector>
 #include <Pentagram.hpp>
 #include <nlohmann/json.hpp>
+#include <resourceManager.hpp>
 
 namespace GH {
     namespace textureIDList {
@@ -20,14 +21,9 @@ namespace GH {
     struct node;
     typedef node* nodeRef;
 
-    namespace fs = std::filesystem;
-    class resourceManager;
-    extern resourceManager g_resourceManager;
+    inline resourceManager g_resourceManager;
 
     inline PNT::Window g_window;
-    inline bool g_windowMaxed = false;
-    inline size_t g_prevWidth = 0;
-    inline size_t g_prevHeight = 0;
     inline fs::path g_openFile;
     inline std::string g_projectName = "Unnamed Project";
     inline std::vector<nodeRef> g_scenes;
