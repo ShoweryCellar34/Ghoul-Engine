@@ -28,21 +28,19 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
 
         case GLFW_KEY_C:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                GH::g_nodeClipboard = GH::g_currentScene->getSelectedNode()->getJSON();
+                GH::copyNode();
             }
             break;
 
         case GLFW_KEY_X:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                GH::g_nodeClipboard = GH::g_currentScene->getSelectedNode()->getJSON();
-                GH::g_currentScene->getSelectedNode()->removeSelf();
+                GH::cutNode();
             }
             break;
 
         case GLFW_KEY_V:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                GH::g_currentScene->getSelectedNode()->addChild(GH::g_nodeClipboard);
-                GH::g_currentScene->getSelectedNode()->m_shouldOpen = true;
+                GH::pasteNode();
             }
             break;
         }
@@ -56,7 +54,6 @@ int main(int argc, char* argv[]) {
     if(!PNT::init()) {
         exit(EXIT_FAILURE);
     }
-
 
     GH::g_window.createWindow("Ghoul Engine", 1200, 675, 250, 250, ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable);
     GH::refreshTitle();
@@ -82,15 +79,6 @@ int main(int argc, char* argv[]) {
         GH::drawNodeInspector();
 
         GH::g_window.endFrame();
-
-        if(GH::g_toReload) {
-            GH::g_toReload = false;
-            PNT::windowData data = GH::g_window.getWindowData();
-            GH::g_window.destroyWindow();
-            GH::g_window.createWindow(data);
-
-            GH::loadUITextures();
-        }
     }
 
     for(GH::nodeRef scene : GH::g_scenes) {

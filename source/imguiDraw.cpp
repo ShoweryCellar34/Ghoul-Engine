@@ -13,7 +13,7 @@ namespace GH {
     RENAME_STATUS drawRenameWindow(std::string& output, const std::string& title) {
         const char* result = tinyfd_inputBox(title.c_str(), nullptr, "");
 
-        if(!strlen(result)) {
+        if(result == nullptr) {
             return RENAME_STATUS::CANCLED;
         }
 
@@ -24,7 +24,7 @@ namespace GH {
     RENAME_STATUS drawRenameWindow(void(*output)(std::string), std::string title) {
         const char* result = tinyfd_inputBox(title.c_str(), nullptr, "");
 
-        if(strlen(result)) {
+        if(result == nullptr) {
             return RENAME_STATUS::CANCLED;
         }
 
@@ -52,25 +52,19 @@ namespace GH {
             if(ImGui::MenuItem("Exit", "ALT+F4")) {
                 g_window.setShouldClose(true);
             }
-            if(ImGui::MenuItem("Reload")) {
-                g_toReload = true;
-            }
 
             ImGui::EndMenu();
         }
 
         if(ImGui::BeginMenu("Edit")) {
             if(ImGui::MenuItem("Copy")) {
-                g_nodeClipboard = g_currentScene->getSelectedNode()->getJSON();
+                copyNode();
             }
             if(ImGui::MenuItem("Cut")) {
-                nodeRef selectedNode = g_currentScene->getSelectedNode();
-                g_nodeClipboard = selectedNode->getJSON();
-                selectedNode->removeSelf();
+                cutNode();
             }
             if(ImGui::MenuItem("Paste")) {
-                g_currentScene->getSelectedNode()->addChild(g_nodeClipboard);
-                g_currentScene->getSelectedNode()->m_shouldOpen = true;
+                pasteNode();
             }
             if(ImGui::MenuItem("Rename Project")) {
                 if(drawRenameWindow(g_projectName, "Rename Project") == RENAME_STATUS::SUCCESS) {
@@ -128,7 +122,7 @@ namespace GH {
         drawScenePopup(g_currentScene);
 
         if(ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
-            g_currentScene->selectNode(g_currentScene);
+            g_currentScene->selectNode(nullptr);
         }
 
         ImGui::End();
@@ -140,15 +134,16 @@ namespace GH {
         ImGui::Begin("Node Inspector", nullptr);
 
         if(g_currentScene->getSelectedNode() != nullptr) {
-            if(ImGui::ImageButton(newFrameIDstr().c_str(), UITextureIDs::edit, ImVec2(12, 12))) {
+            ImGui::Text("Name: %s", g_currentScene->getSelectedNode()->getName().c_str());
+            ImGui::SameLine(235);
+            if(ImGui::ImageButton(newFrameIDstr().c_str(), UITextureIDs::edit, ImVec2(16, 16))) {
                 g_currentScene->getSelectedNode()->renameGUI();
             }
-            ImGui::SameLine();
-            ImGui::Text("Name: %s", g_currentScene->getSelectedNode()->getName().c_str());
-            ImGui::Text("   ImGui name: %s", g_currentScene->getSelectedNode()->getImGuiName().c_str());
+
+            ImGui::Text("ImGui name: %s", g_currentScene->getSelectedNode()->getImGuiName().c_str());
 
         } else {
-            ImGui::Text("Select a node in the node tree panel.");
+            ImGui::TextWrapped("Select a node in the node tree panel.");
         }
 
         ImGui::End();

@@ -5,6 +5,8 @@
 #include <stb_image.h>
 
 namespace GH {
+    // Textuse definitions
+
     texture::texture() : m_GL(nullptr), m_ID(0), m_width(0), m_height(0), m_channels(0), m_data(nullptr) {
     }
 

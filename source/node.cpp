@@ -39,13 +39,11 @@ namespace GH {
         return m_selectedNode;
     }
 
-    node::node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false) {
+    node::node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
         if(root == nullptr) {
             m_root = this;
-            m_selectedNode = this;
         } else {
             m_root = root;
-            m_selectedNode = nullptr;
         }
         if(parent != nullptr) {
             m_name = nameCheck(this, name);
@@ -210,20 +208,15 @@ namespace GH {
             }
         }
         if(ImGui::Button("Copy")) {
-            g_nodeClipboard = node->getJSON();
+            copyNode(node);
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Cut")) {
-            g_nodeClipboard = node->getJSON();
-            node->removeSelf();
+            cutNode(node);
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Paste")) {
-            if(!g_nodeClipboard.empty()) {
-                nodeRef child = node->addChild(g_nodeClipboard);
-                node->m_root->selectNode(child);
-                node->m_shouldOpen = true;
-            }
+            pasteNode(node);
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Remove")) {

@@ -11,7 +11,7 @@
 #include <resourceManager.hpp>
 
 namespace GH {
-    inline std::array<texture, 1> UITextures;
+    inline std::array<texture, 1> g_UITextures;
 
     namespace UITextureIDs {
         inline int edit = 0;
@@ -27,13 +27,19 @@ namespace GH {
 
     inline resourceManager g_resourceManager;
 
-    inline bool g_toReload = false;
     inline PNT::Window g_window;
     inline fs::path g_openFile;
     inline std::string g_projectName = "Unnamed Project";
     inline std::vector<nodeRef> g_scenes;
     inline nodeRef g_currentScene = nullptr;
     inline nlohmann::json g_nodeClipboard;
+
+    void copyNode();
+    void cutNode();
+    void pasteNode();
+    void copyNode(nodeRef target);
+    void cutNode(nodeRef target);
+    void pasteNode(nodeRef target);
 
     void refreshTitle();
     size_t newID();

@@ -22,12 +22,12 @@ namespace GH {
         mutable bool m_shouldOpen;
         nodeRef m_selectedNode;
 
-        friend void drawMainMenuBar();
+        friend void pasteNode();
+        friend void pasteNode(nodeRef target);
         friend void drawNodePopup(nodeRef node);
         friend void drawScenePopup(nodeRef node);
         friend void drawNodeTree();
         friend void drawNodeInspector();
-        friend void ::eventCallback(PNT::Window* window, PNT::windowEvent event);
 
     public:
         node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name);
