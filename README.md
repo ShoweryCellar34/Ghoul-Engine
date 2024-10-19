@@ -32,7 +32,7 @@ Warning: the "res/" directory may not be copied over to the binary directory whe
 3. Generate the project file `cmake -G"MinGW Makefiles" ./..`.
 4. Build Ghoul Engine with `mingw32-make` and run the produced `Ghoul-Engine.exe` file.
 
-### Ubuntu \(GCC\)
+### Linux \(GCC\)
 
 1. Move into the cloned directory `cd Ghoul-Engine`.
 2. Make the build directory `mkdir build` and move into it `cd build`.
