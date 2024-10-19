@@ -30,11 +30,13 @@ Warning: the "res/" directory may not be copied over to the binary directory whe
 1. Move into the cloned directory `cd Ghoul-Engine`.
 2. Make the build directory `mkdir build` and move into it `cd build`.
 3. Generate the project file `cmake -G"MinGW Makefiles" ./..`.
-4. Build Ghoul Engine with `mingw32-make` and run the produced `Ghoul-Engine.exe` file.
+4. Build with `cmake --build ./`
+5. Run the produced `Ghoul-Engine.exe` file.
 
 ### Linux \(GCC\)
 
 1. Move into the cloned directory `cd Ghoul-Engine`.
 2. Make the build directory `mkdir build` and move into it `cd build`.
 3. Generate the project file `cmake -G"Unix Makefiles" ./..`.
-4. Build Ghoul Engine with `make` and run the produced `Ghoul-Engine` file.
+4. Build with `cmake --build ./`
+5. Run the produced `Ghoul-Engine` file.
