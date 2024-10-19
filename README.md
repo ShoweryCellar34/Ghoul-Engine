@@ -5,7 +5,12 @@ Ghoul Engine is an OpenGL rendering engine \(I don't really know what I'm doing 
 
 ## Platform support
 
-Ghoul Engine uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is primary tested on Windows 11 but has been tested on Ubuntu 24.
+Ghoul Engine uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Arch linux X11 (with GNOME, idk if that matters), and has been tested on Windows 11/10.
+
+## Disclaimer
+1. Wayland is not supported as the restrictions on windows position query and modification with imgui \(internaly imgui calls a fuction that segfaults on wayland, may fix in futer DO NOT EXPECT\).
+2. kdialog or another compatible package is required for tinyfiledialogs to fuction.
+3. Using linux works, but it is buggier that windows.
 
 ## How to clone
 

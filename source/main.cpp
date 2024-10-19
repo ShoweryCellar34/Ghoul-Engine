@@ -5,6 +5,8 @@
 #include <fileInterfaces.hpp>
 #include <node.hpp>
 #include <imguiDraw.hpp>
+#include <resourceManager.hpp>
+#include <texture.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -26,21 +28,19 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
 
         case GLFW_KEY_C:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                GH::g_nodeClipboard = GH::g_currentScene->getSelectedNode()->getJSON();
+                GH::copyNode();
             }
             break;
 
         case GLFW_KEY_X:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                GH::g_nodeClipboard = GH::g_currentScene->getSelectedNode()->getJSON();
-                GH::g_currentScene->getSelectedNode()->removeSelf();
+                GH::cutNode();
             }
             break;
 
         case GLFW_KEY_V:
             if(event.keyboard.mods == GLFW_MOD_CONTROL && event.keyboard.action == GLFW_RELEASE) {
-                GH::g_currentScene->getSelectedNode()->addChild(GH::g_nodeClipboard);
-                GH::g_currentScene->getSelectedNode()->m_shouldOpen = true;
+                GH::pasteNode();
             }
             break;
         }
@@ -49,7 +49,7 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
 }
 
 int main(int argc, char* argv[]) {
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
 
     if(!PNT::init()) {
         exit(EXIT_FAILURE);
@@ -66,15 +66,17 @@ int main(int argc, char* argv[]) {
     GH::g_window.startFrame();
     ImGui::GetFont()->Scale = 1.2f;
     GH::g_window.endFrame();
+    GH::loadUITextures();
 
     while(!GH::g_window.shouldClose()) {
+        GH::clearFrameIDs();
         PNT::processEvents();
         GH::g_window.startFrame();
 
         GH::drawGlobalDockingWindow();
         GH::drawMainMenuBar();
-        GH::drawNodeTree(GH::g_currentScene);
-        GH::drawNodeInspector(GH::g_currentScene->getSelectedNode());
+        GH::drawNodeTree();
+        GH::drawNodeInspector();
 
         GH::g_window.endFrame();
     }

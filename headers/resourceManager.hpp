@@ -4,7 +4,8 @@
 #include <filesystem>
 #include <unordered_map>
 #include <string>
-#include <defines_and_globals.hpp>
+
+namespace fs = std::filesystem;
 
 namespace GH {
     class resource {
@@ -37,6 +38,7 @@ namespace GH {
         resourceManager(const resourceManager&) = delete;
         resourceManager& operator=(const resourceManager&) = delete;
 
+        bool exists(const std::string& alias);
         void flush(const std::string& alias);
         void write(const std::string& alias, const std::string& data);
         std::shared_ptr<resource> loadResource(const std::string& alias, fs::path path);

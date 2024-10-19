@@ -39,20 +39,18 @@ namespace GH {
         return m_selectedNode;
     }
 
-    node::node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false) {
+    node::node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name) : m_parent(parent), m_children{}, m_data(data), m_selectedFlag(0), m_shouldOpen(false), m_selectedNode(nullptr) {
         if(root == nullptr) {
             m_root = this;
-            m_selectedNode = this;
         } else {
             m_root = root;
-            m_selectedNode = nullptr;
         }
         if(parent != nullptr) {
             m_name = nameCheck(this, name);
         } else {
             m_name = name;
         }
-        m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+        m_imguiName = m_name + std::format("##{}", newID());
     }
 
     node::node(const nodeRef root, const nodeRef parent, const nlohmann::json& json) : m_parent(parent), m_children{}, m_selectedFlag(0), m_shouldOpen(false) {
@@ -90,11 +88,11 @@ namespace GH {
             return;
         }
         m_name = nameCheck(this, name);
-        m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+        m_imguiName = m_name + std::format("##{}", newID());
     }
 
     void node::updateImGuiName() {
-        m_imguiName = m_name + std::format("##{}", (std::uintptr_t)this);
+        m_imguiName = m_name + std::format("##{}", newID());
     }
 
     nodeRef node::addChild(const std::string& name) {
@@ -124,6 +122,8 @@ namespace GH {
     void node::removeSelf() {
         if(m_parent != nullptr) {
             m_parent->removeChild(m_name);
+        } else {
+            delete this;
         }
     }
 
@@ -196,8 +196,6 @@ namespace GH {
     }
 
     void drawNodePopup(const nodeRef node) {
-        static bool renaming = false;
-        static std::string newName;
         if(ImGui::Button("Add child")) {
             nodeRef child = node->addChild((std::string)"child");
             node->m_root->selectNode(child);
@@ -205,24 +203,20 @@ namespace GH {
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Rename")) {
-            renaming = true;
-            newName = node->getName();
+            if(node->renameGUI() == RENAME_STATUS::SUCCESS) {
+                ImGui::CloseCurrentPopup();
+            }
         }
         if(ImGui::Button("Copy")) {
-            g_nodeClipboard = node->getJSON();
+            copyNode(node);
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Cut")) {
-            g_nodeClipboard = node->getJSON();
-            node->removeSelf();
+            cutNode(node);
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Paste")) {
-            if(!g_nodeClipboard.empty()) {
-                nodeRef child = node->addChild(g_nodeClipboard);
-                node->m_root->selectNode(child);
-                node->m_shouldOpen = true;
-            }
+            pasteNode(node);
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("Remove")) {
@@ -231,12 +225,6 @@ namespace GH {
             node->m_root->selectNode(nullptr);
             delete node;
             ImGui::CloseCurrentPopup();
-        }
-        if(renaming) {
-            if(drawRenameWindow(&renaming, &node->m_name, &newName, "Rename Scene") == RENAME_STATUS::SUCCESS) {
-                node->setName(node->getName());
-                ImGui::CloseCurrentPopup();
-            }
         }
     }
 
@@ -279,5 +267,13 @@ namespace GH {
                 ImGui::EndPopup();
             }
         }
+    }
+
+    RENAME_STATUS node::renameGUI() {
+        RENAME_STATUS result = drawRenameWindow(m_name, std::format("Rename {}", m_name));
+        if(result == RENAME_STATUS::SUCCESS) {
+            updateImGuiName();
+        }
+        return result;
     }
 }

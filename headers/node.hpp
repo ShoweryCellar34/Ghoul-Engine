@@ -22,12 +22,12 @@ namespace GH {
         mutable bool m_shouldOpen;
         nodeRef m_selectedNode;
 
-        friend void drawMainMenuBar();
+        friend void pasteNode();
+        friend void pasteNode(nodeRef target);
         friend void drawNodePopup(nodeRef node);
         friend void drawScenePopup(nodeRef node);
-        friend void drawNodeTree(const nodeRef nodeToDraw);
-        friend void drawNodeInspector(const nodeRef nodeToInspect);
-        friend void ::eventCallback(PNT::Window* window, PNT::windowEvent event);
+        friend void drawNodeTree();
+        friend void drawNodeInspector();
 
     public:
         node(const nodeRef root, const nodeRef parent, const nlohmann::json& data, const std::string& name);
@@ -55,5 +55,6 @@ namespace GH {
         nlohmann::json getJSON() const;
         void loadJSON(const nlohmann::json& json);
         void imguiDraw() const;
+        RENAME_STATUS renameGUI();
     };
 }
