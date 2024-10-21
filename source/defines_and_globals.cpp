@@ -15,7 +15,7 @@ namespace GH {
 
     void cutNode() {
         nodeRef selectedNode = g_currentScene->getSelectedNode();
-        if(selectedNode != nullptr) {
+        if(selectedNode == nullptr) {
             return;
         }
         g_nodeClipboard = selectedNode->getJSON();

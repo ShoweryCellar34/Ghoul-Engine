@@ -89,7 +89,6 @@ namespace GH {
             if(ImGui::Button("Paste")) {
                 if(!g_nodeClipboard.empty()) {
                     nodeRef child = node->addChild(g_nodeClipboard);
-                    node->m_root->selectNode(child);
                     node->m_shouldOpen = true;
                 }
                 ImGui::CloseCurrentPopup();
@@ -134,13 +133,13 @@ namespace GH {
         ImGui::Begin("Node Inspector", nullptr);
 
         if(g_currentScene->getSelectedNode() != nullptr) {
-            ImGui::Text("Name: %s", g_currentScene->getSelectedNode()->getName().c_str());
+            ImGui::TextWrapped("Name: %s", g_currentScene->getSelectedNode()->getName().c_str());
             ImGui::SameLine(235);
             if(ImGui::ImageButton(newFrameIDstr().c_str(), UITextureIDs::edit, ImVec2(16, 16))) {
                 g_currentScene->getSelectedNode()->renameGUI();
             }
 
-            ImGui::Text("ImGui name: %s", g_currentScene->getSelectedNode()->getImGuiName().c_str());
+            ImGui::TextWrapped("ImGui name: %s", g_currentScene->getSelectedNode()->getImGuiName().c_str());
 
         } else {
             ImGui::TextWrapped("Select a node in the node tree panel.");
