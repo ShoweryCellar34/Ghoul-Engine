@@ -12,25 +12,27 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     }
 }
 
-
 int main(int argc, char* argv[]) {
+    const fs::path gameFolder;
 #ifdef GAME_FOLDER
-    char* gameFolder = GAME_FOLDER;
+    *const_cast<fs::path*>(&gameFolder) = GAME_FOLDER;
 #endif
 #ifndef GAME_FOLDER
-    char* gameFolder;
     if(argc > 1) {
-        gameFolder = argv[1];
+        *const_cast<fs::path*>(&gameFolder) = argv[1];
     } else {
-        gameFolder = tinyfd_selectFolderDialog("Select game folder", nullptr);
+        *const_cast<fs::path*>(&gameFolder) = tinyfd_selectFolderDialog("Select game folder", nullptr);
     }
 #endif
 
-    if(gameFolder == nullptr) {
+    if(gameFolder == "") {
+        exit(EXIT_FAILURE);
+    }
+    if(!fs::exists(gameFolder)) {
         exit(EXIT_FAILURE);
     }
 
-    userLogger.get()->info(gameFolder);
+    userLogger.get()->info(gameFolder.string());
 
     return 0;
 }
