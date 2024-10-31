@@ -23,10 +23,10 @@ int main(int argc, char* argv[]) {
     }
 #endif
     if(GH::g_gameFolder == "") {
-        exit(EXIT_FAILURE);
+        GH::exit(GH::exitReason::NO_FOLDER_SET);
     }
     if(!fs::exists(GH::g_gameFolder)) {
-        exit(EXIT_FAILURE);
+        GH::exit(GH::exitReason::FOLDER_DOES_NOT_EXIST);
     }
 
     return 0;
