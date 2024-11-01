@@ -7,3 +7,6 @@
 [submodule "vendors/tinyfiledialogs/tinyfiledialogs"]
 	path = vendors/tinyfiledialogs/tinyfiledialogs
 	url = http://git.code.sf.net/p/tinyfiledialogs/code
+[submodule "vendors/lua/lua"]
+	path = vendors/lua/lua
+	url = https://github.com/lua/lua.git
