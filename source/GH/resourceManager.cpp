@@ -1,6 +1,6 @@
-#include <resourceManager.hpp>
+#include <GH/resourceManager.hpp>
 
-#include <Pentagram.hpp>
+#include <PNT/Pentagram.hpp>
 
 namespace GH {
     // Resource definitions.

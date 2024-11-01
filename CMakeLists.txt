@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 cmake_minimum_required(VERSION 3.20)
 project(Ghoul-Engine DESCRIPTION "A Basic Game Engine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
-file(GLOB source source/*.cpp)
+file(GLOB source source/*/*.cpp)
 add_executable(Ghoul-Engine ${source})
 add_subdirectory(vendors/Pentagram)
 add_subdirectory(vendors/json)
