@@ -3,6 +3,7 @@
 
 #include <GH/globalsAndDefines.hpp>
 #include <GH/error.hpp>
+#include <GH/lua.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -29,6 +30,8 @@ int main(int argc, char* argv[]) {
     if(!fs::exists(GH::g_gameFolder)) {
         GH::error(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
     }
+
+    GH::lua();
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;
