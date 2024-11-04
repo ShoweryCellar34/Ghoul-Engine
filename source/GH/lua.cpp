@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <lua.hpp>
+#include <luaCPP.hpp>
 
 namespace GH {
     void lua() {

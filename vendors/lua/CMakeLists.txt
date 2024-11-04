@@ -36,4 +36,4 @@ set(lua_source "lua/lapi.c"
                "lua/lutf8lib.c"
                "lua/linit.c")
 add_library(lua STATIC ${lua_source})
-target_include_directories(lua PUBLIC lua /)
+target_include_directories(lua PUBLIC lua ./)

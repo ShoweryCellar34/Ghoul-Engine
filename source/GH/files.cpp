@@ -8,7 +8,7 @@ namespace GH {
     bool loadResource(const fs::path& path, const std::string& desiredAlias, bool isCore) {
         try {
             g_resourceManager.loadResource(desiredAlias, (fs::path)GH::g_gameFolder / path);
-            ::userLogger.get()->info("Loaded resource at path \"{}\" with alias \"{}\" successfully", path, desiredAlias);
+            ::userLogger.get()->info("Loaded resource at path \"{}\" with alias \"{}\" successfully", path.string(), desiredAlias);
             return true;
         } catch(const std::exception& error) {
             if(isCore) {

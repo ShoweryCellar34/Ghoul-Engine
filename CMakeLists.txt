@@ -1,13 +1,12 @@
 set(USE_MSVC_RUNTIME_LIBRARY_DLL false CACHE BOOL "Use MSVC runtime library DLL")
 
 set(POSITION_INDEPENDENT_CODE true)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 cmake_minimum_required(VERSION 3.20)
 project(Ghoul-Engine DESCRIPTION "A Basic Game Engine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
 file(GLOB source source/*/*.cpp)
 add_executable(Ghoul-Engine ${source})
+set_property(TARGET Ghoul-Engine PROPERTY CXX_STANDARD 20)
 add_subdirectory(vendors/json)
 add_subdirectory(vendors/lua)
 add_subdirectory(vendors/Pentagram)
