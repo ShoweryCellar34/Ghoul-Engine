@@ -6,7 +6,7 @@ namespace GH {
     void triggerError(errors error, const std::string& data) {
         switch(error) {
         case errors::GAME_FOLDER_DOES_NOT_EXIST:
-            ::userLogger.get()->error("Game folder \"{}\" does not exist, exiting with code {}", data, (int)error);
+            ::userLogger.get()->error("Game folder \"{}\" does not exist, exiting with code {}", g_gameFolder, (int)error);
             exit((int)error);
             break;
         case errors::GAME_FOLDER_NOT_SET:
