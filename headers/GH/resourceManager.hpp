@@ -15,7 +15,7 @@ namespace GH {
         fs::path m_filename;
 
     public:
-        resource(const fs::path& path);
+        resource(const fs::path& path, bool mustExist = true);
         ~resource();
         resource(const resource&) = delete;
         resource& operator=(const resource&) = delete;
@@ -41,7 +41,7 @@ namespace GH {
         bool exists(const std::string& alias);
         void flush(const std::string& alias);
         void write(const std::string& alias, const std::string& data);
-        std::shared_ptr<resource> loadResource(const std::string& alias, const fs::path& path);
+        std::shared_ptr<resource> loadResource(const std::string& alias, const fs::path& path, bool mustExist = true);
         void unloadResource(const std::string& alias);
 
         std::shared_ptr<resource> getResource(const std::string& alias) const;
