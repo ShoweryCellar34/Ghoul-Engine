@@ -31,6 +31,13 @@ int main(int argc, char* argv[]) {
         GH::error(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
+    try {
+        GH::g_resourceManager.loadResource("game resources", (fs::path)GH::g_gameFolder / "res.lua");
+        userLogger.get()->info(GH::g_resourceManager.getData("game resources"));
+    } catch(const std::exception& error) {
+        userLogger.get()->error(error.what());
+    }
+    
     GH::lua();
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
