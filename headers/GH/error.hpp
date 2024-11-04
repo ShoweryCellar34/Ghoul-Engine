@@ -3,5 +3,5 @@
 #include <GH/globalsAndDefines.hpp>
 
 namespace GH {
-    void error(errors error);
+    void triggerError(errors error, const std::string& data = "");
 }

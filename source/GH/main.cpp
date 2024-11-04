@@ -3,7 +3,7 @@
 
 #include <GH/globalsAndDefines.hpp>
 #include <GH/error.hpp>
-#include <GH/lua.hpp>
+#include <GH/files.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -25,20 +25,13 @@ int main(int argc, char* argv[]) {
     }
 #endif
     if(GH::g_gameFolder == nullptr) {
-        GH::error(GH::errors::GAME_FOLDER_NOT_SET);
+        GH::triggerError(GH::errors::GAME_FOLDER_NOT_SET);
     }
     if(!fs::exists(GH::g_gameFolder)) {
-        GH::error(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
+        GH::triggerError(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
-    try {
-        GH::g_resourceManager.loadResource("game resources", (fs::path)GH::g_gameFolder / "res.lua");
-        userLogger.get()->info(GH::g_resourceManager.getData("game resources"));
-    } catch(const std::exception& error) {
-        userLogger.get()->error(error.what());
-    }
-    
-    GH::lua();
+    GH::loadResource("res.lua", "resource file", true);
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;

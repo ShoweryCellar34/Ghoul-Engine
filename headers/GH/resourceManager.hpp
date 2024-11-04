@@ -41,7 +41,7 @@ namespace GH {
         bool exists(const std::string& alias);
         void flush(const std::string& alias);
         void write(const std::string& alias, const std::string& data);
-        std::shared_ptr<resource> loadResource(const std::string& alias, fs::path path);
+        std::shared_ptr<resource> loadResource(const std::string& alias, const fs::path& path);
         void unloadResource(const std::string& alias);
 
         std::shared_ptr<resource> getResource(const std::string& alias) const;

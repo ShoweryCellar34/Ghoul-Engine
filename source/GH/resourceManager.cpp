@@ -88,7 +88,7 @@ namespace GH {
         m_resources.at(alias).get()->write(data.c_str());
     }
 
-    std::shared_ptr<resource> resourceManager::loadResource(const std::string& alias, fs::path path) {
+    std::shared_ptr<resource> resourceManager::loadResource(const std::string& alias, const fs::path& path) {
         if(m_resources.find(alias) != m_resources.end()) {
             throw "Alias \"" + (std::string)alias + "\" is already registered.";
         }

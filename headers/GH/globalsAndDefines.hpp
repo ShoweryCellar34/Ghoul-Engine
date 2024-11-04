@@ -12,6 +12,8 @@ namespace GH {
 
     enum class errors {
         GAME_FOLDER_NOT_SET,
-        GAME_FOLDER_DOES_NOT_EXIST
+        GAME_FOLDER_DOES_NOT_EXIST,
+        RESOURCE_ERROR,
+        CORE_RESOURCE_ERROR
     };
 }
