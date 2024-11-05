@@ -15,6 +15,7 @@ namespace GH {
             }
             return true;
         } catch(const std::exception& error) {
+            ::userLogger.get()->error("{}", error.what());
             if(isCore) {
                 triggerError(GH::errors::CORE_RESOURCE_ERROR, path.string());
             } else {

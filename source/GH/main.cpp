@@ -4,6 +4,7 @@
 #include <GH/globalsAndDefines.hpp>
 #include <GH/error.hpp>
 #include <GH/files.hpp>
+#include <GH/lua.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
@@ -32,6 +33,7 @@ int main(int argc, char* argv[]) {
     }
 
     GH::loadResource("main.lua", "GAME_MAIN", true);
+    GH::script a("pintapoop()", true);
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;

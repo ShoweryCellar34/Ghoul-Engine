@@ -31,20 +31,21 @@ namespace GH {
 
     class resourceManager {
     private:
-        std::unordered_map<std::string, std::shared_ptr<resource>> m_resources;
+        std::unordered_map<std::string, resource*> m_resources;
 
     public:
-        resourceManager();
+        resourceManager() = default;
+        ~resourceManager();
         resourceManager(const resourceManager&) = delete;
         resourceManager& operator=(const resourceManager&) = delete;
 
         bool exists(const std::string& alias);
         void flush(const std::string& alias);
         void write(const std::string& alias, const std::string& data);
-        std::shared_ptr<resource> loadResource(const std::string& alias, const fs::path& path, bool mustExist = true);
+        resource* loadResource(const std::string& alias, const fs::path& path, bool mustExist = true);
         void unloadResource(const std::string& alias);
 
-        std::shared_ptr<resource> getResource(const std::string& alias) const;
+        resource* getResource(const std::string& alias) const;
         std::string getData(const std::string& alias) const;
         fs::path getFilename(const std::string& alias) const;
         fs::path getRelativePath(const std::string& alias) const;

@@ -17,7 +17,7 @@ namespace GH {
             throw std::runtime_error("Path \"" + path.string() + "\" is not a file path.");
         }
 
-        m_handle.open(m_path.string(), std::ios::in | std::ios::out);
+        m_handle.open(m_path, std::ios::in | std::ios::out);
         if(!m_handle.is_open()) {
             throw std::runtime_error("File \"" + path.string() + "\" failed to open, this could mean the file is already in use or cannot be opened.");
         }
@@ -63,7 +63,10 @@ namespace GH {
 
     // ResourceManager definitions.
 
-    resourceManager::resourceManager() : m_resources() {
+    resourceManager::~resourceManager() {
+        for(const std::pair<const std::string&, const resource*> resource : m_resources) {
+            delete resource.second;
+        }
     }
 
     bool resourceManager::exists(const std::string& alias) {
@@ -78,21 +81,21 @@ namespace GH {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
-        m_resources.at(alias).get()->flush();
+        m_resources.at(alias)->flush();
     }
 
     void resourceManager::write(const std::string& alias, const std::string& data) {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
-        m_resources.at(alias).get()->write(data.c_str());
+        m_resources.at(alias)->write(data.c_str());
     }
 
-    std::shared_ptr<resource> resourceManager::loadResource(const std::string& alias, const fs::path& path, bool mustExist) {
+    resource* resourceManager::loadResource(const std::string& alias, const fs::path& path, bool mustExist) {
         if(m_resources.find(alias) != m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is already registered.");
         }
-        std::shared_ptr<resource> newResource = std::make_shared<resource>(path, mustExist);
+        resource* newResource = new resource(path, mustExist);
         m_resources.insert({alias, newResource});
         return newResource;
     }
@@ -101,10 +104,11 @@ namespace GH {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
+        delete m_resources.at(alias);
         m_resources.erase(alias);
     }
 
-    std::shared_ptr<resource> resourceManager::getResource(const std::string& alias) const {
+    resource* resourceManager::getResource(const std::string& alias) const {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered, maybe you haven't loaded it yet.");
         }
@@ -115,27 +119,27 @@ namespace GH {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
-        return m_resources.at(alias).get()->getData();
+        return m_resources.at(alias)->getData();
     }
 
     fs::path resourceManager::getFilename(const std::string& alias) const {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
-        return m_resources.at(alias).get()->getFilename();
+        return m_resources.at(alias)->getFilename();
     }
 
     fs::path resourceManager::getRelativePath(const std::string& alias) const {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
-        return m_resources.at(alias).get()->getRelativePath();
+        return m_resources.at(alias)->getRelativePath();
     }
 
     fs::path resourceManager::getAbsolutePath(const std::string& alias) const {
         if(m_resources.find(alias) == m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
         }
-        return m_resources.at(alias).get()->getAbsolutePath();
+        return m_resources.at(alias)->getAbsolutePath();
     }
 }
