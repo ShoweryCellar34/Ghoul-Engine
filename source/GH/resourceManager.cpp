@@ -11,15 +11,15 @@ namespace GH {
             m_handle.open(path, std::ios::out);
             m_handle.close();
         } else if(!fs::exists(path) && mustExist) {
-            throw std::format("Path \"{}\" does not exist, if you want to create a file pass false as the last agument.", path.string());
+            throw std::runtime_error("Path \"" + path.string() + "\" does not exist, if you want to create a file pass false as the last agument.");
         }
         fs::file_status status = fs::status(path);
         if(fs::is_directory(path)) {
-            throw "Path \"" + path.string() + "\" is not a file path.";
+            throw std::runtime_error("Path \"" + path.string() + "\" is not a file path.");
         }
         m_handle.open(path, std::ios::out | std::ios::in);
         if(!m_handle.is_open()) {
-            throw std::format("File \"{}\" failed to open, this could mean the file is already in use or cannot be opened.", path.string());
+            throw std::runtime_error("File \"" + path.string() + "\" failed to open, this could mean the file is already in use or cannot be opened.");
         }
         m_path = path;
         m_filename = path.filename();
