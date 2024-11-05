@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
         GH::triggerError(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
-    GH::loadResource("res.lua", "GAME_MAIN", true);
+    GH::loadResource("main.lua", "GAME_MAIN", true);
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;

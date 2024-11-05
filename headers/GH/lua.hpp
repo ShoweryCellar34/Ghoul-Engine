@@ -1,5 +1,17 @@
 #pragma once
 
+#include <string>
+#include <luaCPP.hpp>
+
 namespace GH {
-    void lua();
+    class script {
+    private:
+        lua_State* m_L;
+
+    public:
+        script(const std::string& code, bool runNow = false);
+        ~script();
+        script(const script&) = delete;
+        script& operator=(const script&) = delete;
+    };
 }
