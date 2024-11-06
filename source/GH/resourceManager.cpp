@@ -17,10 +17,12 @@ namespace GH {
             throw std::runtime_error("Path \"" + path.string() + "\" is not a file path.");
         }
 
-        m_handle.open(m_path, std::ios::in | std::ios::out);
+        m_handle.open(path, std::ios::in | std::ios::out);
         if(!m_handle.is_open()) {
             throw std::runtime_error("File \"" + path.string() + "\" failed to open, this could mean the file is already in use or cannot be opened.");
         }
+        m_path = path;
+        m_filename = path.filename();
     }
 
     resource::~resource() {
