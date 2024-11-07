@@ -15,16 +15,18 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
 }
 
 int main(int argc, char* argv[]) {
-#ifdef GAME_FOLDER
-    *const_cast<char**>(&GH::g_gameFolder) = (char[])GAME_FOLDER;
+#ifdef GH_GAME_FOLDER
+    *const_cast<char**>(&GH::g_gameFolder) = (char[])GH_GAME_FOLDER;
 #endif
-#ifndef GAME_FOLDER
+#ifndef GH_GAME_FOLDER
     if(argc > 1) {
         *const_cast<char**>(&GH::g_gameFolder) = argv[1];
     } else {
-        *const_cast<char**>(&GH::g_gameFolder) = tinyfd_selectFolderDialog("Select game folder", nullptr);
+        *const_cast<char**>(&GH::g_gameFolder) = tinyfd_selectFolderDialog("Select game folder", argv[0]);
     }
 #endif
+    userLogger.get()->set_level(spdlog::level::trace);
+
     if(GH::g_gameFolder == nullptr) {
         GH::triggerError(GH::errors::GAME_FOLDER_NOT_SET);
     }
@@ -32,7 +34,9 @@ int main(int argc, char* argv[]) {
         GH::triggerError(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
-    GH::loadResource("main.lua", "GAME_MAIN", true);
+    GH::resources::loadResource("GAME_MAIN", "main.lua", true);
+    userLogger.get()->info(GH::resources::getData("GAME_MAIN"));
+    GH::resources::unloadResource("GAME_MAIN");
     GH::script a("pintapoop()", true);
 
     userLogger.get()->info("Finished successfully, exiting with code 0");

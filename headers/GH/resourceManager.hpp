@@ -13,9 +13,10 @@ namespace GH {
         mutable std::fstream m_handle;
         fs::path m_path;
         fs::path m_filename;
+        std::ios_base::openmode m_permitions;
 
     public:
-        resource(const fs::path& path, bool mustExist = true);
+        resource(const fs::path& path, std::ios_base::openmode permitions = std::ios::in, bool mustExist = true);
         ~resource();
         resource(const resource&) = delete;
         resource& operator=(const resource&) = delete;
@@ -27,6 +28,7 @@ namespace GH {
         fs::path getFilename() const;
         fs::path getRelativePath() const;
         fs::path getAbsolutePath() const;
+        std::ios_base::openmode getPermitions() const;
     };
 
     class resourceManager {
@@ -39,10 +41,10 @@ namespace GH {
         resourceManager(const resourceManager&) = delete;
         resourceManager& operator=(const resourceManager&) = delete;
 
-        bool exists(const std::string& alias);
+        bool loaded(const std::string& alias);
         void flush(const std::string& alias);
         void write(const std::string& alias, const std::string& data);
-        resource* loadResource(const std::string& alias, const fs::path& path, bool mustExist = true);
+        resource* loadResource(const std::string& alias, const fs::path& path, std::ios_base::openmode permitions = std::ios::in, bool mustExist = true);
         void unloadResource(const std::string& alias);
 
         resource* getResource(const std::string& alias) const;

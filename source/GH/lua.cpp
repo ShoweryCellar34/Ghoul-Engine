@@ -2,11 +2,11 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include <PNT/Pentagram.hpp>
 #include <luaCPP.hpp>
 
 static int pintapoop(lua_State *L) {
-    printf("WWWWAAAAAAAAAA");
+    ::userLogger.get()->trace("THIS WAS CALLED FROM LUA");
     return 0;
 }
 

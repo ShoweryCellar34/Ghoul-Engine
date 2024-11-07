@@ -6,7 +6,7 @@
 namespace GH {
     // Resource definitions.
 
-    resource::resource(const fs::path& path, bool mustExist) {
+    resource::resource(const fs::path& path, std::ios_base::openmode permitions, bool mustExist) {
         if(!fs::exists(path) && !mustExist) {
             m_handle.open(path, std::ios::out);
             m_handle.close();
@@ -17,12 +17,13 @@ namespace GH {
             throw std::runtime_error("Path \"" + path.string() + "\" is not a file path.");
         }
 
-        m_handle.open(path, std::ios::in | std::ios::out);
+        m_handle.open(path, permitions);
         if(!m_handle.is_open()) {
             throw std::runtime_error("File \"" + path.string() + "\" failed to open, this could mean the file is already in use or cannot be opened.");
         }
         m_path = path;
         m_filename = path.filename();
+        m_permitions = permitions;
     }
 
     resource::~resource() {
@@ -37,10 +38,16 @@ namespace GH {
     }
 
     void resource::write(const char* data) {
+        if(!(m_permitions & std::ios::in)) {
+            throw std::runtime_error("File \"" + m_path.string() + " has writting disabled.");
+        }
         m_handle.write(data, strlen(data));
     }
 
     std::string resource::getData() const {
+        if(!(m_permitions & std::ios::out)) {
+            throw std::runtime_error("File \"" + m_path.string() + " has reading disabled.");
+        }
         m_handle.seekg(0, std::ios::end);
         std::streamsize fileSize = m_handle.tellg();
         m_handle.seekg(0, std::ios::beg);
@@ -63,6 +70,10 @@ namespace GH {
         return fs::absolute(m_path);
     }
 
+    std::ios_base::openmode resource::getPermitions() const {
+        return m_permitions;
+    }
+
     // ResourceManager definitions.
 
     resourceManager::~resourceManager() {
@@ -71,7 +82,7 @@ namespace GH {
         }
     }
 
-    bool resourceManager::exists(const std::string& alias) {
+    bool resourceManager::loaded(const std::string& alias) {
         if(m_resources.find(alias) != m_resources.end()) {
             return true;
         } else {
@@ -93,11 +104,11 @@ namespace GH {
         m_resources.at(alias)->write(data.c_str());
     }
 
-    resource* resourceManager::loadResource(const std::string& alias, const fs::path& path, bool mustExist) {
+    resource* resourceManager::loadResource(const std::string& alias, const fs::path& path, std::ios_base::openmode permitions, bool mustExist) {
         if(m_resources.find(alias) != m_resources.end()) {
             throw std::runtime_error("Alias \"" + alias + "\" is already registered.");
         }
-        resource* newResource = new resource(path, mustExist);
+        resource* newResource = new resource(path, permitions, mustExist);
         m_resources.insert({alias, newResource});
         return newResource;
     }
