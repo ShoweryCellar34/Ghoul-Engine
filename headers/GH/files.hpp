@@ -1,9 +1,9 @@
 #pragma once
 
-#include <GH/globalsAndDefines.hpp>
+#include <GH/resourceManager.hpp>
 
 namespace GH::resources {
-    bool loadResource(const std::string& desiredAlias, const fs::path& path, bool isCore = false, std::ios_base::openmode permitions = std::ios::in);
+    bool loadResource(const std::string& desiredAlias, const fs::path& path, bool isCore = false, perms permitions = perms(true, false));
     bool unloadResource(const std::string& alias);
     std::string getData(const std::string& alias);
 }

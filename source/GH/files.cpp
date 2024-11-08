@@ -8,9 +8,9 @@
 namespace GH::resources {
     std::unordered_map<std::string, bool> resources;
 
-    bool loadResource(const std::string& desiredAlias, const fs::path& path, bool isCore, std::ios_base::openmode permitions) {
+    bool loadResource(const std::string& desiredAlias, const fs::path& path, bool isCore, perms permitions) {
         try {
-            g_resourceManager.loadResource(desiredAlias, (fs::path)GH::g_gameFolder / path, permitions, true);
+            internal::g_resourceManager.loadResource(desiredAlias, (fs::path)GH::g_gameFolder / path, permitions, true);
             resources.insert({desiredAlias, isCore});
             if(isCore) {
                 ::userLogger.get()->info("Loaded core resource at path \"{}\" with alias \"{}\" successfully", path.string(), desiredAlias);
@@ -30,7 +30,7 @@ namespace GH::resources {
 
     bool unloadResource(const std::string& alias) {
         try {
-            g_resourceManager.unloadResource(alias);
+            internal::g_resourceManager.unloadResource(alias);
             resources.erase(alias);
             ::userLogger.get()->info("Unloaded resource with alias \"{}\" successfully", alias);
             return true;
@@ -46,7 +46,7 @@ namespace GH::resources {
 
     std::string getData(const std::string& alias) {
         try {
-            std::string data = g_resourceManager.getData(alias);
+            std::string data = internal::g_resourceManager.getData(alias);
             ::userLogger.get()->trace("Read data from resource with alias \"{}\" successfully", alias);
             return data;
         } catch(const std::exception& error) {

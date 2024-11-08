@@ -7,50 +7,62 @@
 
 namespace fs = std::filesystem;
 
-namespace GH {
-    class resource {
-    private:
-        mutable std::fstream m_handle;
-        fs::path m_path;
-        fs::path m_filename;
-        std::ios_base::openmode m_permitions;
+namespace GH::resources {
+    struct perms {
+        bool m_read;
+        bool m_write;
 
-    public:
-        resource(const fs::path& path, std::ios_base::openmode permitions = std::ios::in, bool mustExist = true);
-        ~resource();
-        resource(const resource&) = delete;
-        resource& operator=(const resource&) = delete;
+        perms();
+        perms(bool read, bool write);
 
-        void flush();
-        void write(const char* data);
-
-        std::string getData() const;
-        fs::path getFilename() const;
-        fs::path getRelativePath() const;
-        fs::path getAbsolutePath() const;
-        std::ios_base::openmode getPermitions() const;
+        std::ios_base::openmode toOpenmode() const;
     };
 
-    class resourceManager {
-    private:
-        std::unordered_map<std::string, resource*> m_resources;
+    namespace internal {
+        class resource {
+        private:
+            mutable std::fstream m_handle;
+            fs::path m_path;
+            fs::path m_filename;
+            perms m_permitions;
 
-    public:
-        resourceManager() = default;
-        ~resourceManager();
-        resourceManager(const resourceManager&) = delete;
-        resourceManager& operator=(const resourceManager&) = delete;
+        public:
+            resource(const fs::path& path, perms permitions = perms(true, false), bool mustExist = true);
+            ~resource();
+            resource(const resource&) = delete;
+            resource& operator=(const resource&) = delete;
 
-        bool loaded(const std::string& alias);
-        void flush(const std::string& alias);
-        void write(const std::string& alias, const std::string& data);
-        resource* loadResource(const std::string& alias, const fs::path& path, std::ios_base::openmode permitions = std::ios::in, bool mustExist = true);
-        void unloadResource(const std::string& alias);
+            void flush();
+            void write(const char* data);
 
-        resource* getResource(const std::string& alias) const;
-        std::string getData(const std::string& alias) const;
-        fs::path getFilename(const std::string& alias) const;
-        fs::path getRelativePath(const std::string& alias) const;
-        fs::path getAbsolutePath(const std::string& alias) const;
-    };
+            std::string getData() const;
+            fs::path getFilename() const;
+            fs::path getRelativePath() const;
+            fs::path getAbsolutePath() const;
+            perms getPermitions() const;
+        };
+
+        class resourceManager {
+        private:
+            std::unordered_map<std::string, resource*> m_resources;
+
+        public:
+            resourceManager() = default;
+            ~resourceManager();
+            resourceManager(const resourceManager&) = delete;
+            resourceManager& operator=(const resourceManager&) = delete;
+
+            bool loaded(const std::string& alias);
+            void flush(const std::string& alias);
+            void write(const std::string& alias, const std::string& data);
+            resource* loadResource(const std::string& alias, const fs::path& path, perms permitions = perms(true, false), bool mustExist = true);
+            void unloadResource(const std::string& alias);
+
+            resource* getResource(const std::string& alias) const;
+            std::string getData(const std::string& alias) const;
+            fs::path getFilename(const std::string& alias) const;
+            fs::path getRelativePath(const std::string& alias) const;
+            fs::path getAbsolutePath(const std::string& alias) const;
+        };
+    }
 }

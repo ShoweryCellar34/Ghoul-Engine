@@ -4,6 +4,7 @@
 #include <GH/globalsAndDefines.hpp>
 #include <GH/error.hpp>
 #include <GH/files.hpp>
+#include <GH/resourceManager.hpp>
 #include <GH/lua.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
@@ -34,10 +35,9 @@ int main(int argc, char* argv[]) {
         GH::triggerError(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
-    GH::resources::loadResource("GAME_MAIN", "main.lua", true);
+    GH::resources::loadResource("GAME_MAIN", "main.lua", true, GH::resources::perms(true, false));
     userLogger.get()->info(GH::resources::getData("GAME_MAIN"));
     GH::resources::unloadResource("GAME_MAIN");
-    GH::script a("pintapoop()", true);
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;

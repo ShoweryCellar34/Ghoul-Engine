@@ -3,16 +3,21 @@
 #include <string>
 #include <luaCPP.hpp>
 
-namespace GH {
-    class script {
-    private:
-        lua_State* m_L;
-        std::string m_code;
+namespace GH::lua {
+    namespace internal {
+        class luaState {
+        private:
+            lua_State* m_L;
 
-    public:
-        script(const std::string& code, bool runNow = false);
-        ~script();
-        script(const script&) = delete;
-        script& operator=(const script&) = delete;
-    };
+        public:
+            luaState();
+            ~luaState();
+            luaState(const luaState&) = delete;
+            luaState& operator=(const luaState&) = delete;
+
+            void run(const std::string& code);
+            template<typename... types>
+            void callFunction(const std::string& function, const types&... arguments);
+        };
+    }
 }
