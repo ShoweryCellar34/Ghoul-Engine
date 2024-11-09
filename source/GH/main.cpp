@@ -39,9 +39,8 @@ int main(int argc, char* argv[]) {
     userLogger.get()->info(GH::resources::getData("GAME_MAIN"));
 
     GH::lua::internal::g_luaState.run(GH::resources::getData("GAME_MAIN"));
-    GH::lua::internal::g_luaState.callFunction("Test", 1, "hello", 0.3f);
+    GH::lua::internal::g_luaState.callFunction("Test", false, 0.1d, "A");
 
-    GH::resources::unloadResource("GAME_MAIN");
     GH::resources::unloadResource("GAME_MAIN");
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
