@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <string>
 #include <glad/gl.h>
 
@@ -24,10 +23,10 @@ namespace GH {
         void setData(const std::string& data);
         void setGL(GladGLContext* GL);
 
-        const unsigned char* getData();
-        const GladGLContext* getGL();
-        unsigned int getID();
-        unsigned int getWidth();
-        unsigned int getHeight();
+        const unsigned char* getData() const;
+        const GladGLContext* getGL() const;
+        unsigned int getID() const;
+        unsigned int getWidth() const;
+        unsigned int getHeight() const;
     };
 }

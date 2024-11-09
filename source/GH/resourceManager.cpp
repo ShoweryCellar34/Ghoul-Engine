@@ -1,6 +1,7 @@
 #include <GH/resourceManager.hpp>
 
 #include <PNT/Pentagram.hpp>
+#include <GH/error.hpp>
 
 namespace GH::resources {
     // Perms definitions
@@ -12,7 +13,7 @@ namespace GH::resources {
     }
 
     std::ios_base::openmode perms::toOpenmode() const {
-        std::ios_base::openmode result = 0;
+        std::ios_base::openmode result = (std::ios_base::openmode)0;
         if(m_read) {
             result |= std::ios::in;
         }
@@ -30,15 +31,15 @@ namespace GH::resources {
                 m_handle.open(path, std::ios::out);
                 m_handle.close();
             } else if(!fs::exists(path) && mustExist) {
-                throw std::runtime_error("Path \"" + path.string() + "\" does not exist, if you want to create a file pass false as the last agument.");
+                throw error::exception("Path \"" + path.string() + "\" does not exist, if you want to create a file pass false as the last agument.");
             }
             if(fs::is_directory(path)) {
-                throw std::runtime_error("Path \"" + path.string() + "\" is not a file path.");
+                throw "Path \"" + path.string() + "\" is not a file path.";
             }
 
             m_handle.open(path, permitions.toOpenmode());
             if(!m_handle.is_open()) {
-                throw std::runtime_error("File \"" + path.string() + "\" failed to open, this could mean the file is already in use or cannot be opened.");
+                throw error::exception("File \"" + path.string() + "\" failed to open, this could mean the file is already in use or cannot be opened.");
             }
             m_path = path;
             m_filename = path.filename();
@@ -58,14 +59,14 @@ namespace GH::resources {
 
         void resource::write(const char* data) {
             if(!m_permitions.m_write) {
-                throw std::runtime_error("File \"" + m_path.string() + " has writting disabled.");
+                throw error::exception("File \"" + m_path.string() + " has writting disabled.");
             }
             m_handle.write(data, strlen(data));
         }
 
         std::string resource::getData() const {
             if(!m_permitions.m_read) {
-                throw std::runtime_error("File \"" + m_path.string() + " has reading disabled.");
+                throw error::exception("File \"" + m_path.string() + " has reading disabled.");
             }
             m_handle.seekg(0, std::ios::end);
             std::streamsize fileSize = m_handle.tellg();
@@ -111,24 +112,24 @@ namespace GH::resources {
 
         void resourceManager::flush(const std::string& alias) {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \"" + alias + "\" is not registered.");
             }
             m_resources.at(alias)->flush();
         }
 
         void resourceManager::write(const std::string& alias, const std::string& data) {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \"" + alias + "\" is not registered.");
             }
             m_resources.at(alias)->write(data.c_str());
         }
 
         resource* resourceManager::loadResource(const std::string& alias, const fs::path& path, perms permitions, bool mustExist) {
             if(!(permitions.m_read) && !(permitions.m_write)) {
-                throw std::runtime_error("Permitions cannot be unradable and unwritable");
+                throw error::exception("Permitions cannot be unradable and unwritable");
             }
             if(m_resources.find(alias) != m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is already registered.");
+                throw error::exception("Alias \"" + alias + "\" is already registered.");
             }
             resource* newResource = new resource(path, permitions, mustExist);
             m_resources.insert({alias, newResource});
@@ -137,7 +138,7 @@ namespace GH::resources {
 
         void resourceManager::unloadResource(const std::string& alias) {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \" + alias + \" is not registered.");
             }
             delete m_resources.at(alias);
             m_resources.erase(alias);
@@ -145,35 +146,35 @@ namespace GH::resources {
 
         resource* resourceManager::getResource(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered, maybe you haven't loaded it yet.");
+                throw error::exception("Alias \"" + alias + "\" is not registered, maybe you haven't loaded it yet.");
             }
             return m_resources.at(alias);
         }
 
         std::string resourceManager::getData(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getData();
         }
 
         fs::path resourceManager::getFilename(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getFilename();
         }
 
         fs::path resourceManager::getRelativePath(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getRelativePath();
         }
 
         fs::path resourceManager::getAbsolutePath(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw std::runtime_error("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getAbsolutePath();
         }

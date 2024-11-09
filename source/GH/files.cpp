@@ -18,11 +18,11 @@ namespace GH::resources {
                 ::userLogger.get()->info("Loaded resource at path \"{}\" with alias \"{}\" successfully", path.string(), desiredAlias);
             }
             return true;
-        } catch(const std::exception& error) {
+        } catch(const error::exception& error) {
             if(isCore) {
-                triggerError(GH::errors::CORE_RESOURCE_ERROR, error.what());
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
             } else {
-                triggerError(GH::errors::RESOURCE_ERROR, error.what());
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
             }
             return false;
         }
@@ -34,11 +34,11 @@ namespace GH::resources {
             resources.erase(alias);
             ::userLogger.get()->info("Unloaded resource with alias \"{}\" successfully", alias);
             return true;
-        } catch(const std::exception& error) {
+        } catch(const error::exception& error) {
             if(resources.at(alias)) {
-                triggerError(GH::errors::CORE_RESOURCE_ERROR, error.what());
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
             } else {
-                triggerError(GH::errors::RESOURCE_ERROR, error.what());
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
             }
             return false;
         }
@@ -49,11 +49,11 @@ namespace GH::resources {
             std::string data = internal::g_resourceManager.getData(alias);
             ::userLogger.get()->trace("Read data from resource with alias \"{}\" successfully", alias);
             return data;
-        } catch(const std::exception& error) {
+        } catch(const error::exception& error) {
             if(resources.at(alias)) {
-                triggerError(GH::errors::CORE_RESOURCE_ERROR, error.what());
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
             } else {
-                triggerError(GH::errors::RESOURCE_ERROR, error.what());
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
             }
             return "";
         }

@@ -1,8 +1,7 @@
 #include <GH/texture.hpp>
 
-#include <cstring>
-#include <format>
 #include <stb_image.h>
+#include <GH/error.hpp>
 
 namespace GH {
     // Textuse definitions
@@ -22,13 +21,13 @@ namespace GH {
 
     void texture::load() {
         if(!m_GL) {
-            throw "OpenGL context is null.";
+            throw error::exception("OpenGL context is null.");
         }
         if(m_ID) {
-            throw std::format("Image is already loaded with ID: {}.", m_ID);
+            throw error::exception("Image is already loaded with ID: " + std::to_string(m_ID) + ".");
         }
         if(!m_data) {
-            throw "Data for image is null.";
+            throw error::exception("Data for image is null.");
         }
 
         m_GL->GenTextures(1, &m_ID);
@@ -40,10 +39,10 @@ namespace GH {
 
     void texture::unload() {
         if(!m_GL) {
-            throw "OpenGL context is null.";
+            throw error::exception("OpenGL context is null.");
         }
         if(!m_ID) {
-            throw "Image is not loaded.";
+            throw error::exception("Image is not loaded.");
         }
 
         m_GL->DeleteTextures(1, &m_ID);
@@ -52,7 +51,7 @@ namespace GH {
 
     void texture::setData(const std::string& data) {
         if(m_ID) {
-            throw std::format("Image loaded with ID: {}.", m_ID);
+            throw error::exception("Image loaded with ID: " + std::to_string(m_ID) + ".");
         }
 
         if(m_data != nullptr) {
@@ -64,29 +63,29 @@ namespace GH {
 
     void texture::setGL(GladGLContext* GL) {
         if(m_ID) {
-            throw std::format("Image loaded with ID: {}.", m_ID);
+            throw error::exception("Image loaded with ID: " + std::to_string(m_ID) + ".");
         }
 
         m_GL = GL;
     }
 
-    const unsigned char* texture::getData() {
+    const unsigned char* texture::getData() const {
         return m_data;
     }
 
-    const GladGLContext* texture::getGL() {
+    const GladGLContext* texture::getGL() const {
         return m_GL;
     }
 
-    unsigned int texture::getID() {
+    unsigned int texture::getID() const {
         return m_ID;
     }
 
-    unsigned int texture::getWidth() {
+    unsigned int texture::getWidth() const {
         return m_width;
     }
 
-    unsigned int texture::getHeight() {
+    unsigned int texture::getHeight() const {
         return m_height;
     }
 }

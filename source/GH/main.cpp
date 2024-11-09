@@ -29,14 +29,19 @@ int main(int argc, char* argv[]) {
     userLogger.get()->set_level(spdlog::level::trace);
 
     if(GH::g_gameFolder == nullptr) {
-        GH::triggerError(GH::errors::GAME_FOLDER_NOT_SET);
+        GH::error::triggerError(GH::error::codes::GAME_FOLDER_NOT_SET);
     }
     if(!fs::exists(GH::g_gameFolder)) {
-        GH::triggerError(GH::errors::GAME_FOLDER_DOES_NOT_EXIST);
+        GH::error::triggerError(GH::error::codes::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
     GH::resources::loadResource("GAME_MAIN", "main.lua", true, GH::resources::perms(true, false));
     userLogger.get()->info(GH::resources::getData("GAME_MAIN"));
+
+    GH::lua::internal::g_luaState.run(GH::resources::getData("GAME_MAIN"));
+    GH::lua::internal::g_luaState.callFunction("Test", 1, "hello", 0.3f);
+
+    GH::resources::unloadResource("GAME_MAIN");
     GH::resources::unloadResource("GAME_MAIN");
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
