@@ -36,12 +36,11 @@ int main(int argc, char* argv[]) {
     }
 
     GH::resources::loadResource("GAME_MAIN", "main.lua", true, GH::resources::perms(true, false));
-    userLogger.get()->info(GH::resources::getData("GAME_MAIN"));
 
     GH::lua::internal::g_luaState.run(GH::resources::getData("GAME_MAIN"));
     GH::lua::internal::g_luaState.callFunction("Test", {GH::lua::numberArgument(1.12)});
 
-    GH::resources::unloadResource("GAME_MAIN");
+    GH::resources::unloadAllResources();
 
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;

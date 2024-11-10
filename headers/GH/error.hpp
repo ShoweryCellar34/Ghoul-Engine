@@ -22,5 +22,5 @@ namespace GH::error {
         const char* what() const throw();
     };
 
-    void triggerError(codes error, const exception& exception = exception(""));
+    void triggerError(codes error, const exception& exception = (std::string)"");
 }

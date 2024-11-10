@@ -52,7 +52,11 @@ namespace GH::resources {
         try {
             internal::g_resourceManager.unloadResource(alias);
             resources.erase(alias);
-            ::userLogger.get()->info("Unloaded resource with alias \"{}\" successfully", alias);
+            if(resources.at(alias)) {
+                ::userLogger.get()->info("Unloaded core resource with alias \"{}\" successfully", alias);
+            } else {
+                ::userLogger.get()->info("Unloaded non-core resource with alias \"{}\" successfully", alias);
+            }
             return true;
         } catch(const error::exception& error) {
             if(resources.at(alias)) {
@@ -62,6 +66,28 @@ namespace GH::resources {
             }
             return false;
         }
+    }
+
+    bool unloadAllResources() {
+        for(const std::pair<std::string, bool>& resource : resources) {
+            try {
+                internal::g_resourceManager.unloadResource(resource.first);
+                if(resource.second) {
+                    ::userLogger.get()->info("Unloaded core resource with alias \"{}\" successfully", resource.first);
+                } else {
+                    ::userLogger.get()->info("Unloaded non-core resource with alias \"{}\" successfully", resource.first);
+                }
+            } catch(const error::exception& error) {
+                if(resource.second) {
+                    triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
+                } else {
+                    triggerError(GH::error::codes::RESOURCE_ERROR, error);
+                }
+                return false;
+            }
+        }
+        resources.clear();
+        return true;
     }
 
     std::string getData(const std::string& alias) {
