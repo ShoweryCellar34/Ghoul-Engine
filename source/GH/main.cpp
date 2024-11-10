@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
     userLogger.get()->info(GH::resources::getData("GAME_MAIN"));
 
     GH::lua::internal::g_luaState.run(GH::resources::getData("GAME_MAIN"));
-    GH::lua::internal::g_luaState.callFunction("Test", false, 0.1d, "A");
+    GH::lua::internal::g_luaState.callFunction("Test", {GH::lua::numberArgument(1.12)});
 
     GH::resources::unloadResource("GAME_MAIN");
 

@@ -3,26 +3,22 @@
 #include <PNT/Pentagram.hpp>
 #include <luaCPP.hpp>
 
-template<typename type>
-void handleArgument(lua_State* L, type value) {
-    ::userLogger.get()->info(typeid(value).name());
-    // switch(typeid(value).name()) {
-    //     case LUA_TNUMBER:
-    //         handleNumber(L, index);
-    //         break;
-    //     case LUA_TSTRING:
-    //         handleString(L, index);
-    //         break;
-    //     case LUA_TBOOLEAN:
-    //         handleBoolean(L, index);
-    //         break;
-    //     default:
-    //         std::cout << "Unknown type" << std::endl;
-    //         break;
-    // }
-}
-
 namespace GH::lua {
+    luaArgument::luaArgument(bool boolean, double number, const std::string& string, argumentType type) : m_boolean(boolean), m_number(number), m_string(string), m_type(type) {
+    }
+
+    luaArgument booleanArgument(bool boolean) {
+        return luaArgument(boolean, 0, "", argumentType::BOOLEAN);
+    }
+
+    luaArgument numberArgument(double number) {
+        return luaArgument(0, number, "", argumentType::NUMBER);
+    }
+
+    luaArgument stringArgument(const std::string& string) {
+        return luaArgument(0, 0, string, argumentType::STRING);
+    }
+
     namespace internal {
         // LuaState definitions
 
@@ -42,6 +38,31 @@ namespace GH::lua {
             int runResult = lua_pcall(m_L, 0, LUA_MULTRET, 0);
             if(runResult != LUA_OK) {
                 throw error::exception(lua_tostring(m_L, -1));
+            }
+        }
+
+        void luaState::callFunction(const std::string& function, const std::vector<luaArgument>& arguments) {
+            lua_getglobal(m_L, function.c_str());
+            if(lua_type(m_L, -1) != LUA_TFUNCTION) {
+                throw error::exception("Function \"" + function + "\" does not exist or is not of type function.");
+            }
+
+            for(const luaArgument& argument : arguments) {
+                switch(argument.m_type) {
+                    case argumentType::BOOLEAN:
+                        lua_pushboolean(m_L, argument.m_boolean);
+                        break;
+                    case argumentType::NUMBER:
+                        lua_pushnumber(m_L, argument.m_number);
+                        break;
+                    case argumentType::STRING:
+                        lua_pushstring(m_L, argument.m_string.c_str());
+                        break;
+                }
+            }
+
+            if(lua_pcall(m_L, arguments.size(), 0, 0) != LUA_OK) {
+                throw error::exception("Failed to call function \"" + function + "\" with error \"" + lua_tostring(m_L, -1) + "\".");
             }
         }
     }
