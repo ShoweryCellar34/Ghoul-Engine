@@ -1,4 +1,4 @@
-#include <GH/lua.hpp>
+#include <GH/lua/luaManager.hpp>
 
 #include <PNT/Pentagram.hpp>
 #include <luaCPP.hpp>
@@ -64,6 +64,16 @@ namespace GH::lua {
             if(lua_pcall(m_L, arguments.size(), 0, 0) != LUA_OK) {
                 throw error::exception("Failed to call function \"" + function + "\" with error \"" + lua_tostring(m_L, -1) + "\".");
             }
+        }
+
+        void luaState::registerFunction(const std::string& luaAlias, lua_CFunction function) {
+            lua_getglobal(m_L, luaAlias.c_str());
+            if(lua_type(m_L, -1) != LUA_TNIL) {
+                throw error::exception("Alias \"" + luaAlias + "\" alread in use.");
+            }
+
+            lua_pushcfunction(m_L, function);
+            lua_setglobal(m_L, luaAlias.c_str());
         }
     }
 }

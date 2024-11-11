@@ -3,7 +3,7 @@
 #include <filesystem>
 
 #include <GH/resourceManager.hpp>
-#include <GH/lua.hpp>
+#include <GH/lua/luaManager.hpp>
 
 namespace fs = std::filesystem;
 

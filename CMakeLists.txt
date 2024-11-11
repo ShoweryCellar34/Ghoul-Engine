@@ -4,7 +4,7 @@ set(POSITION_INDEPENDENT_CODE true)
 
 cmake_minimum_required(VERSION 3.20)
 project(Ghoul-Engine DESCRIPTION "A Basic Game Engine" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Ghoul-Engine")
-file(GLOB source source/*/*.cpp)
+file(GLOB source source/*/*.cpp source/*/*/*.cpp)
 add_executable(Ghoul-Engine ${source})
 add_compile_definitions(PNT_USER_LOGGER_NAME="Ghoul Engine")
 set_property(TARGET Ghoul-Engine PROPERTY CXX_STANDARD 20)
