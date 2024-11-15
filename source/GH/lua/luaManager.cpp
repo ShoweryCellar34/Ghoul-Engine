@@ -20,10 +20,16 @@ namespace GH::lua {
     }
 
     namespace internal {
+        int ohman(lua_State* L) {
+            error::triggerError(error::codes::CORE_LUA_ERROR, error::exception("say you're prayers now, as soon there will be nothing to pray for. IM gUmMY bEAr a GUmMY BeAr."));
+            return 0;
+        }
+
         // LuaState definitions
 
         luaState::luaState() : m_L(luaL_newstate()) {
             luaL_openlibs(m_L);
+            lua_atpanic(m_L, &ohman);
         }
 
         luaState::~luaState() {
@@ -69,11 +75,46 @@ namespace GH::lua {
         void luaState::registerFunction(const std::string& luaAlias, lua_CFunction function) {
             lua_getglobal(m_L, luaAlias.c_str());
             if(lua_type(m_L, -1) != LUA_TNIL) {
+                lua_pop(m_L, 1);
                 throw error::exception("Alias \"" + luaAlias + "\" alread in use.");
             }
+            lua_pop(m_L, 1);
 
             lua_pushcfunction(m_L, function);
             lua_setglobal(m_L, luaAlias.c_str());
+        }
+
+        bool luaState::getBoolean(const std::string& name) const {
+            lua_getglobal(m_L, name.c_str());
+            if(!lua_isboolean(m_L, -1)) {
+                lua_pop(m_L, 1);
+                throw error::exception("Boolean \"" + name + "\" does not exist or is not of type boolean.");
+            }
+            bool result = lua_toboolean(m_L, -1);
+            lua_pop(m_L, 1);
+            return result;
+        }
+
+        double luaState::getNumber(const std::string& name) const {
+            lua_getglobal(m_L, name.c_str());
+            if(!lua_isnumber(m_L, -1)) {
+                lua_pop(m_L, 1);
+                throw error::exception("Number \"" + name + "\" does not exist or is not of type number.");
+            }
+            double result = lua_tonumber(m_L, -1);
+            lua_pop(m_L, 1);
+            return result;
+        }
+
+        std::string luaState::getString(const std::string& name) const {
+            lua_getglobal(m_L, name.c_str());
+            if(!lua_isstring(m_L, -1)) {
+                lua_pop(m_L, 1);
+                throw error::exception("String \"" + name + "\" does not exist or is not of type string.");
+            }
+            std::string result = (std::string)lua_tostring(m_L, -1);
+            lua_pop(m_L, 1);
+            return result;
         }
     }
 }

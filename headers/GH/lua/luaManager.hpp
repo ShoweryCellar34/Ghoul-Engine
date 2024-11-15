@@ -39,6 +39,10 @@ namespace GH::lua {
             void run(const std::string& code);
             void callFunction(const std::string& function, const std::vector<luaArgument>& arguments = std::vector<luaArgument>());
             void registerFunction(const std::string& luaAlias, lua_CFunction function);
+
+            bool getBoolean(const std::string& name) const;
+            double getNumber(const std::string& name) const;
+            std::string getString(const std::string& name) const;
         };
     }
 }

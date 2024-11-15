@@ -28,8 +28,13 @@ int luaMain(int argc, char* argv[]) {
         GH::error::triggerError(GH::error::codes::GAME_FOLDER_DOES_NOT_EXIST);
     }
 
+
     GH::resources::loadResource("GAME_MAIN", "main.lua", true, GH::resources::perms(true, false));
 
+    PNT::init();
+    PNT::Window gameWindow(GH::lua::getString("GAME_NAME", true).first, 100, 100, 100, 100, 0);
+
+    PNT::deinit();
     GH::resources::unloadAllResources();
     userLogger.get()->info("Finished successfully, exiting with code 0");
     return 0;
