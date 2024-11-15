@@ -2,7 +2,7 @@
 
 #include <PNT/Pentagram.hpp>
 #include <luaCPP.hpp>
-#include <GH/error.hpp>
+#include <GH/cpp/error.hpp>
 
 namespace GH::lua {
     enum class argumentType {

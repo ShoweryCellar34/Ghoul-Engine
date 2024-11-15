@@ -1,7 +1,7 @@
-#include <GH/resourceManager.hpp>
+#include <GH/cpp/resourceManager.hpp>
 
 #include <PNT/Pentagram.hpp>
-#include <GH/error.hpp>
+#include <GH/cpp/error.hpp>
 
 namespace GH::resources {
     // Perms definitions

@@ -2,10 +2,10 @@
 
 #include <tinyfiledialogs.h>
 
-#include <GH/globalsAndDefines.hpp>
-#include <GH/error.hpp>
-#include <GH/files.hpp>
-#include <GH/resourceManager.hpp>
+#include <GH/cpp/globalsAndDefines.hpp>
+#include <GH/cpp/error.hpp>
+#include <GH/cpp/files.hpp>
+#include <GH/cpp/resourceManager.hpp>
 #include <GH/lua/scripting.hpp>
 
 int luaMain(int argc, char* argv[]) {

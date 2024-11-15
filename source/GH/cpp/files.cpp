@@ -1,9 +1,9 @@
-#include <GH/files.hpp>
+#include <GH/cpp/files.hpp>
 
 #include <unordered_map>
 #include <PNT/Pentagram.hpp>
-#include <GH/globalsAndDefines.hpp>
-#include <GH/error.hpp>
+#include <GH/cpp/globalsAndDefines.hpp>
+#include <GH/cpp/error.hpp>
 
 namespace GH::resources {
     std::unordered_map<std::string, bool> resources;

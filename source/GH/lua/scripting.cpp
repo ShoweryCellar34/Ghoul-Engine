@@ -1,6 +1,6 @@
 #include <GH/lua/scripting.hpp>
 
-#include <GH/globalsAndDefines.hpp>
+#include <GH/cpp/globalsAndDefines.hpp>
 
 namespace GH::lua {
     bool run(const std::string& code, bool isCore) {

@@ -1,7 +1,7 @@
-#include <GH/error.hpp>
+#include <GH/cpp/error.hpp>
 
 #include <PNT/Pentagram.hpp>
-#include <GH/globalsAndDefines.hpp>
+#include <GH/cpp/globalsAndDefines.hpp>
 
 namespace GH::error {
     exception::exception(const std::string& message) : m_message(message) {

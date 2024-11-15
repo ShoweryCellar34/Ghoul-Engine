@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include <GH/resourceManager.hpp>
+#include <GH/cpp/resourceManager.hpp>
 #include <GH/lua/luaManager.hpp>
 
 namespace fs = std::filesystem;

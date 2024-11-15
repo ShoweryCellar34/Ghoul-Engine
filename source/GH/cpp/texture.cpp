@@ -1,7 +1,7 @@
-#include <GH/texture.hpp>
+#include <GH/cpp/texture.hpp>
 
 #include <stb_image.h>
-#include <GH/error.hpp>
+#include <GH/cpp/error.hpp>
 
 namespace GH {
     // Textuse definitions
