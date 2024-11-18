@@ -33,7 +33,19 @@ namespace GH::error {
                 exit((int)error);
                 break;
             case codes::LUA_ERROR:
-                ::userLogger.get()->error("Lua code errored with message \"{}\"", exception.what());
+                ::userLogger.get()->warn("Lua code errored with message \"{}\"", exception.what());
+                break;
+        }
+    }
+
+    void triggerError(codes error, const PNT::exception& exception) {
+        switch(error) {
+            case codes::CORE_PNT_ERROR:
+                ::userLogger.get()->error("Pentagram with core criticality errored with message \"{}\", and code {}, exiting with code {}", exception.what(), (int)exception.whatErrorCode(), (int)error);
+                exit((int)error);
+                break;
+            case codes::PNT_ERROR:
+                ::userLogger.get()->warn("Pentagram with non-core criticality errored with message \"{}\", and code {}", exception.what(), (int)exception.whatErrorCode());
                 break;
         }
     }

@@ -30,9 +30,30 @@ int luaMain(int argc, char* argv[]) {
 
 
     GH::resources::loadResource("GAME_MAIN", "main.lua", true, GH::resources::perms(true, false));
+    GH::lua::run(GH::resources::getData("GAME_MAIN"));
 
     PNT::init();
-    PNT::Window gameWindow(GH::lua::getString("GAME_NAME", true).first, 100, 100, 100, 100, 0);
+
+    std::pair<std::string, bool> nameResult = GH::lua::getString("GAME_NAME", false);
+    std::pair<int, bool> widthResult = GH::lua::getNumber("GAME_WIDTH", false);
+    std::pair<int, bool> heightResult = GH::lua::getNumber("GAME_HEIGHT", false);
+    std::string name = nameResult.second ? nameResult.first : "UNNAMED";
+    uint32_t width = widthResult.second ? widthResult.first : 1600;
+    uint32_t height = heightResult.second ? heightResult.first : 900;
+
+    try {
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        GH::renderer::internal::g_window = new PNT::Window(name, width, height, 100, 100, 0);
+    } catch(const PNT::exception& error) {
+        GH::error::triggerError(GH::error::codes::CORE_PNT_ERROR, error);
+    }
+
+    while(!GH::renderer::internal::g_window->shouldClose()) {
+        PNT::processEvents();
+        GH::renderer::internal::g_window->startFrame();
+
+        GH::renderer::internal::g_window->endFrame();
+    }
 
     PNT::deinit();
     GH::resources::unloadAllResources();
