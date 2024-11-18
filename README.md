@@ -5,7 +5,7 @@ Ghoul Engine is an OpenGL rendering engine \(I don't really know what I'm doing 
 
 ## Platform support
 
-Ghoul Engine uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Arch linux X11 (with KDE plasma, idk if that matters) and Windows 11/10.
+Ghoul Engine uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Arch linux with KDE plasma and Windows 11/10.
 
 ## How to clone
 
