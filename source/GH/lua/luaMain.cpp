@@ -29,8 +29,8 @@ int luaMain(int argc, char* argv[]) {
     }
 
 
-    GH::resources::loadResource("GAME_MAIN", "main.lua", true, GH::resources::perms(true, false));
-    GH::lua::run(GH::resources::getData("GAME_MAIN"));
+    GH::resources::loadResource("GAME_SETTINGS", "settings.lua", true, GH::resources::perms(true, false));
+    GH::lua::run(GH::resources::getData("GAME_SETTINGS"));
 
     PNT::init();
 
