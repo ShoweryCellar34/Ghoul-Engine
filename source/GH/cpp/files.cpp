@@ -53,9 +53,9 @@ namespace GH::resources {
             internal::g_resourceManager.unloadResource(alias);
             resources.erase(alias);
             if(resources.at(alias)) {
-                ::userLogger.get()->info("Unloaded core resource with alias \"{}\" successfully", alias);
+                ::userLogger.get()->trace("Unloaded core resource with alias \"{}\" successfully", alias);
             } else {
-                ::userLogger.get()->info("Unloaded non-core resource with alias \"{}\" successfully", alias);
+                ::userLogger.get()->trace("Unloaded non-core resource with alias \"{}\" successfully", alias);
             }
             return true;
         } catch(const error::exception& error) {
@@ -73,9 +73,9 @@ namespace GH::resources {
             try {
                 internal::g_resourceManager.unloadResource(resource.first);
                 if(resource.second) {
-                    ::userLogger.get()->info("Unloaded core resource with alias \"{}\" successfully", resource.first);
+                    ::userLogger.get()->trace("Unloaded core resource with alias \"{}\" successfully", resource.first);
                 } else {
-                    ::userLogger.get()->info("Unloaded non-core resource with alias \"{}\" successfully", resource.first);
+                    ::userLogger.get()->trace("Unloaded non-core resource with alias \"{}\" successfully", resource.first);
                 }
             } catch(const error::exception& error) {
                 if(resource.second) {

@@ -39,7 +39,7 @@ int luaMain(int argc, char* argv[]) {
     std::pair<int, bool> widthResult = GH::lua::getNumber("GAME_WIDTH", false);
     std::pair<int, bool> heightResult = GH::lua::getNumber("GAME_HEIGHT", false);
     std::string name = nameResult.second ? nameResult.first : "UNNAMED";
-    fs::path icon = nameResult.second ? nameResult.first : "";
+    fs::path icon = iconResult.second ? iconResult.first : "";
     uint32_t width = widthResult.second ? widthResult.first : 1600;
     uint32_t height = heightResult.second ? heightResult.first : 900;
 
@@ -47,7 +47,7 @@ int luaMain(int argc, char* argv[]) {
 
     try {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        GH::renderer::internal::g_window = new PNT::Window(name, width, height, 100, 100, 0);
+        GH::renderer::internal::g_window = new PNT::Window(name, width, height, GLFW_DONT_CARE, GLFW_DONT_CARE, 0);
         // GH::renderer::internal::g_window->setIcon();
     } catch(const PNT::exception& error) {
         GH::error::triggerError(GH::error::codes::CORE_PNT_ERROR, error);
