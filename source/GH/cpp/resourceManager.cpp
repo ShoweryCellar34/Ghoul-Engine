@@ -112,14 +112,14 @@ namespace GH::resources {
 
         void resourceManager::flush(const std::string& alias) {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered.");
             }
             m_resources.at(alias)->flush();
         }
 
         void resourceManager::write(const std::string& alias, const std::string& data) {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered.");
             }
             m_resources.at(alias)->write(data.c_str());
         }
@@ -129,7 +129,7 @@ namespace GH::resources {
                 throw error::exception("Permitions cannot be unradable and unwritable");
             }
             if(m_resources.find(alias) != m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is already registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is already registered.");
             }
             resource* newResource = new resource(path, permitions, mustExist);
             m_resources.insert({alias, newResource});
@@ -138,7 +138,7 @@ namespace GH::resources {
 
         void resourceManager::unloadResource(const std::string& alias) {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \" + alias + \" is not registered.");
+                throw error::exception("Resource alias \" + alias + \" is not registered.");
             }
             delete m_resources.at(alias);
             m_resources.erase(alias);
@@ -146,35 +146,35 @@ namespace GH::resources {
 
         resource* resourceManager::getResource(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered, maybe you haven't loaded it yet.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered, maybe you haven't loaded it yet.");
             }
             return m_resources.at(alias);
         }
 
         std::string resourceManager::getData(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getData();
         }
 
         fs::path resourceManager::getFilename(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getFilename();
         }
 
         fs::path resourceManager::getRelativePath(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getRelativePath();
         }
 
         fs::path resourceManager::getAbsolutePath(const std::string& alias) const {
             if(m_resources.find(alias) == m_resources.end()) {
-                throw error::exception("Alias \"" + alias + "\" is not registered.");
+                throw error::exception("Resource alias \"" + alias + "\" is not registered.");
             }
             return m_resources.at(alias)->getAbsolutePath();
         }

@@ -4,6 +4,7 @@
 #include <PNT/Pentagram.hpp>
 #include <GH/cpp/resourceManager.hpp>
 #include <GH/lua/luaManager.hpp>
+#include <GH/cpp/textureManager.hpp>
 
 namespace fs = std::filesystem;
 
@@ -16,6 +17,7 @@ namespace GH {
     }
     namespace renderer::internal {
         inline PNT::Window* g_window = nullptr;
+        inline textureManager g_textureManager;
     }
     inline const char* g_gameFolder;
 }

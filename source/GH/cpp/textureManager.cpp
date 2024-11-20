@@ -11,7 +11,7 @@ namespace GH::renderer {
         }
 
         texture::texture(GladGLContext* GL, const std::string& data) : m_GL(GL), m_ID(0) {
-            m_data = stbi_load_from_memory((unsigned char*)data.c_str(), data.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, 4);
+            m_data = stbi_load_from_memory((unsigned char*)data.c_str(), data.size(), &m_width, &m_height, &m_channels, 4);
         }
 
         texture::~texture() {
@@ -20,61 +20,11 @@ namespace GH::renderer {
             }
         }
 
-        void texture::load() {
-            if(!m_GL) {
-                throw error::exception("OpenGL context is null.");
-            }
-            if(m_ID) {
-                throw error::exception("Image is already loaded with ID: " + std::to_string(m_ID) + ".");
-            }
-            if(!m_data) {
-                throw error::exception("Data for image is null.");
-            }
-
-            m_GL->GenTextures(1, &m_ID);
-            m_GL->BindTexture(GL_TEXTURE_2D, m_ID);
-            m_GL->TexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data);
-            m_GL->GenerateMipmap(GL_TEXTURE_2D);
-            m_GL->BindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        void texture::unload() {
-            if(!m_GL) {
-                throw error::exception("OpenGL context is null.");
-            }
-            if(!m_ID) {
-                throw error::exception("Image is not loaded.");
-            }
-
-            m_GL->DeleteTextures(1, &m_ID);
-            m_ID = 0;
-        }
-
-        void texture::setData(const std::string& data) {
-            if(m_ID) {
-                throw error::exception("Image loaded with ID: " + std::to_string(m_ID) + ".");
-            }
-
-            if(m_data != nullptr) {
-                stbi_image_free(m_data);
-            }
-
-            m_data = stbi_load_from_memory((unsigned char*)data.c_str(), data.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, 4);
-        }
-
-        void texture::setGL(GladGLContext* GL) {
-            if(m_ID) {
-                throw error::exception("Image loaded with ID: " + std::to_string(m_ID) + ".");
-            }
-
-            m_GL = GL;
-        }
-
-        const unsigned char* texture::getData() const {
+        const unsigned char* const texture::getData() const {
             return m_data;
         }
 
-        const GladGLContext* texture::getGL() const {
+        const GladGLContext* const texture::getGL() const {
             return m_GL;
         }
 
@@ -82,12 +32,59 @@ namespace GH::renderer {
             return m_ID;
         }
 
-        unsigned int texture::getWidth() const {
+        int texture::getWidth() const {
             return m_width;
         }
 
-        unsigned int texture::getHeight() const {
+        int texture::getHeight() const {
             return m_height;
+        }
+
+        // TextureManager definitions
+
+        textureManager::~textureManager() {
+            for(const std::pair<const std::string&, const texture*> texture : m_textures) {
+                delete texture.second;
+            }
+        }
+
+        bool textureManager::loaded(const std::string& alias) {
+            if(m_textures.find(alias) != m_textures.end()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        texture* textureManager::loadTexture(const std::string& alias, const std::string& data) {
+            if(m_textures.find(alias) != m_textures.end()) {
+                throw error::exception("Texture alias \"" + alias + "\" is already registered.");
+            }
+            texture* newtexture = new texture(m_GL, data);
+            m_textures.insert({alias, newtexture});
+            return newtexture;
+        }
+
+        void textureManager::unloadTexture(const std::string& alias) {
+            if(m_textures.find(alias) == m_textures.end()) {
+                throw error::exception("Texture alias \"" + alias + "\" is not registered.");
+            }
+            delete m_textures.at(alias);
+            m_textures.erase(alias);
+        }
+
+        texture* textureManager::getTexture(const std::string& alias) const {
+            if(m_textures.find(alias) == m_textures.end()) {
+                throw error::exception("Texture alias \"" + alias + "\" is not registered, maybe you haven't loaded it yet.");
+            }
+            return m_textures.at(alias);
+        }
+
+        const unsigned char* const textureManager::getData(const std::string& alias) const {
+            if(m_textures.find(alias) == m_textures.end()) {
+                throw error::exception("Texture alias \"" + alias + "\" is not registered.");
+            }
+            return m_textures.at(alias)->getData();
         }
     }
 }
