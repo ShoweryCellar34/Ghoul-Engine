@@ -48,8 +48,8 @@ namespace GH::renderer {
             texture* getTexture(const std::string& alias) const;
             const unsigned char* const getData(const std::string& alias) const;
             unsigned int getID(const std::string& alias) const;
-            unsigned int getWidth(const std::string& alias) const;
-            unsigned int getHeight(const std::string& alias) const;
+            int getWidth(const std::string& alias) const;
+            int getHeight(const std::string& alias) const;
         };
     }
 }

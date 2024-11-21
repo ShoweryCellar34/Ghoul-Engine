@@ -34,14 +34,12 @@ int luaMain(int argc, char* argv[]) {
 
     PNT::init();
 
-    std::pair<std::string, bool> nameResult = GH::lua::getString("GAME_NAME", false);
-    std::pair<std::string, bool> iconResult = GH::lua::getString("GAME_ICON", false);
-    std::pair<int, bool> widthResult = GH::lua::getNumber("GAME_WIDTH", false);
-    std::pair<int, bool> heightResult = GH::lua::getNumber("GAME_HEIGHT", false);
-    std::string name = nameResult.second ? nameResult.first : "UNNAMED";
-    fs::path icon = iconResult.second ? iconResult.first : "";
-    uint32_t width = widthResult.second ? widthResult.first : 1600;
-    uint32_t height = heightResult.second ? heightResult.first : 900;
+    std::string name = GH::lua::getString("GAME_NAME", true);
+    std::string icon = GH::lua::getString("GAME_ICON", false);
+    int widthResult = GH::lua::getNumber("GAME_WIDTH", false);
+    uint32_t width = GH::lua::wasSuccessful() ? widthResult : 1600;
+    int heightResult = GH::lua::getNumber("GAME_HEIGHT", false);
+    uint32_t height = GH::lua::wasSuccessful() ? heightResult : 900;
 
     GH::resources::loadResource("GAME_ICON", icon, false, GH::resources::perms(true, false));
 

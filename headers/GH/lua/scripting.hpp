@@ -6,11 +6,13 @@
 #include <GH/lua/luaManager.hpp>
 
 namespace GH::lua {
-    bool run(const std::string& code, bool isCore = false);
-    bool callFunction(const std::string& function, const std::vector<luaArgument>& arguments, bool isCore);
-    bool registerFunction(const std::string& luaAlias, lua_CFunction function, bool isCore);
+    bool wasSuccessful();
 
-    std::pair<bool, bool> getBoolean(const std::string& name, bool isCore);
-    std::pair<double, bool> getNumber(const std::string& name, bool isCore);
-    std::pair<std::string, bool> getString(const std::string& name, bool isCore);
+    void run(const std::string& code, bool isCore = false);
+    void callFunction(const std::string& function, const std::vector<luaArgument>& arguments, bool isCore);
+    void registerFunction(const std::string& luaAlias, lua_CFunction function, bool isCore);
+
+    bool getBoolean(const std::string& name, bool isCore);
+    double getNumber(const std::string& name, bool isCore);
+    std::string getString(const std::string& name, bool isCore);
 }

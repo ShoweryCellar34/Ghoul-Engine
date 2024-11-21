@@ -86,5 +86,19 @@ namespace GH::renderer {
             }
             return m_textures.at(alias)->getData();
         }
+
+        int textureManager::getWidth(const std::string& alias) const {
+            if(m_textures.find(alias) == m_textures.end()) {
+                throw error::exception("Texture alias \"" + alias + "\" is not registered.");
+            }
+            return m_textures.at(alias)->getWidth();
+        }
+
+        int textureManager::getHeight(const std::string& alias) const {
+            if(m_textures.find(alias) == m_textures.end()) {
+                throw error::exception("Texture alias \"" + alias + "\" is not registered.");
+            }
+            return m_textures.at(alias)->getHeight();
+        }
     }
 }

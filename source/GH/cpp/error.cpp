@@ -21,11 +21,11 @@ namespace GH::error {
                 ::userLogger.get()->error("Game folder not set, exiting with code {}", (int)error);
                 exit((int)error);
                 break;
-            case codes::CORE_RESOURCE_ERROR:
+            case codes::CORE_FILE_ERROR:
                 ::userLogger.get()->error("Core resource operation failed with error message \"{}\", exiting with code {}", exception.what(), (int)error);
                 exit((int)error);
                 break;
-            case codes::RESOURCE_ERROR:
+            case codes::FILE_ERROR:
                 ::userLogger.get()->warn("Resource operation failed with error message \"{}\"", exception.what());
                 break;
             case codes::CORE_LUA_ERROR:
