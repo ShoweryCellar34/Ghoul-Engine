@@ -7,10 +7,11 @@ namespace GH::renderer {
     bool wasSuccessful();
 
     void loadTexture(const std::string& desiredAlias, const std::string& data, bool isCore);
-    void loadTexture(const std::string& desiredAlias, const fs::path& path, bool isCore);
     void unloadTexture(const std::string& alias);
     void unloadAllTextures();
 
-    int getWidth(const std::string& alias, bool isCore);
-    int getHeight(const std::string& alias, bool isCore);
+    std::string getTextureData(const std::string& alias);
+    unsigned char* const getRawTextureData(const std::string& alias);
+    int getTextureWidth(const std::string& alias);
+    int getTextureHeight(const std::string& alias);
 }

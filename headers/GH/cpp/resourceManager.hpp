@@ -51,12 +51,12 @@ namespace GH::resources {
             resourceManager(const resourceManager&) = delete;
             resourceManager& operator=(const resourceManager&) = delete;
 
-            bool loaded(const std::string& alias);
             void flush(const std::string& alias);
             void write(const std::string& alias, const std::string& data);
             resource* loadResource(const std::string& alias, const fs::path& path, perms permitions = perms(true, false), bool mustExist = true);
             void unloadResource(const std::string& alias);
 
+            bool loaded(const std::string& alias) const;
             resource* getResource(const std::string& alias) const;
             std::string getData(const std::string& alias) const;
             fs::path getFilename(const std::string& alias) const;

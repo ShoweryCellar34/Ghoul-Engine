@@ -4,25 +4,25 @@
 
 namespace GH::renderer {
     bool success = false;
-    std::unordered_map<std::string, bool> resources;
+    std::unordered_map<std::string, bool> textures;
 
     bool wasSuccessful() {
         return success;
     }
 
     void loadTexture(const std::string& desiredAlias, const std::string& data, bool isCore) {
-        if(resources.find(desiredAlias) != resources.end()) {
-            if(resources.at(desiredAlias)) {
+        if(textures.find(desiredAlias) != textures.end()) {
+            if(textures.at(desiredAlias)) {
                 if(isCore) {
-                    error::triggerError(error::codes::CORE_RESOURCE_ERROR, error::exception("Core texture \"" + desiredAlias + "\" already registered with the \"GH::resources::loadResource()\" function (if you unregistered the texture alias in any way other than the \"GH::resources::unloadResource()\" function)"));
+                    error::triggerError(error::codes::CORE_RESOURCE_ERROR, error::exception("Core texture \"" + desiredAlias + "\" already registered with the \"GH::renderer::loadTexture()\" function (if you unregistered the texture alias in any way other than the \"GH::renderer::unloadTexture()\" function)"));
                 } else {
-                    error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Core texture \"" + desiredAlias + "\" already registered with the \"GH::resources::loadResource()\" function (if you unregistered the texture alias in any way other than the \"GH::resources::unloadResource()\" function)"));
+                    error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Core texture \"" + desiredAlias + "\" already registered with the \"GH::renderer::loadTexture()\" function (if you unregistered the texture alias in any way other than the \"GH::renderer::unloadTexture()\" function)"));
                 }
             } else {
                 if(isCore) {
-                    error::triggerError(error::codes::CORE_RESOURCE_ERROR, error::exception("Non-core texture \"" + desiredAlias + "\" already registered with the \"GH::resources::loadResource()\" function (if you unregistered the texture alias in any way other than the \"GH::resources::unloadResource()\" function)"));
+                    error::triggerError(error::codes::CORE_RESOURCE_ERROR, error::exception("Non-core texture \"" + desiredAlias + "\" already registered with the \"GH::renderer::loadTexture()\" function (if you unregistered the texture alias in any way other than the \"GH::renderer::unloadTexture()\" function)"));
                 } else {
-                    error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Non-core texture \"" + desiredAlias + "\" already registered with the \"GH::resources::loadResource()\" function (if you unregistered the texture alias in any way other than the \"GH::resources::unloadResource()\" function)"));
+                    error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Non-core texture \"" + desiredAlias + "\" already registered with the \"GH::renderer::loadTexture()\" function (if you unregistered the texture alias in any way other than the \"GH::renderer::unloadTexture()\" function)"));
                 }
             }
             success = false;
@@ -30,11 +30,11 @@ namespace GH::renderer {
         }
         try {
             internal::g_textureManager.loadTexture(desiredAlias, data);
-            resources.insert({desiredAlias, isCore});
+            textures.insert({desiredAlias, isCore});
             if(isCore) {
-                ::userLogger.get()->info("Loaded core texture at path \"{}\" with texture alias \"{}\" successfully", path.string(), desiredAlias);
+                ::userLogger.get()->info("Loaded core texture with texture alias \"{}\" successfully", desiredAlias);
             } else {
-                ::userLogger.get()->info("Loaded non-core texture at path \"{}\" with texture alias \"{}\" successfully", path.string(), desiredAlias);
+                ::userLogger.get()->info("Loaded non-core texture with texture alias \"{}\" successfully", desiredAlias);
             }
             success = true;
         } catch(const error::exception& error) {
@@ -51,22 +51,22 @@ namespace GH::renderer {
     }
 
     void unloadTexture(const std::string& alias) {
-        if(resources.find(alias) == resources.end()) {
-            error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::resources::loadResource()\" function, that may be the cause of this error)"));
+        if(textures.find(alias) == textures.end()) {
+            error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::renderer::loadTexture()\" function, that may be the cause of this error)"));
             success = false;
             return;
         }
         try {
             internal::g_textureManager.unloadTexture(alias);
-            resources.erase(alias);
-            if(resources.at(alias)) {
+            textures.erase(alias);
+            if(textures.at(alias)) {
                 ::userLogger.get()->trace("Unloaded core texture with texture alias \"{}\" successfully", alias);
             } else {
                 ::userLogger.get()->trace("Unloaded non-core texture with texture alias \"{}\" successfully", alias);
             }
             success = true;
         } catch(const error::exception& error) {
-            if(resources.at(alias)) {
+            if(textures.at(alias)) {
                 triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
             } else {
                 triggerError(GH::error::codes::RESOURCE_ERROR, error);
@@ -76,7 +76,7 @@ namespace GH::renderer {
     }
 
     void unloadAllTextures() {
-        for(const std::pair<std::string, bool>& texture : resources) {
+        for(const std::pair<std::string, bool>& texture : textures) {
             try {
                 internal::g_textureManager.unloadTexture(texture.first);
                 if(texture.second) {
@@ -94,14 +94,111 @@ namespace GH::renderer {
                 return;
             }
         }
-        resources.clear();
+        textures.clear();
         success = true;
     }
 
-
-    int getWidth(const std::string& alias) {
+    std::string getTextureData(const std::string& alias) {
+        if(textures.find(alias) == textures.end()) {
+            error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::renderer::loadTexture()\" function, that may be the cause of this error)"));
+            success = false;
+            return 0;
+        }
+        try {
+            std::string result = internal::g_textureManager.getData(alias);
+            if(textures.at(alias)) {
+                ::userLogger.get()->trace("Read data from core texture with texture alias \"{}\" successfully", alias);
+            } else {
+                ::userLogger.get()->trace("Read data from non-core texture with texture alias \"{}\" successfully", alias);
+            }
+            success = true;
+            return result;
+        } catch(const error::exception& error) {
+            if(textures.at(alias)) {
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
+            } else {
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
+            }
+            success = false;
+            return nullptr;
+        }
     }
 
-    int getHeight(const std::string& alias) {
+    unsigned char* const getRawTextureData(const std::string& alias) {
+        if(textures.find(alias) == textures.end()) {
+            error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::renderer::loadTexture()\" function, that may be the cause of this error)"));
+            success = false;
+            return 0;
+        }
+        try {
+            unsigned char* result = internal::g_textureManager.getRawData(alias);
+            if(textures.at(alias)) {
+                ::userLogger.get()->trace("Read raw data from core texture with texture alias \"{}\" successfully", alias);
+            } else {
+                ::userLogger.get()->trace("Read raw data from non-core texture with texture alias \"{}\" successfully", alias);
+            }
+            success = true;
+            return result;
+        } catch(const error::exception& error) {
+            if(textures.at(alias)) {
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
+            } else {
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
+            }
+            success = false;
+            return nullptr;
+        }
+    }
+
+    int getTextureWidth(const std::string& alias) {
+        if(textures.find(alias) == textures.end()) {
+            error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::renderer::loadTexture()\" function, that may be the cause of this error)"));
+            success = false;
+            return 0;
+        }
+        try {
+            int result = internal::g_textureManager.getWidth(alias);
+            if(textures.at(alias)) {
+                ::userLogger.get()->trace("Read width from core texture with texture alias \"{}\" successfully", alias);
+            } else {
+                ::userLogger.get()->trace("Read width from non-core texture with texture alias \"{}\" successfully", alias);
+            }
+            success = true;
+            return result;
+        } catch(const error::exception& error) {
+            if(textures.at(alias)) {
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
+            } else {
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
+            }
+            success = false;
+            return 0;
+        }
+    }
+
+    int getTextureHeight(const std::string& alias) {
+        if(textures.find(alias) == textures.end()) {
+            error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::renderer::loadTexture()\" function, that may be the cause of this error)"));
+            success = false;
+            return 0;
+        }
+        try {
+            int result = internal::g_textureManager.getWidth(alias);
+            if(textures.at(alias)) {
+                ::userLogger.get()->trace("Read height from core texture with texture alias \"{}\" successfully", alias);
+            } else {
+                ::userLogger.get()->trace("Read height from non-core texture with texture alias \"{}\" successfully", alias);
+            }
+            success = true;
+            return result;
+        } catch(const error::exception& error) {
+            if(textures.at(alias)) {
+                triggerError(GH::error::codes::CORE_RESOURCE_ERROR, error);
+            } else {
+                triggerError(GH::error::codes::RESOURCE_ERROR, error);
+            }
+            success = false;
+            return 0;
+        }
     }
 }

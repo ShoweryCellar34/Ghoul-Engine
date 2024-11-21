@@ -102,14 +102,6 @@ namespace GH::resources {
             }
         }
 
-        bool resourceManager::loaded(const std::string& alias) {
-            if(m_resources.find(alias) != m_resources.end()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         void resourceManager::flush(const std::string& alias) {
             if(m_resources.find(alias) == m_resources.end()) {
                 throw error::exception("Resource alias \"" + alias + "\" is not registered.");
@@ -142,6 +134,14 @@ namespace GH::resources {
             }
             delete m_resources.at(alias);
             m_resources.erase(alias);
+        }
+
+        bool resourceManager::loaded(const std::string& alias) const {
+            if(m_resources.find(alias) != m_resources.end()) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         resource* resourceManager::getResource(const std::string& alias) const {

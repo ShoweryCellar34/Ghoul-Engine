@@ -11,7 +11,8 @@ namespace GH::renderer {
             GladGLContext* m_GL;
             unsigned int m_ID;
             int m_width, m_height, m_channels;
-            unsigned char* m_data;
+            std::string m_data;
+            unsigned char* m_rawData;
 
         public:
             texture();
@@ -21,7 +22,8 @@ namespace GH::renderer {
             texture(const texture&) = delete;
             texture& operator=(const texture&) = delete;
 
-            const unsigned char* const getData() const;
+            std::string getData() const;
+            unsigned char* const getRawData() const;
             const GladGLContext* const getGL() const;
             unsigned int getID() const;
             int getWidth() const;
@@ -46,7 +48,8 @@ namespace GH::renderer {
 
             const GladGLContext* const getGL() const;
             texture* getTexture(const std::string& alias) const;
-            const unsigned char* const getData(const std::string& alias) const;
+            std::string getData(const std::string& alias) const;
+            unsigned char* const getRawData(const std::string& alias) const;
             unsigned int getID(const std::string& alias) const;
             int getWidth(const std::string& alias) const;
             int getHeight(const std::string& alias) const;

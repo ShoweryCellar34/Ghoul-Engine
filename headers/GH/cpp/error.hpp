@@ -5,6 +5,7 @@
 
 namespace GH::error {
     enum class codes {
+        SUCCESS,
         GAME_FOLDER_NOT_SET,
         GAME_FOLDER_DOES_NOT_EXIST,
         CORE_FILE_ERROR,
