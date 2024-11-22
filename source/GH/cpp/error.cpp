@@ -32,8 +32,11 @@ namespace GH::error {
                 ::userLogger.get()->error("Core lua code errored with message \"{}\", exiting with code {}", exception.what(), (int)error);
                 exit((int)error);
                 break;
-            case codes::LUA_ERROR:
+            case codes::LUA_ERROR:  
                 ::userLogger.get()->warn("Lua code errored with message \"{}\"", exception.what());
+                break;
+            default:
+                ::userLogger.get()->warn("Unreconized error code");
                 break;
         }
     }
@@ -46,6 +49,9 @@ namespace GH::error {
                 break;
             case codes::PNT_ERROR:
                 ::userLogger.get()->warn("Pentagram with non-core criticality errored with message \"{}\", and code {}", exception.what(), (int)exception.whatErrorCode());
+                break;
+            default:
+                ::userLogger.get()->warn("Unreconized error code");
                 break;
         }
     }
