@@ -47,9 +47,6 @@ namespace GH::renderer {
         }
     }
 
-    void loadTexture(const std::string& desiredAlias, const fs::path& path, bool isCore) {
-    }
-
     void unloadTexture(const std::string& alias) {
         if(textures.find(alias) == textures.end()) {
             error::triggerError(error::codes::RESOURCE_ERROR, error::exception("Alias \"" + alias + "\" not registered (if you registered the texture alias in any way other than the \"GH::renderer::loadTexture()\" function, that may be the cause of this error)"));

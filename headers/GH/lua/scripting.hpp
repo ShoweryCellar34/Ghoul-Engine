@@ -15,4 +15,6 @@ namespace GH::lua {
     bool getBoolean(const std::string& name, bool isCore);
     double getNumber(const std::string& name, bool isCore);
     std::string getString(const std::string& name, bool isCore);
+
+    void loadSettings();
 }

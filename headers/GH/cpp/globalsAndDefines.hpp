@@ -19,5 +19,12 @@ namespace GH {
         inline PNT::Window* g_window = nullptr;
         inline textureManager g_textureManager;
     }
+    namespace userSettings {
+        inline std::string g_name;
+        inline std::string g_mainScenePath;
+        inline std::string g_iconPath;
+        inline int g_width = 0;
+        inline int g_height = 0;
+    }
     inline const char* g_gameFolder;
 }
