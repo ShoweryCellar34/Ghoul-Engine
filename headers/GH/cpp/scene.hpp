@@ -10,5 +10,5 @@ namespace GH::scene::internal {
         node* m_parent;
 
     public:
-    }
+    };
 }
