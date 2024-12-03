@@ -9,6 +9,7 @@
 #include <GH/cpp/window.hpp>
 #include <GH/lua/scripting.hpp>
 #include <GH/cpp/images.hpp>
+#include <GH/cpp/scene.hpp>
 
 void setGameFolder(int argc, char* argv[]) {
 #ifdef GH_GAME_FOLDER
@@ -47,6 +48,9 @@ void deinit() {
 
 int luaMain(int argc, char* argv[]) {
     initialize(argc, argv);
+
+    GH::scene::internal::node root(nullptr);
+    root.addChild("test");
 
     while(!GH::renderer::internal::g_window->shouldClose()) {
         PNT::processEvents();

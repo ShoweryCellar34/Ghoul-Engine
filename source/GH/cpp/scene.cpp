@@ -146,9 +146,39 @@ namespace GH::scene::internal {
         return m_data;
     }
 
-    void node::setJSON(const nlohmann::json& data) {
+    void node::setJSON(const nlohmann::json& json) {
+        if(json.contains("data") && json["data"].is_string()) {
+            m_data = json.at("data").get<std::string>();
+        }
+
+        std::unordered_map<std::string, node> children;
+
+        if(json.contains("childrenNames") && json["childrenNames"].is_array()) {
+            for (const auto& childName : json.at("childrenNames")) {
+                if(json.contains("children") && json["children"].is_array()) {
+                    for (const auto& childJson : json.at("children")) {
+                        children.insert({childName, node(this, childJson)});
+                    }
+                }
+            }
+        }
     }
 
     nlohmann::json node::getJSON() const {
+        nlohmann::json json;
+        json["data"] = m_data;
+
+        nlohmann::json children = nlohmann::json::array();
+        for(const std::pair<std::string, node>& child : m_children) {
+            children.emplace_back(child.second.getJSON());
+        }
+        nlohmann::json childrenNames = nlohmann::json::array();
+        for(const std::pair<std::string, node>& child : m_children) {
+            childrenNames.emplace_back(child.first);
+        }
+        json["children"] = children;
+        json["childrenNames"] = childrenNames;
+
+        return json;
     }
 }

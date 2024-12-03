@@ -32,7 +32,7 @@ namespace GH::scene::internal {
         bool getIsRoot() const;
         nlohmann::json getData() const;
 
-        void setJSON(const nlohmann::json& data);
+        void setJSON(const nlohmann::json& json);
         nlohmann::json getJSON() const;
     };
 }
