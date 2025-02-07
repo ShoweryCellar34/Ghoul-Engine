@@ -1,6 +1,7 @@
 #include <GH/cpp/files.hpp>
 
 #include <unordered_map>
+#include <RM/error.hpp>
 #include <PNT/Pentagram.hpp>
 #include <GH/cpp/globalsAndDefines.hpp>
 #include <GH/cpp/error.hpp>
@@ -40,11 +41,11 @@ namespace GH::resources {
                 ::userLogger.get()->info("Loaded non-core resource at path \"{}\" with resource alias \"{}\" successfully", path.string(), desiredAlias);
             }
             success = true;
-        } catch(const error::exception& error) {
+        } catch(const RM::error::exception& error) {
             if(isCore) {
-                triggerError(GH::error::codes::CORE_FILE_ERROR, error);
+                triggerError(GH::error::codes::CORE_FILE_ERROR, error::exception(error.what()));
             } else {
-                triggerError(GH::error::codes::FILE_ERROR, error);
+                triggerError(GH::error::codes::FILE_ERROR, error::exception(error.what()));
             }
             success = false;
         }
@@ -65,11 +66,11 @@ namespace GH::resources {
                 ::userLogger.get()->trace("Unloaded non-core resource with resource alias \"{}\" successfully", alias);
             }
             success = true;
-        } catch(const error::exception& error) {
+        } catch(const RM::error::exception& error) {
             if(resources.at(alias)) {
-                triggerError(GH::error::codes::CORE_FILE_ERROR, error);
+                triggerError(GH::error::codes::CORE_FILE_ERROR, error::exception(error.what()));
             } else {
-                triggerError(GH::error::codes::FILE_ERROR, error);
+                triggerError(GH::error::codes::FILE_ERROR, error::exception(error.what()));
             }
             success = false;
         }
@@ -84,11 +85,11 @@ namespace GH::resources {
                 } else {
                     ::userLogger.get()->trace("Unloaded non-core resource with resource alias \"{}\" successfully", resource.first);
                 }
-            } catch(const error::exception& error) {
+            } catch(const RM::error::exception& error) {
                 if(resource.second) {
-                    triggerError(GH::error::codes::CORE_FILE_ERROR, error);
+                    triggerError(GH::error::codes::CORE_FILE_ERROR, error::exception(error.what()));
                 } else {
-                    triggerError(GH::error::codes::FILE_ERROR, error);
+                    triggerError(GH::error::codes::FILE_ERROR, error::exception(error.what()));
                 }
                 success = false;
                 return;
@@ -111,11 +112,11 @@ namespace GH::resources {
                 ::userLogger.get()->trace("Read data from non-core resource with resource alias \"{}\" successfully", alias);
             }
             return data;
-        } catch(const error::exception& error) {
+        } catch(const RM::error::exception& error) {
             if(resources.at(alias)) {
-                triggerError(GH::error::codes::CORE_FILE_ERROR, error);
+                triggerError(GH::error::codes::CORE_FILE_ERROR, error::exception(error.what()));
             } else {
-                triggerError(GH::error::codes::FILE_ERROR, error);
+                triggerError(GH::error::codes::FILE_ERROR, error::exception(error.what()));
             }
             return "";
         }
