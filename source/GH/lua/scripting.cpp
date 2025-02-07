@@ -131,7 +131,7 @@ namespace GH::lua {
     }
 
     void loadSettings() {
-        GH::resources::loadResource("GAME_SETTINGS", "settings.lua", true, GH::resources::perms(true, false));
+        GH::resources::loadResource("GAME_SETTINGS", "settings.lua", true, RM::mode(true, false));
         GH::lua::run(GH::resources::getData("GAME_SETTINGS"));
 
         userSettings::g_name = GH::lua::getString("GAME_NAME", true);
@@ -142,7 +142,7 @@ namespace GH::lua {
         int heightResult = GH::lua::getNumber("GAME_HEIGHT", false);
         userSettings::g_height = GH::lua::wasSuccessful() ? heightResult : 900;
 
-        GH::resources::loadResource("GAME_MAIN_SCENE_PATH", GH::userSettings::g_mainScenePath, true, GH::resources::perms(true, false));
-        GH::resources::loadResource("GAME_ICON_PATH", GH::userSettings::g_iconPath, false, GH::resources::perms(true, false));
+        GH::resources::loadResource("GAME_MAIN_SCENE_PATH", GH::userSettings::g_mainScenePath, true, RM::mode(true, false));
+        GH::resources::loadResource("GAME_ICON_PATH", GH::userSettings::g_iconPath, false, RM::mode(true, false));
     }
 }

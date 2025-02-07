@@ -13,7 +13,7 @@ namespace GH::resources {
         return success;
     }
 
-    void loadResource(const std::string& desiredAlias, const fs::path& path, bool isCore, perms permitions) {
+    void loadResource(const std::string& desiredAlias, const fs::path& path, bool isCore, RM::mode permitions) {
         if(resources.find(desiredAlias) != resources.end()) {
             if(resources.at(desiredAlias)) {
                 if(isCore) {

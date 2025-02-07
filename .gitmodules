@@ -10,3 +10,6 @@
 [submodule "vendors/lua/lua"]
 	path = vendors/lua/lua
 	url = https://github.com/lua/lua.git
+[submodule "vendors/Resource-manager"]
+	path = vendors/Resource-Manager
+	url = https://github.com/ShoweryCellar34/Resource-Manager.git

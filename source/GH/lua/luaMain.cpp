@@ -5,7 +5,6 @@
 #include <GH/cpp/globalsAndDefines.hpp>
 #include <GH/cpp/error.hpp>
 #include <GH/cpp/files.hpp>
-#include <GH/cpp/resourceManager.hpp>
 #include <GH/cpp/window.hpp>
 #include <GH/lua/scripting.hpp>
 #include <GH/cpp/images.hpp>

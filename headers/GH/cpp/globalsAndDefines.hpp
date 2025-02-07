@@ -1,8 +1,8 @@
 #pragma once
 
 #include <filesystem>
+#include <RM/resourceManager.hpp>
 #include <PNT/Pentagram.hpp>
-#include <GH/cpp/resourceManager.hpp>
 #include <GH/lua/luaManager.hpp>
 #include <GH/cpp/textureManager.hpp>
 
@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 
 namespace GH {
     namespace resources::internal {
-        inline resourceManager g_resourceManager;
+        inline RM::resourceManager g_resourceManager;
     }
     namespace lua::internal {
         inline luaState g_luaState;
