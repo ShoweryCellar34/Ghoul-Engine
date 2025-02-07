@@ -1,4 +1,4 @@
-This project uses the following projects:
+This project uses the following project(s):
 
 - nlohmann/json: The licenses for nlohmann/json can be found at `vendors/json/LICENSES/`.
 - lua: The licence for lua can be found at the end of this file `vendors/lua/lua/lua.h`.
