@@ -1,6 +1,6 @@
 #pragma once
 
-#include <RM/resourceManager.hpp>
+#include <RM/RM.hpp>
 
 namespace GH::resources {
     bool wasSuccessful();

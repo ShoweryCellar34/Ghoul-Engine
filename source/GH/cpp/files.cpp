@@ -1,7 +1,6 @@
 #include <GH/cpp/files.hpp>
 
 #include <unordered_map>
-#include <RM/error.hpp>
 #include <PNT/Pentagram.hpp>
 #include <GH/cpp/globalsAndDefines.hpp>
 #include <GH/cpp/error.hpp>
