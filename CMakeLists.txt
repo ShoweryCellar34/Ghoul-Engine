@@ -19,7 +19,7 @@ add_subdirectory(vendors/Resource-Manager)
 
 add_subdirectory(vendors/tinyfiledialogs)
 
-target_link_libraries(Ghoul-Engine PUBLIC Resource-Manager nlohmann_json::nlohmann_json lua Pentagram tinyfiledialogs)
+target_link_libraries(Ghoul-Engine PUBLIC nlohmann_json::nlohmann_json lua Pentagram Resource-Manager tinyfiledialogs)
 
 if(MSVC)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS /MP")
